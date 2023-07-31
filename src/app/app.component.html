@@ -1,0 +1,31 @@
+<!--GridLayout>
+  <page-router-outlet></page-router-outlet>
+</GridLayout-->
+<Page xmlns:mdt="@nativescript-community/ui-material-bottom-navigation">
+  <ActionBar title="NutFinance - Home" class="action-bar" flat="true">
+  </ActionBar>
+  <MDBottomNavigation
+    selectedIndexChanged="{{onSelectedIndexChanged}}"
+    selectedIndex="0"
+    width="100%"
+    tabsPosition="bottom"
+    iosOverflowSafeArea="true">
+    <MDTabStrip>
+      <MDTabStripItem>
+        <Label text="Home" ios:fontSize="10" android:fontSize="12"></Label>
+        <Image src="font://&#xf015;" class="fas"></Image>
+      </MDTabStripItem>
+      <MDTabStripItem class="special">
+        <Label text="Transações" ios:fontSize="10" android:fontSize="12"></Label>
+        <Image src="font://&#xf007;" class="fas"></Image>
+      </MDTabStripItem>
+    </MDTabStrip>
+
+    <MDTabContentItem>
+      <page-router-outlet name="home"></page-router-outlet>
+    </MDTabContentItem>
+    <MDTabContentItem>
+      <page-router-outlet name="transacoes"></page-router-outlet>
+    </MDTabContentItem>
+  </MDBottomNavigation>
+</Page>

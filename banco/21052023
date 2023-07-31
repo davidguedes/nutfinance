@@ -1,0 +1,50 @@
+CREATE ROLE nutadmin WITH
+	LOGIN
+	SUPERUSER
+	CREATEDB
+	CREATEROLE
+	INHERIT
+	REPLICATION
+	CONNECTION LIMIT -1
+	PASSWORD 'xxxxxx';
+
+CREATE DATABASE nutfinance
+    WITH
+    OWNER = nutadmin
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'Portuguese_Brazil.1252'
+    LC_CTYPE = 'Portuguese_Brazil.1252'
+    CONNECTION LIMIT = -1
+    IS_TEMPLATE = False;
+
+CREATE TABLE public.usuario(
+    id integer NOT NULL,
+    nome character varying NOT NULL,
+    email character varying NOT NULL,
+    status CHAR(1) NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE SEQUENCE public.usuario_id_seq;
+
+ALTER SEQUENCE public.usuario_id_seq OWNED BY
+public.usuario.id;
+
+ALTER TABLE usuario ALTER id SET DEFAULT nextval('public.usuario_id_seq');
+
+CREATE TABLE public.transacoes(
+    id integer NOT NULL,
+	valor real NOT NULL,
+	tipo char(1) NOT NULL,
+	recorrencia BOOLEAN NOT NULL,
+	numero_recorrencia INTEGER,
+	data_transacao TIMESTAMP NOT NULL,
+	CONSTRAINT id_usuario PRIMARY KEY (id)
+);
+
+CREATE SEQUENCE public.transacoes_id_seq;
+
+ALTER SEQUENCE public.transacoes OWNED BY
+public.transacoes.id;
+
+ALTER TABLE transacoes ALTER id SET DEFAULT nextval('public.transacoes_id_seq');

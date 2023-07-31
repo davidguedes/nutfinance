@@ -1,0 +1,38 @@
+<ActionBar title="Transações" class="action-bar" flat="true">
+</ActionBar>
+<StackLayout class="p-20">
+  <ListView height="400" [items]="transacoes" separatorColor="black" rowHeight="100">
+    <ng-template let-item="item" let-i="index" let-odd="odd" let-even="even">
+      <StackLayout backgroundColor="#3c495e" orientation="horizontal">
+        <FlexboxLayout width="90%" flexDirection="column" justifyContent="center" alignItems="center" class="justify-content-center item-list" [class.odd]="odd" [class.even]="even">
+          <Label width="90%" class="text-id h3 text-center" [text]="'#' + item.id"></Label>
+          <Label class="text-descript text-center">
+            <FormattedString>
+              <Span class="fas h3" text="&#xf155;"></Span>
+              <Label class="h3" [text]="' '+item.valor"></Label>
+              <Label class="h3" [text]="' - '+item.tipo"></Label>
+            </FormattedString>
+
+          </Label>
+          <!--Label class="text-descript text-center">
+            <FormattedString>
+              <ng-template *ngIf="item.tipo === 'S'">
+                <Span class="fas h4" text="&#xf067;"></Span>
+              </ng-template>
+              <ng-template *ngIf="item.tipo === 'D'">
+                <Span class="fas h4" text="&#xf068;"></Span>
+              </ng-template>
+            </FormattedString>
+          </Label-->
+        </FlexboxLayout>
+        <Button width="10%" class="btn-remove btn btn-primary" (tap)="removerTransacao(item.id)">
+          <FormattedString>
+            <Span class="fas" text="&#xf057;"></Span>
+          </FormattedString>
+        </Button>
+      </StackLayout>
+    </ng-template>
+  </ListView>
+  <!--Label text="Enjoy" class="h1 text-center c-white"></Label>
+  <Image src="~/assets/images/nx-nativescript.png" class="h-center m-t-20" width="300"></Image-->
+</StackLayout>

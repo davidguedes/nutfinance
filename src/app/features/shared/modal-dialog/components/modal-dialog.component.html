@@ -1,0 +1,40 @@
+<StackLayout class="modal-view-style">
+  <FlexboxLayout height="100%" width="100%" flexDirection="column" justifyContent="center" alignItems="center">
+    <Label class="h2" [text]="title"></Label>
+    <TextField
+      id="valor"
+      class="btn-form"
+      hint="Valor"
+      color="black"
+      width="80%"
+      backgroundColor="lightyellow"
+      secure="false"
+      returnKeyType="next"
+      android:keyboardType="number"
+      ios:keyboardType="phone"
+      (returnPress)="onReturnPress($event)"
+      autocorrect="true"
+      maxLength="50"
+      (focus)="onFocus($event)"
+      (blur)="onBlur($event)"
+      [(ngModel)]="transacao.valor"
+    />
+    <TextField
+      id="tipo"
+      class="btn-form"
+      hint="Tipo"
+      returnKeyType="done"
+      color="black"
+      width="80%"
+      backgroundColor="lightyellow"
+      maxLength="1"
+      (focus)="onFocus($event)"
+      (blur)="onBlur($event)"
+      [(ngModel)]="transacao.tipo"
+    />
+    <StackLayout orientation="horizontal">
+      <Button text="Cancelar" (tap)="onClose()"></Button>
+      <Button text="Enviar" (tap)="addChamado()"></Button>
+    </StackLayout>
+  </FlexboxLayout>
+</StackLayout>

@@ -1,0 +1,32 @@
+.odd {
+    background-color: rgba(97, 223, 171, .8);
+}
+
+.even {
+    background-color: rgba(97, 150, 223, .8);
+}
+
+.item-list {
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.text-id {
+    padding: 10px;
+}
+
+.text-descript {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: grey;
+    border-radius: 50px;
+    border-color: black;
+    padding: 10px;
+}
+
+.btn-remove {
+    margin: 0px;
+    background-color: transparent;
+}

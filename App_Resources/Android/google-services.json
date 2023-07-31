@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "87860610882",
+    "project_id": "nutfinance-c2273",
+    "storage_bucket": "nutfinance-c2273.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:87860610882:android:1d85bec20afe5b3867aadb",
+        "android_client_info": {
+          "package_name": "org.nativescript.nutfinance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "87860610882-r99onvhqlt84h2qnc33mk0agbbetosja.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqLN6hFbP0RAbRl3LwcpiwKo9CiZPYp5Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "87860610882-r99onvhqlt84h2qnc33mk0agbbetosja.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "87860610882-1m5mrtlu7477drdcqi38nfi0tr9paguo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.nativescript.nutfinance"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
