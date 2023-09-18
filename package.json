@@ -17,7 +17,9 @@
     "@nativescript/angular": "^15.0.0",
     "@nativescript/core": "~8.5.0",
     "@nativescript/firebase": "^11.1.0",
+    "@nativescript/local-notifications": "^6.1.1",
     "@nativescript/theme": "~3.0.2",
+    "nativescript-fonticon": "^8.0.2",
     "rxjs": "~7.6.0",
     "zone.js": "~0.13.0"
   },
@@ -25,7 +27,7 @@
     "@angular-devkit/build-angular": "~15.2.0",
     "@angular/compiler-cli": "~15.2.0",
     "@nativescript/android": "8.5.0",
-    "@nativescript/preview-cli": "1.0.2",
+    "@nativescript/preview-cli": "1.0.5",
     "@nativescript/types": "~8.5.0",
     "@nativescript/webpack": "~5.0.14",
     "@ngtools/webpack": "~15.2.0",

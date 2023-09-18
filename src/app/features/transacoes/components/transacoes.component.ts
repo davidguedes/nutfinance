@@ -4,6 +4,7 @@ import { setStatusBarColor } from '../../../utils';
 import { TransacaoModel } from '../../../core/models/transacao.model';
 import { Dialogs } from '@nativescript/core';
 import { TransacaoService } from "~/app/core";
+import { Subscription } from 'rxjs';
 
 @Component({
   moduleId: module.id,
@@ -12,7 +13,9 @@ import { TransacaoService } from "~/app/core";
   styleUrls: ['./transacoes.component.scss'],
 })
 export class TransacoesComponent {
-  transacoes: TransacaoModel[] = [];
+  protected title: string = 'Transações';
+  protected transacoes: TransacaoModel[] = [];
+  private subs: Subscription[] = [];
 
   constructor(
     private transacaoService: TransacaoService
@@ -20,10 +23,25 @@ export class TransacoesComponent {
 
   ngOnInit() {
     setStatusBarColor('dark', '#97d9e9');
-    this.getTransacoes();
+    //this.getTransacoes();
+    this.subs.push(
+      this.transacaoService.transacoesBs.subscribe(resp => {
+        console.log('O resp: ', resp);
+        this.transacoes = resp
+      })
+    );
   }
 
   removerTransacao(id: number): void {
+    this.transacaoService.removeTransacaoById(id);
+
+    Dialogs.alert(`Transação ${id} removida.`)
+    .then(() => {
+      console.log('Dialog closed!');
+    });
+  }
+
+  /*removerTransacao(id: number): void {
     this.transacaoService.removeTransacaoById(id);
 
     Dialogs.alert(`Transação ${id} removida.`)
@@ -37,5 +55,5 @@ export class TransacoesComponent {
   getTransacoes(): void {
     this.transacoes = this.transacaoService.getTransacoes();
     console.log('Valor de transacoes: ', this.transacoes);
-  }
+  }*/
 }

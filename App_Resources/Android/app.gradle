@@ -1,6 +1,8 @@
 // You can add your native dependencies here
 dependencies {
 //  implementation 'androidx.multidex:multidex:2.0.1'
+  implementation "com.google.firebase:firebase-iid:21.1.0"
+  implementation "com.google.firebase:firebase-messaging:22.0.0"
 }
 
 android {

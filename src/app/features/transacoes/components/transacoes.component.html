@@ -1,18 +1,31 @@
-<ActionBar title="Transações" class="action-bar" flat="true">
+<ActionBar flat="false">
+  <StackLayout orientation="horizontal">
+    <!--image src="res://icon" width="40" height="40" verticalAlignment="center"></image-->
+    <label [text]="title" fontSize="24" verticalAlignment="center"></label>
+  </StackLayout>
 </ActionBar>
 <StackLayout class="p-20">
-  <ListView height="400" [items]="transacoes" separatorColor="black" rowHeight="100">
-    <ng-template let-item="item" let-i="index" let-odd="odd" let-even="even">
+  <ListView *ngIf="transacoes.length > 0" height="400" [items]="transacoes" separatorColor="black" rowHeight="100">
+    <!--ng-template let-item="item" let-i="index" [ngClass]="{'saldo': item.saldo >= 0, 'despesa': item.saldo < 0}" let-odd="odd" let-even="even"-->
+    <ng-template let-item="item" let-i="index">
       <StackLayout backgroundColor="#3c495e" orientation="horizontal">
-        <FlexboxLayout width="90%" flexDirection="column" justifyContent="center" alignItems="center" class="justify-content-center item-list" [class.odd]="odd" [class.even]="even">
-          <Label width="90%" class="text-id h3 text-center" [text]="'#' + item.id"></Label>
-          <Label class="text-descript text-center">
+        <!--FlexboxLayout width="90%" flexDirection="column" justifyContent="center" alignItems="center" class="justify-content-center item-list" [ngClass]="{'saldo': item.saldo >= 0, 'despesa': item.saldo < 0}" [class.odd]="odd" [class.even]="even"-->
+        <FlexboxLayout width="90%" flexDirection="column" justifyContent="center" alignItems="center" class="justify-content-center item-list" [ngClass]="{'saldo': item.tipo === 'S', 'despesa': item.tipo === 'D'}">
+          <Label class="content-center">
             <FormattedString>
-              <Span class="fas h3" text="&#xf155;"></Span>
-              <Label class="h3" [text]="' '+item.valor"></Label>
-              <Label class="h3" [text]="' - '+item.tipo"></Label>
+              <Span class="text-id h4" [text]="'#' + item.id"></Span>
             </FormattedString>
-
+          </Label>
+          <Label class="h2 text-descript content-center">
+            <FormattedString>
+              <!--Span class="fas h3" text="&#xf155;"></Span-->
+              <Span class="h2" [text]="item.valor | currency:'BRL'"></Span>
+            </FormattedString>
+          </Label>
+          <Label class="content-center">
+            <FormattedString>
+              <Span class="text-id h3" [text]="item.dataTransacao | date: 'HH:mm'"></Span>
+            </FormattedString>
           </Label>
           <!--Label class="text-descript text-center">
             <FormattedString>
@@ -33,6 +46,7 @@
       </StackLayout>
     </ng-template>
   </ListView>
+  <Label *ngIf="transacoes.length <= 0" class="h2" text="Nenhuma transação disponível 🤑"></Label>
   <!--Label text="Enjoy" class="h1 text-center c-white"></Label>
   <Image src="~/assets/images/nx-nativescript.png" class="h-center m-t-20" width="300"></Image-->
 </StackLayout>

@@ -5,6 +5,7 @@ import { TransacaoModel } from '../../../core/models/transacao.model';
 import { ModalDialogComponent } from '../../shared/modal-dialog/components';
 import { setStatusBarColor } from '../../../utils';
 import { TransacaoService } from '~/app/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   moduleId: module.id,
@@ -13,7 +14,10 @@ import { TransacaoService } from '~/app/core';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent {
+  protected title: string = 'Home';
   protected valor: number = 0;
+  protected token: string = '';
+  private subs: Subscription[] = [];
 
   constructor(
     private transacaoService: TransacaoService,
@@ -25,9 +29,17 @@ export class HomeComponent {
 
   ngOnInit(): void {
     setStatusBarColor('dark', '#97d9e9');
-    this.getFechamento();
+    this.realizarFechamento();
+
+    this.subs.push(
+      this.transacaoService.saldoBS.subscribe(saldo => this.valor = saldo),
+      this.transacaoService.tokenBS.subscribe(resp => this.token = resp)
+    );
   }
 
+  ngOnDestroy(): void {
+    this.subs.forEach(s => s.unsubscribe());
+  }
 
   /*
   getIconSource(details: string): string {
@@ -71,7 +83,7 @@ export class HomeComponent {
     });*/
   }
 
-  getFechamento() {
-    this.valor = this.transacaoService.fechamento();
+  realizarFechamento() {
+    this.transacaoService.fechamento();
   }
 }

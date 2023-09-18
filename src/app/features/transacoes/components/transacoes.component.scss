@@ -6,27 +6,48 @@
     background-color: rgba(97, 150, 223, .8);
 }
 
+.saldo {
+    background-color: rgba(54, 247, 48, 0.6);
+}
+
+.despesa {
+    background-color: rgba(255, 33, 33, 0.6);
+}
+
+
 .item-list {
     padding: 10px;
     border-radius: 10px;
 }
 
 .text-id {
-    padding: 10px;
+    font-size: 12px;
 }
 
-.text-descript {
+.content-center {
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    background-color: grey;
+    padding: 5px;
+}
+
+.text-descript {
+    //background-color: grey;
     border-radius: 50px;
     border-color: black;
-    padding: 10px;
+    font-size: 16px;
+    margin: 5px;
 }
 
 .btn-remove {
     margin: 0px;
     background-color: transparent;
+    width: 20;
+    height: 20;
+    border-radius: 40;
+    color: #ffffff;
+    font-size: 10;
+    vertical-align: center;
+    text-align: center;
 }

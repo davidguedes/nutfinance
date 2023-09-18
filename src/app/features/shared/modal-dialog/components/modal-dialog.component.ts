@@ -1,5 +1,5 @@
 import { Component, ViewContainerRef } from '@angular/core';
-import { TextField, Utils } from '@nativescript/core';
+import { EventData, Switch, TextField, Utils } from '@nativescript/core';
 import { ModalDialogOptions, ModalDialogParams, ModalDialogService } from "@nativescript/angular";
 
 import { TransacaoModel } from '~/app/core/models/transacao.model';
@@ -13,7 +13,7 @@ import { TransacaoService } from '~/app/core';
 })
 export class ModalDialogComponent {
   protected title: string;
-  protected transacao: TransacaoModel = {id: null, valor: null, tipo: ''};
+  protected transacao: TransacaoModel = {id: null, valor: null, dataTransacao: null, tipo: 'S'};
 
   constructor(
     private transacaoService: TransacaoService,
@@ -38,9 +38,11 @@ export class ModalDialogComponent {
     this._params.closeCallback("return value");
   }
 
-  addChamado(): void {
+  addTransacao(): void {
     this.transacao.id = this.datatimeRandom();
-    this.transacaoService.insertTransacao(this.transacao);
+    this.transacao.dataTransacao = new Date();
+    this.transacaoService.novaTransacao(this.transacao);
+    this.transacaoService.fechamento();
     this.onClose();
   }
 
@@ -86,6 +88,13 @@ export class ModalDialogComponent {
   onBlur(args) {
   // blur event will be triggered when the user leaves the TextField
     const textField = <TextField>args.object;
+  }
+
+  onCheckedChange(args: EventData) {
+    const sw = args.object as Switch
+    const isChecked = sw.checked; // boolean
+
+    this.transacao.tipo = isChecked ? 'S' : 'D';
   }
 
   datatimeRandom(): number {

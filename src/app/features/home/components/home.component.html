@@ -1,8 +1,18 @@
-<ActionBar title="Home" class="action-bar" flat="true">
+<ActionBar flat="false">
+  <StackLayout orientation="horizontal">
+    <!--image src="res://icon" width="40" height="40" verticalAlignment="center"></image-->
+    <label [text]="title" fontSize="24" verticalAlignment="center"></label>
+  </StackLayout>
 </ActionBar>
 <StackLayout class="p-20">
-  <Label class="text-valor h2">Total: {{valor}}</Label>
-  <Button class="btn-add" text="+ Transação" (tap)="addTransacao(true, true, true)"></Button>
+  <StackLayout orientation="vertical" verticalAlignment="center" horizontalAlignment="center">
+    <Label text="Saldo" class="saldo-label"></Label>
+    <Label class="saldo-value">{{valor | currency:'BRL'}}</Label>
+  </StackLayout>
+  <!--Button class="btn-add" text="+ Transação" (tap)="addTransacao(true, true, true)"></Button-->
+  <Button text="+" (tap)="addTransacao(true, true, true)" class="round-button">
+  </Button>
+
   <!--Button text="Button" [nsRouterLink]="['/transacoes']" pageTransition="slide" clearHistory="true"></Button>
 
   <Label text="&#xf019;" class="far"></Label>
