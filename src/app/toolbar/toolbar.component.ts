@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, Output, booleanAttribute } from '@angular/core';
+import { Component, EventEmitter, Input, Output, booleanAttribute, inject } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-toolbar',
@@ -11,7 +12,7 @@ import { ButtonModule } from 'primeng/button';
   <div class="card">
       <p-menubar [model]="items">
           <ng-template pTemplate="start">
-            <img width="45" src="assets/svg/logo.svg" alt="Logotipo NutFinance">
+            <img width="45" src="assets/svg/logo.svg" alt="Logotipo NutFinance" (click)="router.navigate(['/'])">
           </ng-template>
           <ng-template pTemplate="end">
             <p-button icon="pi pi-bars" (onClick)="toggleVisible(!valueSidebarVisible)" [rounded]="true" [text]="true"></p-button>
@@ -25,6 +26,7 @@ export class ToolbarComponent {
   items: MenuItem[] | undefined;
   @Input({ transform: booleanAttribute }) valueSidebarVisible: boolean = false;
   @Output() sidebarVisible = new EventEmitter<boolean>();
+  protected router = inject(Router);
 
   toggleVisible(value: boolean): void {
     this.valueSidebarVisible = value;
