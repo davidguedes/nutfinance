@@ -5,83 +5,117 @@ import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { TransacoesService } from '../transacoes.service';
 import { Transacoes } from '../transacoes.interface';
-import { TransacoesForm } from '../../model/transacoes.model';
+import { TransactionForm } from '../../model/transaction.model';
 import { TabViewModule } from 'primeng/tabview';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { TransacoesModalComponent } from '../../transacoes/transacoes-modal/modal.component';
 import { TransacoesDeleteComponent } from '../transacoes-delete/transacoes-delete.component';
+import { catchError, lastValueFrom } from 'rxjs';
+import { LoadingComponentComponent } from '../../shared/loading-component/loading-component.component';
+import { ActionButtonComponent } from '../../shared/action-button/action-button.component';
 
 @Component({
   selector: 'transacoes-list',
   standalone: true,
-  imports: [CommonModule, DataViewModule, TagModule, ButtonModule, TabViewModule, ConfirmDialogModule, ToastModule, TransacoesModalComponent, TransacoesDeleteComponent],
+  imports: [CommonModule,
+    DataViewModule,
+    TagModule,
+    ButtonModule,
+    TabViewModule,
+    ConfirmDialogModule,
+    ToastModule,
+    TransacoesModalComponent,
+    TransacoesDeleteComponent,
+    LoadingComponentComponent,
+    ActionButtonComponent,
+    TransacoesModalComponent
+  ],
   template: `
-    <p-tabView>
-      <p-tabPanel header="03/2024">
-        <div>
-          <p-dataView #dv [value]="transacoes">
-              <ng-template pTemplate="list" let-transacoes>
-                  <div class="grid grid-nogutter">
-                      <div class="col-12" *ngFor="let item of transacoes; let first = first">
-                          <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4" [ngClass]="{ 'border-top-1 surface-border': !first }">
-                              <div class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-                                  <div class="flex flex-column align-items-center sm:align-items-start gap-3">
-                                      <div class="text-2xl font-bold text-900">{{ item.descricao }}</div>
-                                      <div class="flex align-items-center gap-3">
-                                          <span class="flex align-items-center gap-2">
-                                              <i class="pi pi-tag"></i>
-                                              <span class="font-semibold">{{ item.category }}</span>
-                                          </span>
-                                          <p-tag [value]="item.tipo == 'D' ? 'Despesa' : 'Receita'" [severity]="getSeverity(item)"></p-tag>
-                                          @for (tag of item.tags; track tag) {
-                                            <p-tag [value]="tag"></p-tag>
+    <div class="content">
+      @if (isLoading) {
+        <app-loading-component/>
+      } @else {
+        <p-tabView>
+          <p-tabPanel header="03/2024">
+            <div>
+              <p-dataView #dv [value]="transacoes" class="data-transactions">
+                  <ng-template pTemplate="list" let-transacoes>
+                      <div class="grid grid-nogutter">
+                          <div class="col-12" *ngFor="let item of transacoes; let first = first">
+                              <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4" [ngClass]="{ 'border-top-1 surface-border': !first }">
+                                  <div class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
+                                      <div class="flex flex-column align-items-center sm:align-items-start gap-3">
+                                          <div class="text-2xl font-bold text-900">{{ item.description }}</div>
+                                          <div class="flex align-items-center gap-3">
+                                              <span class="flex align-items-center gap-2">
+                                                  <i class="pi pi-tag"></i>
+                                                  <span class="font-semibold">{{ item.category }}</span>
+                                              </span>
+                                              <p-tag [value]="item.tipo == 'D' ? 'Despesa' : 'Receita'" [severity]="getSeverity(item)"></p-tag>
+                                              @for (tag of item.tags; track tag) {
+                                                <p-tag [value]="tag"></p-tag>
+                                              }
+                                          </div>
+                                          @if(item.recorrencia) {
+                                            <div>
+                                              <i class="pi pi-undo"></i> {{item.number_recurrence == '0' ? 'Repetir todo mês.' : calcularParcelasExecutadas(item.date_transaction, item.number_recurrence)}}
+                                            </div>
                                           }
+                                          <div>
+                                            <i class="pi pi-calendar"></i> {{item.date_transaction | date:'dd/MM/yyyy'}}
+                                          </div>
                                       </div>
-                                      @if(item.recorrencia) {
-                                        <div>
-                                          <i class="pi pi-undo"></i> {{item.numero_recorrencia == '0' ? 'Repetir todo mês.' : calcularParcelasExecutadas(item.data_transacao, item.numero_recorrencia)}}
-                                        </div>
-                                      }
-                                      <div>
-                                        <i class="pi pi-calendar"></i> {{item.data_transacao | date:'dd/MM/yyyy'}}
+                                      <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
+                                        <span class="text-2xl font-semibold">{{ 'R$' + item.value }}</span>
+                                        <app-transacoes-delete [idTransaction]="item.id" />
+                                        <p-button icon="pi pi-pencil" (click)="editTransaction = item; modalVisible = true"></p-button>
                                       </div>
-                                  </div>
-                                  <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
-                                    <span class="text-2xl font-semibold">{{ '$' + item.valor }}</span>
-                                    <app-transacoes-delete />
-                                    <p-button icon="pi pi-pencil" (click)="editTransaction = item; modalVisible = true"></p-button>
                                   </div>
                               </div>
                           </div>
                       </div>
-                  </div>
-              </ng-template>
-          </p-dataView>
-        </div>
-      </p-tabPanel>
-      <p-tabPanel header="04/2024">
-      </p-tabPanel>
-      <p-tabPanel header="05/2024">
-      </p-tabPanel>
-    </p-tabView>
+                  </ng-template>
+              </p-dataView>
+            </div>
+          </p-tabPanel>
+          <p-tabPanel header="04/2024">
+          </p-tabPanel>
+          <p-tabPanel header="05/2024">
+          </p-tabPanel>
+        </p-tabView>
+        <app-action-button (functionButton)="editTransaction = undefined; this.modalVisible = true"></app-action-button>
 
-    @if (modalVisible) {
-      <app-transacos-modal (toggleVisible)="modalVisible = false" [transactionEdit]="editTransaction" [visible]="modalVisible" ></app-transacos-modal>
-    }
+        @if (modalVisible) {
+          <app-transacos-modal (toggleVisible)="modalVisible = false; getTransactions()" [transactionEdit]="editTransaction" [visible]="modalVisible" ></app-transacos-modal>
+        }
+      }
+    </div>
   `,
   styles: `
+    .content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
 
+    p-tabview {
+      width: 100%
+    }
   `,
 })
 export class TransacoesListComponent implements OnInit {
   protected transactionService: Transacoes = inject(TransacoesService);
-  editTransaction: TransacoesForm = {} as TransacoesForm;
+  editTransaction!: TransactionForm | undefined;
   modalVisible: boolean = false;
-  transacoes: TransacoesForm[] = [];
+  transacoes: TransactionForm[] = [];
+  isLoading: boolean = false;
 
   ngOnInit(): void {
     this.transacoes = this.transactionService.getDataLocally();
+
+    this.getTransactions();
   }
 
   /*products: any[] = [
@@ -111,8 +145,24 @@ export class TransacoesListComponent implements OnInit {
     },
   ]*/
 
-  getSeverity (transacao: TransacoesForm) {
-      switch (transacao.tipo) {
+  async getTransactions(): Promise<void> {
+    this.isLoading = true;
+    const transactions: TransactionForm[] = await lastValueFrom(this.transactionService.getTransactions().pipe(
+      catchError(error => {
+        console.log('Error: ', error.message);
+        //this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao recuperar cadastro ' + error.error.message })
+        return [];
+      })
+    ));
+
+    console.log(transactions);
+
+    this.transacoes = transactions;
+    this.isLoading = false;
+  }
+
+  getSeverity (transacao: TransactionForm) {
+      switch (transacao.type) {
           case 'R':
               return 'success';
 

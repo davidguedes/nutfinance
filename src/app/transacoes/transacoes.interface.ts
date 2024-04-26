@@ -1,8 +1,13 @@
-import { TransacoesForm } from "../model/transacoes.model";
+import { Observable } from "rxjs";
+import { TransactionForm } from "../model/transaction.model";
 
 export interface Transacoes {
-  saveData(data: TransacoesForm): void;
-  getDataLocally(): TransacoesForm[];
-  mergeData(existingData: TransacoesForm[], newData: TransacoesForm[]): TransacoesForm[];
-  saveLocally(data: TransacoesForm[]): void;
+  getTransactions(): Observable<TransactionForm[]>;
+  saveData(data: TransactionForm): void;
+  createTransaction(data: TransactionForm): Observable<any>;
+  updateTransaction(data: TransactionForm): Observable<any>;
+  deleteTransaction(id: string): Observable<any>;
+  getDataLocally(): TransactionForm[];
+  mergeData(existingData: TransactionForm[], newData: TransactionForm[]): TransactionForm[];
+  saveLocally(data: TransactionForm[]): void;
 }
