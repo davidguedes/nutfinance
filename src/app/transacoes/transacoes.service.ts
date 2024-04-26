@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { TransactionForm } from '../model/transaction.model';
-import { enviroment } from '../../evironments/evironments';
+import { enviroment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
