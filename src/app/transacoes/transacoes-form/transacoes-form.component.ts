@@ -4,7 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
 import { InputSwitchModule } from 'primeng/inputswitch';
-import { TransacoesForm } from '../../model/transacoes.model';
+import { TransactionForm } from '../../model/transaction.model';
 import { ErroFormComponent } from '../../shared/erro-form/erro-form.component';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -22,11 +22,11 @@ import { ChipsModule } from 'primeng/chips';
             <div class="input-field d-column">
               <div class="input-campos" style="display: flex; width: 100%">
                 <p-floatLabel>
-                  <input pInputText type="text" id="descricao" formControlName="descricao" />
-                  <label for="descricao">Descrição*</label>
+                  <input pInputText type="text" id="description" formControlName="description" />
+                  <label for="description">Descrição*</label>
                 </p-floatLabel>
               </div>
-              <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite um nome válido" nameField="valor"></app-erro-form>
+              <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite um nome válido" nameField="description"></app-erro-form>
             </div>
           </div>
 
@@ -34,11 +34,11 @@ import { ChipsModule } from 'primeng/chips';
             <div class="input-field d-column">
               <div class="input-campos" style="display: flex; width: 100%">
                 <p-floatLabel>
-                  <p-inputNumber id="valor" formControlName="valor" [minFractionDigits]="2" mode="currency" currency="BRL" locale="pt-BR"> </p-inputNumber>
-                  <label for="valor">Valor*</label>
+                  <p-inputNumber id="value" formControlName="value" [minFractionDigits]="2" mode="currency" currency="BRL" locale="pt-BR"> </p-inputNumber>
+                  <label for="value">Valor*</label>
                 </p-floatLabel>
               </div>
-              <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite um nome válido" nameField="valor"></app-erro-form>
+              <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite um nome válido" nameField="value"></app-erro-form>
             </div>
           </div>
 
@@ -50,10 +50,10 @@ import { ChipsModule } from 'primeng/chips';
                 </div>
                 <!--div class="input-switch" style="border: 1px solid #ddd; border-radius: 0px 10px 10px 0px; justify-content: space-between; padding: 6px"-->
                 <div class="input-switch">
-                  <p-inputSwitch formControlName="tipo" [falseValue]="'D'" [trueValue]="'R'"></p-inputSwitch><span [style]="{'margin-left': '5px', 'padding': '10px', 'background-color': formulario.get('tipo')?.value === 'R' ? '#27ff006e' : '#ff00006e', 'border-radius': '10px'}">{{formulario.get('tipo')?.value === 'R' ? 'Receita' : 'Despesa'}}</span>
+                  <p-inputSwitch formControlName="type" [falseValue]="'D'" [trueValue]="'R'"></p-inputSwitch><span [style]="{'margin-left': '5px', 'padding': '10px', 'background-color': formulario.get('type')?.value === 'R' ? '#27ff006e' : '#ff00006e', 'border-radius': '10px'}">{{formulario.get('type')?.value === 'R' ? 'Receita' : 'Despesa'}}</span>
                 </div>
               </div>
-              <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite um nome válido" nameField="tipo"></app-erro-form>
+              <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite um nome válido" nameField="type"></app-erro-form>
             </div>
           </div>
 
@@ -64,19 +64,19 @@ import { ChipsModule } from 'primeng/chips';
                   <span>Recorrência*</span>
                 </div>
                 <div class="inpu-switch">
-                  <p-inputSwitch formControlName="recorrencia"></p-inputSwitch>
+                  <p-inputSwitch formControlName="recurrence"></p-inputSwitch>
                 </div>
               </div>
             </div>
           </div>
 
-          @if(this.formulario.get('recorrencia')?.value === true){
+          @if(this.formulario.get('recurrence')?.value === true){
             <div class="form-input">
               <div class="input-field d-column">
                 <div class="input-campos" style="display: flex; width: 100%">
                   <p-floatLabel>
-                    <p-inputNumber id="numero_recorrencia" formControlName="numero_recorrencia" [showButtons]="true" [min]="0"></p-inputNumber>
-                    <label for="numero_recorrencia">Nº Recorrência</label>
+                    <p-inputNumber id="number_recurrence" formControlName="number_recurrence" [showButtons]="true" [min]="0"></p-inputNumber>
+                    <label for="number_recurrence">Nº Recorrência</label>
                   </p-floatLabel>
                 </div>
               </div>
@@ -87,12 +87,12 @@ import { ChipsModule } from 'primeng/chips';
             <div class="input-field d-column">
               <div class="input-campos" style="display: flex; width: 100%">
                 <p-floatLabel>
-                  <p-calendar id="data_transacao" class="calendar-cadastro" formControlName="data_transacao" [style]="{'min-width': '100%'}" appendTo="body"></p-calendar>
-                  <label for="data_transacao">Dt. Transação*</label>
+                  <p-calendar id="date_transaction" class="calendar-cadastro" formControlName="date_transaction" [style]="{'min-width': '100%'}" appendTo="body"></p-calendar>
+                  <label for="date_transaction">Dt. Transação*</label>
                 </p-floatLabel>
               </div>
               <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Selecione a data de admissão
-              " nameField="data_transacao"></app-erro-form>
+              " nameField="date_transaction"></app-erro-form>
             </div>
           </div>
 
@@ -132,8 +132,7 @@ import { ChipsModule } from 'primeng/chips';
 })
 export class TransacoesFormComponent implements OnInit {
   @Input({ transform: booleanAttribute }) fastForm: boolean = false;
-  @Input() new: TransacoesForm = {} as TransacoesForm;
-  @Input() edit!: TransacoesForm;
+  @Input() edit!: TransactionForm | undefined;
   @Output() onSubmit = new EventEmitter();
   @Output() closeModal = new EventEmitter<boolean>();
 
@@ -143,22 +142,23 @@ export class TransacoesFormComponent implements OnInit {
   ngOnInit(): void {
     if(this.edit) {
       this.formulario = this.formBuilder.group({
-        descricao: [this.edit.descricao, [Validators.required]],
-        valor: [this.edit.valor, [Validators.required]],
-        tipo: [this.edit.tipo, [Validators.required]],
-        recorrencia: [this.edit.recorrencia, [Validators.required]],
-        numero_recorrencia: this.edit.numero_recorrencia,
-        data_transacao: [new Date(this.edit.data_transacao), [Validators.required]],
+        id: [this.edit.id, [Validators.required]],
+        description: [this.edit.description, [Validators.required]],
+        value: [this.edit.value, [Validators.required]],
+        type: [this.edit.type, [Validators.required]],
+        recurrence: [this.edit.recurrence, [Validators.required]],
+        number_recurrence: this.edit.number_recurrence,
+        date_transaction: [new Date(this.edit.date_transaction), [Validators.required]],
         tags: [this.edit.tags],
       });
     } else {
       this.formulario = this.formBuilder.group({
-        descricao: [null, [Validators.required]],
-        valor: [null, [Validators.required]],
-        tipo: ['D', [Validators.required]],
-        recorrencia: [false, [Validators.required]],
-        numero_recorrencia: [0],
-        data_transacao: [null, [Validators.required]],
+        description: [null, [Validators.required]],
+        value: [null, [Validators.required]],
+        type: ['D', [Validators.required]],
+        recurrence: [false, [Validators.required]],
+        number_recurrence: [0],
+        date_transaction: [null, [Validators.required]],
         tags: [[]],
       });
     }

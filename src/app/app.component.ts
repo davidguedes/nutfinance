@@ -30,6 +30,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   handleSidebarVisible(value: boolean) {
+    console.log("Passa aqui")
     this.sidebarVisible = value;
   }
 
