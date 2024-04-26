@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -41,6 +41,7 @@ export class TransacoesDeleteComponent {
   protected messageService: any = inject(MessageService);
   protected transactionService: Transacoes = inject(TransacoesService);
   @Input() idTransaction!: string;
+  @Output() deleteButton = new EventEmitter<boolean>();
 
   confirm() {
     this.confirmationService.confirm({
@@ -48,11 +49,8 @@ export class TransacoesDeleteComponent {
       message: 'Por favor, confirme a operação.',
       accept: () => {
         this.deleteTransacao(this.idTransaction);
-        this.messageService.add({ severity: 'info', summary: 'Confirmada', detail: 'Operação confirmada', life: 3000 });
       },
-      reject: () => {
-        this.messageService.add({ severity: 'error', summary: 'Rejeitada', detail: 'Operação rejeitada', life: 3000 });
-      }
+      reject: () => {}
     });
   }
 
@@ -64,6 +62,7 @@ export class TransacoesDeleteComponent {
       })
     ));
 
+    this.deleteButton.emit(true);
     this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Sucesso ao excluir transação' });
   }
 }

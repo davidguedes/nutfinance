@@ -68,7 +68,7 @@ import { ActionButtonComponent } from '../../shared/action-button/action-button.
                                       </div>
                                       <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
                                         <span class="text-2xl font-semibold">{{ 'R$' + item.value }}</span>
-                                        <app-transacoes-delete [idTransaction]="item.id" />
+                                        <app-transacoes-delete (deleteButton)="getTransactions()" [idTransaction]="item.id" />
                                         <p-button icon="pi pi-pencil" (click)="editTransaction = item; modalVisible = true"></p-button>
                                       </div>
                                   </div>

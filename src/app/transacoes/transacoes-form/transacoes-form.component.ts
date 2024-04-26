@@ -108,12 +108,12 @@ import { ChipsModule } from 'primeng/chips';
             </div>
           </div>
         </form>
-        <div class="buttons-form" [style]="{'display': 'flex'}">
-          <div class="button" [style]="{'width': '33%', 'margin': '5px'}"><p-button icon="pi pi-check" [style]="{'width': '100%', 'background-color':'#2196F3', 'border': '1px solid #2196F3'}" label="Salvar" (click)="submitForm()"></p-button></div>
+        <div class="buttons-form">
+          <div class="button"><p-button icon="pi pi-check" [style]="{'width': '100%', 'background-color':'#2196F3', 'border': '1px solid #2196F3'}" label="Salvar" (click)="submitForm()"></p-button></div>
 
-          <div class="button" [style]="{'width': '33%', 'margin': '5px'}"><p-button icon="pi pi-eraser" [style]="{'width': '100%', 'background-color':'#fab710', 'border': '1px solid #fab710'}" label="Limpar" (click)="clear()"></p-button></div>
+          <div class="button"><p-button icon="pi pi-eraser" [style]="{'width': '100%', 'background-color':'#fab710', 'border': '1px solid #fab710'}" label="Limpar" (click)="clear()"></p-button></div>
 
-          <div class="button" [style]="{'width': '33%', 'margin': '5px'}"><p-button icon="pi pi-times" [style]="{'width': '100%', 'background-color':'#D32F2F', 'border': '1px solid #D32F2F'}" label="Cancelar" (click)="close()"></p-button></div>
+          <div class="button"><p-button icon="pi pi-times" [style]="{'width': '100%', 'background-color':'#D32F2F', 'border': '1px solid #D32F2F'}" label="Cancelar" (click)="close()"></p-button></div>
         </div>
       </div>
     </div>
@@ -127,6 +127,24 @@ import { ChipsModule } from 'primeng/chips';
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    .buttons-form {
+      display: grid;
+      grid-gap: 10px;
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    @media (max-width: 860px) {
+      .buttons-form {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .buttons-form {
+        grid-template-columns: 1fr;
+      }
     }
   `
 })
