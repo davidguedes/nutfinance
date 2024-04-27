@@ -12,7 +12,7 @@ import { catchError, lastValueFrom } from 'rxjs';
     selector: 'app-transacos-modal',
     standalone: true,
     template: `
-      <p-dialog header="Transação" [(visible)]="visible" (onHide)="toggleVisible.emit(false)" [draggable]="false" [resizable]="false" [modal]="true" [style]="{width: '50vw'}" [breakpoints]="{ '960px': '75vw', '660px': '100vw' }">
+      <p-dialog header="Transação" [(visible)]="visible" (onHide)="toggleVisible.emit(false)" [draggable]="false" [resizable]="false" [modal]="true" [style]="{width: '50vw'}" [breakpoints]="{ '960px': '75vw', '660px': '90vw' }">
         <app-transacoes-form (onSubmit)="createTransacao($event)" [edit]="transactionEdit" (closeModal)="close($event)"></app-transacoes-form>
       </p-dialog>
       <p-toast></p-toast>

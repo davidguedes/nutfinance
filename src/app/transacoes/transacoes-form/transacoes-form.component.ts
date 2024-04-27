@@ -16,13 +16,13 @@ import { ChipsModule } from 'primeng/chips';
   imports: [ButtonModule, ReactiveFormsModule, ErroFormComponent, InputTextModule, InputNumberModule, FloatLabelModule, CalendarModule, InputSwitchModule, ChipsModule],
   template: `
     <div class="cadastro-forms" style="display: flex; width: 100%; justify-content: center; flex-direction: column">
-      <div class="formulario" style="width: 100%;">
+      <div class="formulario">
         <form [formGroup]="formulario">
           <div class="form-input">
             <div class="input-field d-column">
-              <div class="input-campos" style="display: flex; width: 100%">
-                <p-floatLabel>
-                  <input pInputText type="text" id="description" formControlName="description" />
+              <div class="input-campos">
+                <p-floatLabel [style]="{'width': '100%'}">
+                  <input pInputText type="text" [style]="{'width': '100%'}" id="description" formControlName="description"/>
                   <label for="description">Descrição*</label>
                 </p-floatLabel>
               </div>
@@ -32,9 +32,9 @@ import { ChipsModule } from 'primeng/chips';
 
           <div class="form-input">
             <div class="input-field d-column">
-              <div class="input-campos" style="display: flex; width: 100%">
-                <p-floatLabel>
-                  <p-inputNumber id="value" formControlName="value" [minFractionDigits]="2" mode="currency" currency="BRL" locale="pt-BR"> </p-inputNumber>
+              <div class="input-campos">
+                <p-floatLabel [style]="{'width': '100%'}">
+                  <p-inputNumber styleClass="input-styling" id="value" formControlName="value" [minFractionDigits]="2" mode="currency" currency="BRL" locale="pt-BR"> </p-inputNumber>
                   <label for="value">Valor*</label>
                 </p-floatLabel>
               </div>
@@ -45,7 +45,7 @@ import { ChipsModule } from 'primeng/chips';
           <div class="form-input">
             <div class="input-field">
               <div class="input-campos" style="display: flex; width: 100%; align-items:center;">
-                <div class="input-name" style="padding: 13px; width: 30%">
+                <div class="input-name" style="padding: 13px; min-width: 30%">
                   <span>Tipo*</span>
                 </div>
                 <!--div class="input-switch" style="border: 1px solid #ddd; border-radius: 0px 10px 10px 0px; justify-content: space-between; padding: 6px"-->
@@ -60,7 +60,7 @@ import { ChipsModule } from 'primeng/chips';
           <div class="form-input">
             <div class="input-field">
               <div class="input-campos" style="display: flex; width: 100%; align-items:center;">
-                <div class="input-name" style="padding: 13px; width: 30%">
+                <div class="input-name" style="padding: 13px; min-width: 30%">
                   <span>Recorrência*</span>
                 </div>
                 <div class="inpu-switch">
@@ -74,8 +74,8 @@ import { ChipsModule } from 'primeng/chips';
             <div class="form-input">
               <div class="input-field d-column">
                 <div class="input-campos" style="display: flex; width: 100%">
-                  <p-floatLabel>
-                    <p-inputNumber id="number_recurrence" formControlName="number_recurrence" [showButtons]="true" [min]="0"></p-inputNumber>
+                  <p-floatLabel [style]="{'width': '100%'}">
+                    <p-inputNumber styleClass="input-styling" id="number_recurrence" formControlName="number_recurrence" [showButtons]="true" [min]="0"></p-inputNumber>
                     <label for="number_recurrence">Nº Recorrência</label>
                   </p-floatLabel>
                 </div>
@@ -86,8 +86,8 @@ import { ChipsModule } from 'primeng/chips';
           <div class="form-input">
             <div class="input-field d-column">
               <div class="input-campos" style="display: flex; width: 100%">
-                <p-floatLabel>
-                  <p-calendar id="date_transaction" class="calendar-cadastro" formControlName="date_transaction" [style]="{'min-width': '100%'}" appendTo="body"></p-calendar>
+                <p-floatLabel [style]="{'width': '100%'}">
+                  <p-calendar [style]="{'width': '100%'}" id="date_transaction" class="calendar-cadastro" formControlName="date_transaction" [style]="{'min-width': '100%'}" appendTo="body"></p-calendar>
                   <label for="date_transaction">Dt. Transação*</label>
                 </p-floatLabel>
               </div>
@@ -98,9 +98,9 @@ import { ChipsModule } from 'primeng/chips';
 
           <div class="form-input">
             <div class="input-field d-column">
-              <div class="input-campos" style="display: flex; width: 100%">
-                <p-floatLabel>
-                  <p-chips formControlName="tags"></p-chips>
+              <div class="input-campos">
+                <p-floatLabel [style]="{'width': '100%'}">
+                  <p-chips styleClass="input-styling" formControlName="tags" [style]="{'width': '100%'}"></p-chips>
                   <label for="tags">Tags</label>
                 </p-floatLabel>
               </div>
@@ -119,8 +119,26 @@ import { ChipsModule } from 'primeng/chips';
     </div>
   `,
   styles: `
+    p-inputNumber {
+      width: 100%!important;
+    }
+
+    ::ng-deep span.input-styling.p-inputnumber.p-component {
+      width: 100%!important;
+    }
+
+    ::ng-deep ul.p-inputtext.p-chips-multiple-container {
+      width: 100%!important;
+    }
+
     .form-input {
       padding: 20px;
+      width: 100%;
+    }
+
+    .input-campos {
+      display: flex;
+      width: 100%;
     }
 
     .input-switch {
