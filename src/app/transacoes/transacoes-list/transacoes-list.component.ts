@@ -14,6 +14,20 @@ import { TransacoesDeleteComponent } from '../transacoes-delete/transacoes-delet
 import { catchError, lastValueFrom } from 'rxjs';
 import { LoadingComponentComponent } from '../../shared/loading-component/loading-component.component';
 import { ActionButtonComponent } from '../../shared/action-button/action-button.component';
+import { ScrollerModule } from 'primeng/scroller';
+import { TableLazyLoadEvent, TableModule } from 'primeng/table';
+
+interface LazyEvent {
+  first: number;
+  last: number;
+}
+
+
+interface Column {
+  field: string;
+  header: string;
+}
+
 
 @Component({
   selector: 'transacoes-list',
@@ -29,11 +43,44 @@ import { ActionButtonComponent } from '../../shared/action-button/action-button.
     TransacoesDeleteComponent,
     LoadingComponentComponent,
     ActionButtonComponent,
-    TransacoesModalComponent
+    TransacoesModalComponent,
+    ScrollerModule,
+    TableModule
   ],
   template: `
     <div class="content">
-      @if (isLoading) {
+    <p-table [columns]="cols" [value]="transacoes" [scrollable]="true" scrollHeight="250px" [rows]="5"
+        [virtualScroll]="true" [virtualScrollItemSize]="46" [lazy]="true" (onLazyLoad)="getTransactions($event)">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" style="width: 20%;">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr style="height:46px">
+                <td *ngFor="let col of columns">
+                    {{rowData[col.field]}}
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="loadingbody" let-columns="columns">
+            <tr style="height:46px">
+                <td *ngFor="let col of columns; let even = even">
+                    <p-skeleton [ngStyle]="{'width': even ? (col.field === 'year' ? '30%' : '40%') : '60%'}"></p-skeleton>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+      <!--p-scroller [items]="transacoes" [itemSize]="50" [showLoader]="true" [delay]="500" [loading]="lazyLoading" [lazy]="true" (onLazyLoad)="getTransactions($event)" styleClass="border-1 surface-border" [style]="{'width': '800px', 'height': '300px'}">
+        <ng-template pTemplate="item" let-item let-options="options">
+          <div class="flex align-items-center p-2" [ngClass]="{ 'surface-ground': options.odd }" style="height: 50px;">{{ item.id }}</div>
+        </ng-template>
+      </p-scroller-->
+
+      <!--@if (isLoading) {
         <app-loading-component/>
       } @else {
         <p-tabView>
@@ -68,7 +115,7 @@ import { ActionButtonComponent } from '../../shared/action-button/action-button.
                                       </div>
                                       <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
                                         <span class="text-2xl font-semibold">{{ 'R$' + item.value }}</span>
-                                        <app-transacoes-delete (deleteButton)="getTransactions()" [idTransaction]="item.id" />
+                                        <app-transacoes-delete (deleteButton)="getTransactions(filterLazy)" [idTransaction]="item.id" />
                                         <p-button icon="pi pi-pencil" (click)="editTransaction = item; modalVisible = true"></p-button>
                                       </div>
                                   </div>
@@ -87,9 +134,9 @@ import { ActionButtonComponent } from '../../shared/action-button/action-button.
         <app-action-button (functionButton)="editTransaction = undefined; this.modalVisible = true"></app-action-button>
 
         @if (modalVisible) {
-          <app-transacos-modal (toggleVisible)="modalVisible = false; getTransactions()" [transactionEdit]="editTransaction" [visible]="modalVisible" ></app-transacos-modal>
+          <app-transacos-modal (toggleVisible)="modalVisible = false; getTransactions(filterLazy)" [transactionEdit]="editTransaction" [visible]="modalVisible" ></app-transacos-modal>
         }
-      }
+      } -->
     </div>
   `,
   styles: `
@@ -111,43 +158,34 @@ export class TransacoesListComponent implements OnInit {
   modalVisible: boolean = false;
   transacoes: TransactionForm[] = [];
   isLoading: boolean = false;
+  lazyLoading: boolean = true;
+  filterLazy: TableLazyLoadEvent = {first: 0, last: 5};
+  loadLazyTimeout: any;
+  teste: any = [];
+  cols!: Column[];
 
   ngOnInit(): void {
-    this.transacoes = this.transactionService.getDataLocally();
+    //this.transacoes = this.transactionService.getDataLocally();
+      this.cols = [
+        { field: 'id', header: 'Id' },
+        { field: 'vin', header: 'Vin' },
+        { field: 'year', header: 'Year' },
+        { field: 'brand', header: 'Brand' },
+        { field: 'color', header: 'Color' }
+    ];
 
-    this.getTransactions();
+    console.log('chamando pelo oninit')
+    this.getTransactions(this.filterLazy);
   }
 
-  /*products: any[] = [
-      {
-        id: '1002',
-        description: 'Compra mercado',
-        price: 650,
-        category: 'Accessories',
-        inventoryStatus: 'INSTOCK',
-        rating: 5
-    },
-    {
-        id: '1005',
-        description: 'Academia',
-        price: 54,
-        category: 'Accessories',
-        inventoryStatus: 'INSTOCK',
-        rating: 5
-    },
-    {
-        id: '1007',
-        description: 'Compra de roupas novas',
-        price: 412,
-        category: 'Accessories',
-        inventoryStatus: 'INSTOCK',
-        rating: 5
-    },
-  ]*/
-
-  async getTransactions(): Promise<void> {
+  async getTransactions(event: TableLazyLoadEvent): Promise<void> {
+    console.log('chamando a função aqui ó: ', event);
+    console.log('this.transacoes.length: ', this.transacoes.length);
+    this.filterLazy = event;
+    this.lazyLoading = true;
     this.isLoading = true;
-    const transactions: TransactionForm[] = await lastValueFrom(this.transactionService.getTransactions().pipe(
+
+    const transactions: TransactionForm[] = await lastValueFrom(this.transactionService.getTransactions(event.first ?? 0, 5).pipe(
       catchError(error => {
         console.log('Error: ', error.message);
         //this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao recuperar cadastro ' + error.error.message })
@@ -155,10 +193,19 @@ export class TransacoesListComponent implements OnInit {
       })
     ));
 
-    console.log(transactions);
+    setTimeout(() => {
+      console.log('depois da espera:')
 
-    this.transacoes = transactions;
-    this.isLoading = false;
+      console.log('transactions: ', transactions)
+
+      if(transactions.length > 0)
+        this.transacoes = [...this.transacoes, ...transactions];
+
+      console.log('this.transactions: ', this.transacoes)
+
+      this.lazyLoading = false;
+      this.isLoading = false;
+    }, 500);
   }
 
   getSeverity (transacao: TransactionForm) {

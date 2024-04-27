@@ -11,8 +11,8 @@ export class TransacoesService {
   private readonly API = `${enviroment.API}/transaction`
   protected http = inject(HttpClient);
 
-  getTransactions(): Observable<any> {
-    return this.http.get(`${this.API}`);
+  getTransactions(first: number, last: number): Observable<any> {
+    return this.http.get(`${this.API}?first=${first}&last=${last}`);
   }
 
   createTransaction(data: TransactionForm): Observable<any>{
