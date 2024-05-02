@@ -55,6 +55,8 @@ export class TransacoesComponent {
         }, 0);
       } else if(this.transacoess.length > 0) {
         this.last = true;
+        this.listTransactions.isLoading = false;
+        this.listTransactions.loadingContent = false;        
       }
 
       console.log('loading ', this.loading);
