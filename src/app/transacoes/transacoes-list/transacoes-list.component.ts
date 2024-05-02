@@ -148,7 +148,7 @@ export class TransacoesListComponent implements OnInit {
         this.isLoading = true;
         this.searchTransactions.emit(transacoes);
       }
-    }, 500);
+    }, 0);
   }
 
   getSeverity (transacao: TransactionForm) {
