@@ -3,6 +3,7 @@ import { TransactionForm } from '../model/transaction.model';
 import { enviroment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { TransacoesFilter } from './transacoes.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +12,37 @@ export class TransacoesService {
   private readonly API = `${enviroment.API}/transaction`
   protected http = inject(HttpClient);
 
-  getTransactions(first: number, last: number): Observable<any> {
-    return this.http.get(`${this.API}?first=${first}&last=${last}`);
+  getTransactions(filters: TransacoesFilter): Observable<any> {
+    console.log('filters: ', filters);
+    let params = `?first=${filters.offset}`;
+
+    if(filters.initial_date_transaction) {
+      let initialDate = filters.initial_date_transaction.toLocaleDateString('pt-BR');
+      let partesData = initialDate.split('/');
+
+      // Formatando a data no padrão americano 'mm/dd/yyyy'
+      let dataUS = partesData[1] + '/' + partesData[0] + '/' + partesData[2];
+      params += `&initial_date_transaction=${dataUS}`
+    }
+
+    if(filters.final_date_transaction) {
+      let finalDate = filters.final_date_transaction.toLocaleDateString('pt-BR');
+      let partesData = finalDate.split('/');
+
+      // Formatando a data no padrão americano 'mm/dd/yyyy'
+      let dataUS = partesData[1] + '/' + partesData[0] + '/' + partesData[2];
+      params += `&final_date_transaction=${dataUS}`
+    }
+
+    if(filters.tags) {
+      params += `&tags=${filters.tags}`
+    }
+
+    if(filters.type) {
+      params += `&type=${filters.type}`
+    }
+
+    return this.http.get(`${this.API}${params}`);
   }
 
   createTransaction(data: TransactionForm): Observable<any>{

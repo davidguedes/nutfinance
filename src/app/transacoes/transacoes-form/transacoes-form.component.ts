@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, booleanAttribute, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -13,7 +14,7 @@ import { ChipsModule } from 'primeng/chips';
 @Component({
   selector: 'app-transacoes-form',
   standalone: true,
-  imports: [ButtonModule, ReactiveFormsModule, ErroFormComponent, InputTextModule, InputNumberModule, FloatLabelModule, CalendarModule, InputSwitchModule, ChipsModule],
+  imports: [CommonModule, ButtonModule, ReactiveFormsModule, ErroFormComponent, InputTextModule, InputNumberModule, FloatLabelModule, CalendarModule, InputSwitchModule, ChipsModule],
   template: `
     <div class="cadastro-forms" style="display: flex; width: 100%; justify-content: center; flex-direction: column">
       <div class="formulario">
@@ -78,6 +79,16 @@ import { ChipsModule } from 'primeng/chips';
                     <p-inputNumber styleClass="input-styling" id="number_recurrence" formControlName="number_recurrence" [showButtons]="true" [min]="0"></p-inputNumber>
                     <label for="number_recurrence">Nº Recorrência</label>
                   </p-floatLabel>
+                </div>
+              </div>
+            </div>
+          }
+
+          @if(this.formulario.get('number_recurrence')?.value > 0) {
+            <div style="margin: 0px 20px 20px 20px;">
+              <div class="input-field d-column">
+                <div class="input-campos" style="display: flex; width: 100%; margin: 0px 5px">
+                  <span>Valor total:&nbsp;</span> <span style="font-weight: bolder">{{(this.formulario.get('value')?.value * this.formulario.get('number_recurrence')?.value) | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</span>
                 </div>
               </div>
             </div>
