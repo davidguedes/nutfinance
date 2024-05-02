@@ -38,7 +38,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
         <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - (67px + 64px + 64px + 66px))' }" styleClass="custombar1">
           @if (loadingContent) {
             @for(item of transacoes; track item.id; let idx = $index; let primeiro = $first){
-                <div #extrato class="extrato">
+                <div #transacao class="transacao-item">
                     @if(idx !== transacoes.length-1 || isLoading || last){
                       <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4" [ngClass]="{ 'border-top-1 surface-border': !primeiro }">
                         <div class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
@@ -86,7 +86,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
                 </div>
             }@empty {
-              <div #extrato class="extrato">
+              <div #transacao class="transacao-empty">
                 <span>Sem nenhuma Transação.</span>
               </div>
             }
@@ -115,6 +115,16 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     .scrollTransactions {
       width: 100%;
       max-height: calc(100vh - (67px + 64px + 64px + 66px));
+    }
+    .transacao-empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      span {
+        font-weight: bold;
+        font-size: 18px;
+      }
     }
 
     p-tabview {
