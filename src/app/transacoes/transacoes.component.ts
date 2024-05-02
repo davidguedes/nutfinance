@@ -54,9 +54,7 @@ export class TransacoesComponent {
           this.transacoess = this.setTransacoes(this.transacoess, transactions);
         }, 0);
       } else if(this.transacoess.length > 0) {
-        this.last = true;
-        this.listTransactions.isLoading = false;
-        this.listTransactions.loadingContent = false;        
+        this.last = true;     
       }
 
       console.log('loading ', this.loading);
