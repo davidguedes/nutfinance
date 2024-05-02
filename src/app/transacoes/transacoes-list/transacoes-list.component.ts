@@ -120,7 +120,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
       display: flex;
       align-items: center;
       justify-content: center;
-
+      padding: 40px;
+      
       span {
         font-weight: bold;
         font-size: 18px;
