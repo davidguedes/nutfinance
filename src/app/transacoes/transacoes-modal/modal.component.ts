@@ -12,7 +12,7 @@ import { catchError, lastValueFrom } from 'rxjs';
     selector: 'app-transacos-modal',
     standalone: true,
     template: `
-      <p-dialog header="Transação" [(visible)]="visible" (onHide)="toggleVisible.emit(false)" [draggable]="false" [resizable]="false" [modal]="true" [style]="{width: '50vw'}" [breakpoints]="{ '960px': '75vw', '660px': '90vw' }">
+      <p-dialog header="Transação" [(visible)]="visible" (onHide)="toggleVisible.emit({visible: false, alter: alter})" [draggable]="false" [resizable]="false" [modal]="true" [style]="{width: '50vw'}" [breakpoints]="{ '960px': '75vw', '660px': '90vw' }">
         <app-transacoes-form (onSubmit)="createTransacao($event)" [edit]="transactionEdit" (closeModal)="close($event)"></app-transacoes-form>
       </p-dialog>
       <p-toast></p-toast>
@@ -22,16 +22,14 @@ import { catchError, lastValueFrom } from 'rxjs';
     imports: [DialogModule, TransacoesFormComponent, ToastModule],
     providers: [MessageService]
 })
-export class TransacoesModalComponent implements OnInit {
-  ngOnInit(): void {
-    console.log('passando no oninit da modal')
-  }
+export class TransacoesModalComponent {
 
   @Input() transactionEdit!: TransactionForm | undefined;
   @Input({ transform: booleanAttribute }) visible: boolean = false;
   @Output() toggleVisible = new EventEmitter();
   protected transactionService: Transacoes = inject(TransacoesService);
   protected messageService = inject(MessageService);
+  alter: boolean = false;
 
   async createTransacao(formulario: TransactionForm) {
     const dadosFormulario = formulario;
@@ -56,12 +54,11 @@ export class TransacoesModalComponent implements OnInit {
     }
 
     this.messageService.add({ severity: 'success', summary: 'Success', detail: textDetail });
+    this.alter = true;
     this.close(true);
-    //this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Erro ao incluir transação' });
   }
 
   close(close: boolean) {
-    console.log('Passou por aqui ', this.transactionEdit);
     this.visible = close === true ? false : true;
   }
 }

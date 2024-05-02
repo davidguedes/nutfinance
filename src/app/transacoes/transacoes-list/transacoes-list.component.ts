@@ -1,19 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DEFAULT_CURRENCY_CODE, EventEmitter, Input, LOCALE_ID, OnInit, Output } from '@angular/core';
 import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
-import { TransacoesService } from '../transacoes.service';
-import { Transacoes } from '../transacoes.interface';
 import { TransactionForm } from '../../model/transaction.model';
 import { TabViewModule } from 'primeng/tabview';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { TransacoesModalComponent } from '../../transacoes/transacoes-modal/modal.component';
 import { TransacoesDeleteComponent } from '../transacoes-delete/transacoes-delete.component';
-import { catchError, lastValueFrom } from 'rxjs';
 import { LoadingComponentComponent } from '../../shared/loading-component/loading-component.component';
 import { ActionButtonComponent } from '../../shared/action-button/action-button.component';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'transacoes-list',
@@ -29,136 +28,127 @@ import { ActionButtonComponent } from '../../shared/action-button/action-button.
     TransacoesDeleteComponent,
     LoadingComponentComponent,
     ActionButtonComponent,
-    TransacoesModalComponent
+    TransacoesModalComponent,
+    ScrollPanelModule,
+    ProgressSpinnerModule
   ],
   template: `
     <div class="content">
-      @if (isLoading) {
-        <app-loading-component/>
-      } @else {
-        <p-tabView>
-          <p-tabPanel header="03/2024">
-            <div>
-              <p-dataView #dv [value]="transacoes" class="data-transactions">
-                  <ng-template pTemplate="list" let-transacoes>
-                      <div class="grid grid-nogutter">
-                          <div class="col-12" *ngFor="let item of transacoes; let first = first">
-                              <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4" [ngClass]="{ 'border-top-1 surface-border': !first }">
-                                  <div class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-                                      <div class="flex flex-column align-items-center sm:align-items-start gap-3">
-                                          <div class="text-2xl font-bold text-900">{{ item.description }}</div>
-                                          <div class="flex align-items-center gap-3">
-                                              <span class="flex align-items-center gap-2">
-                                                  <i class="pi pi-tag"></i>
-                                                  <span class="font-semibold">{{ item.category }}</span>
-                                              </span>
-                                              <p-tag [value]="item.tipo == 'D' ? 'Despesa' : 'Receita'" [severity]="getSeverity(item)"></p-tag>
-                                              @for (tag of item.tags; track tag) {
-                                                <p-tag [value]="tag"></p-tag>
-                                              }
-                                          </div>
-                                          @if(item.recorrencia) {
-                                            <div>
-                                              <i class="pi pi-undo"></i> {{item.number_recurrence == '0' ? 'Repetir todo mês.' : calcularParcelasExecutadas(item.date_transaction, item.number_recurrence)}}
-                                            </div>
-                                          }
-                                          <div>
-                                            <i class="pi pi-calendar"></i> {{item.date_transaction | date:'dd/MM/yyyy'}}
-                                          </div>
-                                      </div>
-                                      <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
-                                        <span class="text-2xl font-semibold">{{ 'R$' + item.value }}</span>
-                                        <app-transacoes-delete (deleteButton)="getTransactions()" [idTransaction]="item.id" />
-                                        <p-button icon="pi pi-pencil" (click)="editTransaction = item; modalVisible = true"></p-button>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </ng-template>
-              </p-dataView>
-            </div>
-          </p-tabPanel>
-          <p-tabPanel header="04/2024">
-          </p-tabPanel>
-          <p-tabPanel header="05/2024">
-          </p-tabPanel>
-        </p-tabView>
-        <app-action-button (functionButton)="editTransaction = undefined; this.modalVisible = true"></app-action-button>
 
-        @if (modalVisible) {
-          <app-transacos-modal (toggleVisible)="modalVisible = false; getTransactions()" [transactionEdit]="editTransaction" [visible]="modalVisible" ></app-transacos-modal>
-        }
+        <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - (67px + 64px + 64px + 66px))' }" styleClass="custombar1">
+          @if (loadingContent) {
+            @for(item of transacoes; track item.id; let idx = $index; let primeiro = $first){
+                <div #extrato class="extrato">
+                    @if(idx !== transacoes.length-1 || isLoading || last){
+                      <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4" [ngClass]="{ 'border-top-1 surface-border': !primeiro }">
+                        <div class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
+                            <div class="flex flex-column align-items-center sm:align-items-start gap-3">
+                                <div class="text-2xl font-bold text-900">{{ item.description }}</div>
+                                <div class="flex align-items-center gap-3">
+                                    <span class="flex align-items-center gap-2">
+                                        <i class="pi pi-tag"></i>
+                                        <!--span class="font-semibold">{{ item.category }}</span-->
+                                    </span>
+                                    <p-tag [value]="item.type == 'D' ? 'Despesa' : 'Receita'" [severity]="getSeverity(item)"></p-tag>
+                                    @for (tag of item.tags; track tag) {
+                                      <p-tag [value]="tag"></p-tag>
+                                    }
+                                </div>
+                                @if(item.recurrence) {
+                                  <div>
+                                    <i class="pi pi-undo"></i> {{item.number_recurrence == 0 ? 'Repetir todo mês.' : calcularParcelasExecutadas(item.date_transaction, item.number_recurrence ?? 0)}}
+                                  </div>
+                                }
+                                <div>
+                                  <i class="pi pi-calendar"></i> {{item.date_transaction | date:'dd/MM/yyyy'}}
+                                </div>
+                            </div>
+                            <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
+                              <span class="text-2xl font-semibold">{{item.value | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</span>
+                              <app-transacoes-delete (deleteButton)="isLoading = false; findTransactions(-1, transacoes, true)" [idTransaction]="item.id" />
+                              <p-button icon="pi pi-pencil" (click)="editTransaction = item; modalVisible = true"></p-button>
+                            </div>
+                        </div>
+                      </div>
+                    }@else {
+                      @defer(on viewport(); when isLoading){
+                        <div style="width: 100%; height: 10rem; display: flex; justify-content: center; align-items: center">
+                          <div class="spinner">
+                            <p-progressSpinner></p-progressSpinner>
+                          </div>
+                          {{findTransactions(idx, transacoes)}}
+                          <!-- {{cdRef.markForCheck()}} -->
+                        </div>
+                      }@placeholder {
+                        <div>load</div>
+                      }
+                    }
+
+                </div>
+            }@empty {
+              <div #extrato class="extrato">
+                <span>Sem nenhuma Transação.</span>
+              </div>
+            }
+          }
+          @else {
+            <div style="width: 100%; height: 10rem; display: flex; justify-content: center; align-items: center">
+              <div class="spinner" style="">
+                <p-progressSpinner></p-progressSpinner>
+              </div>
+            </div>
+
+          }
+      </p-scrollPanel>
+
+      <app-action-button (functionButton)="editTransaction = undefined; this.modalVisible = true"></app-action-button>
+
+      @if (modalVisible) {
+        <app-transacos-modal (toggleVisible)="hideModal($event)" [transactionEdit]="editTransaction" [visible]="modalVisible" ></app-transacos-modal>
       }
     </div>
   `,
   styles: `
     .content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
       width: 100%;
+    }
+    .scrollTransactions {
+      width: 100%;
+      max-height: calc(100vh - (67px + 64px + 64px + 66px));
     }
 
     p-tabview {
       width: 100%
     }
-  `,
+  `
 })
 export class TransacoesListComponent implements OnInit {
-  protected transactionService: Transacoes = inject(TransacoesService);
   editTransaction!: TransactionForm | undefined;
   modalVisible: boolean = false;
-  transacoes: TransactionForm[] = [];
-  isLoading: boolean = false;
+  @Output() searchTransactions = new EventEmitter();
+  @Output() clear = new EventEmitter();
+  @Input() transacoes: TransactionForm[] = [];
+  @Input() isLoading: boolean = false;
+  @Input() loadingContent: boolean = false;
+  @Input() last: boolean = false;
 
   ngOnInit(): void {
-    this.transacoes = this.transactionService.getDataLocally();
-
-    this.getTransactions();
   }
 
-  /*products: any[] = [
-      {
-        id: '1002',
-        description: 'Compra mercado',
-        price: 650,
-        category: 'Accessories',
-        inventoryStatus: 'INSTOCK',
-        rating: 5
-    },
-    {
-        id: '1005',
-        description: 'Academia',
-        price: 54,
-        category: 'Accessories',
-        inventoryStatus: 'INSTOCK',
-        rating: 5
-    },
-    {
-        id: '1007',
-        description: 'Compra de roupas novas',
-        price: 412,
-        category: 'Accessories',
-        inventoryStatus: 'INSTOCK',
-        rating: 5
-    },
-  ]*/
+  findTransactions(index: number, transacoes: Array<TransactionForm>, clear?: boolean): void {
+    this.last = false;
 
-  async getTransactions(): Promise<void> {
-    this.isLoading = true;
-    const transactions: TransactionForm[] = await lastValueFrom(this.transactionService.getTransactions().pipe(
-      catchError(error => {
-        console.log('Error: ', error.message);
-        //this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao recuperar cadastro ' + error.error.message })
-        return [];
-      })
-    ));
+    if(clear) {
+      this.clear.emit(true);
+      transacoes = [];
+    }
 
-    console.log(transactions);
-
-    this.transacoes = transactions;
-    this.isLoading = false;
+    setTimeout(() => {
+      if(index+1 == transacoes.length && !this.isLoading) {
+        this.isLoading = true;
+        this.searchTransactions.emit(transacoes);
+      }
+    }, 500);
   }
 
   getSeverity (transacao: TransactionForm) {
@@ -192,5 +182,14 @@ export class TransacoesListComponent implements OnInit {
     const parcelasExecutadas = Math.min(Math.floor(diffEmDias / 30), numeroRecorrencia) + 1;
 
     return `${parcelasExecutadas} / ${numeroRecorrencia}` ;
+  }
+
+  hideModal(event: any) {
+    this.modalVisible = false;
+
+    if(event.alter) {
+      this.isLoading = false;
+      this.findTransactions(-1, this.transacoes, true)
+    }
   }
 }

@@ -42,12 +42,12 @@ export class SidebarComponent implements OnInit {
         {
             label: 'Despesas',
             icon: 'pi pi-fw pi-minus',
-            command: () => this.toggleVisible(false)
+            command: () => {this.router.navigate(['/despesas']); this.toggleVisible(false)}
         },
         {
             label: 'Perfil',
             icon: 'pi pi-fw pi-user',
-            command: () => this.toggleVisible(false)
+            command: () => {this.router.navigate(['/perfil']); this.toggleVisible(false)}
         }
     ];
   }
