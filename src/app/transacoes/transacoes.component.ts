@@ -47,18 +47,19 @@ export class TransacoesComponent {
         })
       ));
 
-      console.log('vai setar o laoding ');
+      console.log('vai setar o laoding. transactions', transactions, " this.transacoess: ",this.transacoess);
 
       if(transactions.length > 0) {
         setTimeout(async () => {
           this.transacoess = this.setTransacoes(this.transacoess, transactions);
         }, 0);
-      } else if(this.transacoess.length > 0) {
-        this.last = true;     
+      } else if(this.transacoess.length == 0) {
+        this.last = true;
+        this.listTransactions.loadingContent = true;
+        this.listTransactions.isLoading = false;
       }
 
       console.log('loading ', this.loading);
-
   }
 
   setTransacoes (transacoes: TransactionForm[], searchTransacoes: TransactionForm[]): TransactionForm[]{
