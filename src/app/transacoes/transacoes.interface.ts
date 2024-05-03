@@ -17,5 +17,6 @@ export interface TransacoesFilter {
   final_date_transaction: Date,
   tags: string[],
   type: string,
+  sort: boolean,
   offset: number,
 }
