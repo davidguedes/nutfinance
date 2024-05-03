@@ -40,7 +40,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
             @for(item of transacoes; track item.id; let idx = $index; let primeiro = $first){
                 <div #transacao class="transacao-item">
                     @if(idx !== transacoes.length-1 || isLoading || last){
-                      <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4" [ngClass]="{ 'border-top-1 surface-border': !primeiro }">
+                      <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4" [ngClass]="{ 'border-top-1 surface-border': !primeiro, 'first-item' : primeiro }">
                         <div class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
                             <div class="flex flex-column align-items-center sm:align-items-start gap-3">
                                 <div class="text-2xl font-bold text-900">{{ item.description }}</div>
@@ -121,11 +121,14 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
       align-items: center;
       justify-content: center;
       padding: 40px;
-      
+
       span {
         font-weight: bold;
         font-size: 18px;
       }
+    }
+    .first-item {
+      border-top: 1px solid #00000059;
     }
 
     p-tabview {

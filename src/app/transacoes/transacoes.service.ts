@@ -15,6 +15,8 @@ export class TransacoesService {
   getTransactions(filters: TransacoesFilter): Observable<any> {
     console.log('filters: ', filters);
     let params = `?first=${filters.offset}`;
+    params += `&type=${filters.type}`
+    params += `&sort=${filters.sort}`
 
     if(filters.initial_date_transaction) {
       let initialDate = filters.initial_date_transaction.toLocaleDateString('pt-BR');
@@ -36,10 +38,6 @@ export class TransacoesService {
 
     if(filters.tags) {
       params += `&tags=${filters.tags}`
-    }
-
-    if(filters.type) {
-      params += `&type=${filters.type}`
     }
 
     return this.http.get(`${this.API}${params}`);
