@@ -31,7 +31,7 @@ import { TriStateCheckboxModule } from 'primeng/tristatecheckbox';
               <span>Tipo*</span>
             </div>
             <div class="input-switch" style="display: flex; align-items: center; justify-content: center;">
-              <p-triStateCheckbox formControlName="type" (ngModelChange)="emitFilter()" inputId="type" />
+              <p-triStateCheckbox formControlName="type" (onChange)="emitFilter()" inputId="type" />
               <label for="type">
                 <span [style]="{'margin-left': '10px', 'padding': '10px', 'background-color': formulario.get('type')?.value === null ? '#0ea5e96e' : formulario.get('type')?.value === true ? '#27ff006e' : '#ff00006e', 'border-radius': '10px'}">{{ formulario.value.type === null ? 'Todos' : formulario.value.type === true ? 'Ganhos' : 'Gastos'}}</span>
               </label>
@@ -41,24 +41,24 @@ import { TriStateCheckboxModule } from 'primeng/tristatecheckbox';
         </div>
         <div class="input-filter">
           <p-floatLabel>
-            <p-calendar id="initial_date_transaction" [showIcon]="true" dateFormat="dd/mm/yy" formControlName="initial_date_transaction" (ngModelChange)="emitFilter()"></p-calendar>
+            <p-calendar id="initial_date_transaction" [showIcon]="true" dateFormat="dd/mm/yy" formControlName="initial_date_transaction" (onSelect)="emitFilter()" (onClear)="emitFilter()" [showClear]="true"></p-calendar>
             <label for="initial_date_transaction">Dt. Início Transação*</label>
           </p-floatLabel>
         </div>
         <div class="input-filter">
           <p-floatLabel>
-            <p-calendar id="final_date_transaction" [showIcon]="true" dateFormat="dd/mm/yy" formControlName="final_date_transaction" (ngModelChange)="emitFilter()"></p-calendar>
+            <p-calendar id="final_date_transaction" [showIcon]="true" dateFormat="dd/mm/yy" formControlName="final_date_transaction" (onSelect)="emitFilter()" (onClear)="emitFilter()" [showClear]="true"></p-calendar>
             <label for="final_date_transaction">Dt. Final Transação*</label>
           </p-floatLabel>
         </div>
         <div class="input-filter">
           <p-floatLabel>
-            <p-chips formControlName="tags" (ngModelChange)="emitFilter()"></p-chips>
+            <p-chips formControlName="tags" (onAdd)="emitFilter()" (onRemove)="emitFilter()" (onClear)="emitFilter()" [showClear]="true"></p-chips>
             <label for="tags">Tags</label>
           </p-floatLabel>
         </div>
         <div class="input-filter">
-          <p-button icon="pi pi-eraser" severity="warning" [style]="{'width': '100%'}" label="Limpar" (click)="formulario.reset()"></p-button>
+          <p-button icon="pi pi-eraser" severity="warning" [style]="{'width': '100%'}" label="Limpar" (click)="clear()"></p-button>
         </div>
       </div>
     </form>
@@ -121,6 +121,11 @@ export class TransacoesFilterComponent implements OnInit {
       sort: [true],
     })
 
+    this.emitFilter();
+  }
+
+  clear() {
+    this.formulario.reset();
     this.emitFilter();
   }
 
