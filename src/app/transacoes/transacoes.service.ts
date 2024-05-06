@@ -36,7 +36,7 @@ export class TransacoesService {
       params += `&final_date_transaction=${dataUS}`
     }
 
-    if(filters.tags) {
+    if(filters.tags?.length > 0) {
       params += `&tags=${filters.tags}`
     }
 
