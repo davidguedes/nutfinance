@@ -35,7 +35,7 @@ import { TriStateCheckboxModule } from 'primeng/tristatecheckbox';
               <label for="type">
                 <span [style]="{'margin-left': '10px', 'padding': '10px', 'background-color': formulario.get('type')?.value === null ? '#0ea5e96e' : formulario.get('type')?.value === true ? '#27ff006e' : '#ff00006e', 'border-radius': '10px'}">{{ formulario.value.type === null ? 'Todos' : formulario.value.type === true ? 'Ganhos' : 'Gastos'}}</span>
               </label>
-              <!--p-inputSwitch formControlName="types" (ngModelChange)="emitFilter()" [falseValue]="'D'" [trueValue]="'R'"></p-inputSwitch><span [style]="{'margin-left': '5px', 'padding': '10px', 'background-color': formulario.get('types')?.value === 'R' ? '#27ff006e' : '#ff00006e', 'border-radius': '10px'}">{{formulario.get('types')?.value === 'R' ? 'Receita' : 'Despesa'}}</span-->
+              <!--p-inputSwitch formControlName="types" (ngModelChange)="emitFilter()" [falseValue]="'D'" [trueValue]="'R'"></p-inputSwitch><span [style]="{'margin-left': '5px', 'padding': '10px', 'background-color': formulario.get('types')?.value === 'R' ? '#27ff006e' : '#ff00006e', 'border-radius': '10px'}">{{formulario.get('types')?.value === 'R' ? 'Ganho' : 'Gasto'}}</span-->
             </div>
           </div>
         </div>

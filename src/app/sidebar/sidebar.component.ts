@@ -3,6 +3,7 @@ import { SidebarModule } from 'primeng/sidebar';
 import { MenuModule } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
 import { Router } from '@angular/router';
+import { LoginService } from '../login/login.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -20,6 +21,7 @@ export class SidebarComponent implements OnInit {
   @Input({ transform: booleanAttribute }) valueSidebarVisible: boolean = false;
   @Output() sidebarVisible = new EventEmitter<boolean>();
   protected router = inject(Router);
+  protected loginService: any = inject(LoginService);
 
   items: MenuItem[] | undefined;
 
@@ -40,14 +42,19 @@ export class SidebarComponent implements OnInit {
           command: () => {this.router.navigate(['/transacoes']); this.toggleVisible(false)}
         },
         {
-            label: 'Despesas',
+            label: 'Fixas',
             icon: 'pi pi-fw pi-minus',
-            command: () => {this.router.navigate(['/despesas']); this.toggleVisible(false)}
+            command: () => {this.router.navigate(['/fixas']); this.toggleVisible(false)}
         },
         {
             label: 'Perfil',
             icon: 'pi pi-fw pi-user',
             command: () => {this.router.navigate(['/perfil']); this.toggleVisible(false)}
+        },
+        {
+            label: 'Sair',
+            icon: 'pi pi-fw pi-sign-out',
+            command: () => {this.loginService.logout(), this.router.navigate(['/login']); this.toggleVisible(false)}
         }
     ];
   }
