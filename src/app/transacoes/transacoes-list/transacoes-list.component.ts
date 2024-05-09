@@ -34,7 +34,6 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
   ],
   template: `
     <div class="content">
-
         <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - (67px + 64px + 64px + 66px))' }" styleClass="custombar1">
           @if (loadingContent) {
             @for(item of transacoes; track item.id; let idx = $index; let primeiro = $first){
@@ -49,7 +48,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
                                         <i class="pi pi-tag"></i>
                                         <!--span class="font-semibold">{{ item.category }}</span-->
                                     </span>
-                                    <p-tag [value]="item.type == 'D' ? 'Despesa' : 'Receita'" [severity]="getSeverity(item)"></p-tag>
+                                    <p-tag [value]="item.type == 'D' ? 'Gasto' : 'Ganho'" [severity]="getSeverity(item)"></p-tag>
                                     @for (tag of item.tags; track tag) {
                                       <p-tag [value]="tag"></p-tag>
                                     }

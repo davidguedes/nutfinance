@@ -21,7 +21,7 @@ import { TransacoesModalComponent } from '../transacoes/transacoes-modal/modal.c
         <p-card class="card mb-0">
           <div class="flex justify-content-between mb-3">
             <div>
-              <span class="block text-500 font-medium mb-3">Despesas</span>
+              <span class="block text-500 font-medium mb-3">Fixas</span>
               <div class="text-900 font-medium text-xl">152</div>
             </div>
             <div class="flex align-items-center justify-content-center bg-blue-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
@@ -36,7 +36,7 @@ import { TransacoesModalComponent } from '../transacoes/transacoes-modal/modal.c
         <p-card class="card mb-0">
           <div class="flex justify-content-between mb-3">
             <div>
-              <span class="block text-500 font-medium mb-3">Receita</span>
+              <span class="block text-500 font-medium mb-3">Ganho</span>
               <div class="text-900 font-medium text-xl">R$2.100</div>
             </div>
             <div class="flex align-items-center justify-content-center bg-orange-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
