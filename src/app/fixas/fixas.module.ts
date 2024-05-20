@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { FixasRoutingModule } from './fixas-routing.module';
 
-
 @NgModule({
   declarations: [],
   imports: [

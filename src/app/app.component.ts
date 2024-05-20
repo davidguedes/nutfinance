@@ -58,6 +58,9 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subscription.push(this.loginService.isLoggedIn$.subscribe((isLoggedIn: boolean) => {
       console.log('isLoggedIn: ', isLoggedIn);
       this.logged = isLoggedIn;
+
+      if(!this.logged)
+        localStorage.removeItem('isLoggedIn');
     }));
 
     this.translate.setDefaultLang('pt');

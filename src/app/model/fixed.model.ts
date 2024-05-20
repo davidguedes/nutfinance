@@ -4,9 +4,10 @@ export interface FixedForm {
   updatedAt: Date;
   value: number;
   type: string;
-  date_release: Date;
+  date_inclusion: Date;
   description: string;
   tags?: string[] | [];
   status: boolean;
   user_id: string;
+  total: number;
 }
