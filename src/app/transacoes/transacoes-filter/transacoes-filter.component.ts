@@ -28,7 +28,7 @@ import { TriStateCheckboxModule } from 'primeng/tristatecheckbox';
         <div class="input-filter">
           <div class="input-campos" style="display: flex; width: 100%; align-items:center; justify-content: center;">
             <div class="input-name" style="padding: 13px; width: 30%">
-              <span>Tipo*</span>
+              <span>Tipo</span>
             </div>
             <div class="input-switch" style="display: flex; align-items: center; justify-content: center;">
               <p-triStateCheckbox formControlName="type" (onChange)="emitFilter()" inputId="type" />
@@ -42,13 +42,13 @@ import { TriStateCheckboxModule } from 'primeng/tristatecheckbox';
         <div class="input-filter">
           <p-floatLabel>
             <p-calendar id="initial_date_transaction" [showIcon]="true" dateFormat="dd/mm/yy" formControlName="initial_date_transaction" (onSelect)="emitFilter()" (onClear)="emitFilter()" [showClear]="true"></p-calendar>
-            <label for="initial_date_transaction">Dt. Início Transação*</label>
+            <label for="initial_date_transaction">Dt. Início Transação</label>
           </p-floatLabel>
         </div>
         <div class="input-filter">
           <p-floatLabel>
             <p-calendar id="final_date_transaction" [showIcon]="true" dateFormat="dd/mm/yy" formControlName="final_date_transaction" (onSelect)="emitFilter()" (onClear)="emitFilter()" [showClear]="true"></p-calendar>
-            <label for="final_date_transaction">Dt. Final Transação*</label>
+            <label for="final_date_transaction">Dt. Final Transação</label>
           </p-floatLabel>
         </div>
         <div class="input-filter">
@@ -72,6 +72,10 @@ import { TriStateCheckboxModule } from 'primeng/tristatecheckbox';
     }
 
     .input-filter {
+      width: 100%;
+    }
+
+    ::ng-deep .p-inputtext, ::ng-deep .p-chips {
       width: 100%;
     }
 
@@ -104,7 +108,6 @@ import { TriStateCheckboxModule } from 'primeng/tristatecheckbox';
         grid-template-columns: 1fr;
       }
     }
-
   `]
 })
 export class TransacoesFilterComponent implements OnInit {

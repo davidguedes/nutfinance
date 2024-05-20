@@ -7,6 +7,8 @@ import { PasswordModule } from 'primeng/password';
 import { ErroFormComponent } from '../shared/erro-form/erro-form.component';
 import { LoginService } from './login.service';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +19,8 @@ import { Router } from '@angular/router';
     ReactiveFormsModule,
     ErroFormComponent,
     FloatLabelModule,
-    PasswordModule
+    PasswordModule,
+    ToastModule
   ],
   template: `
     <div class="container">
@@ -43,6 +46,7 @@ import { Router } from '@angular/router';
         </div>
       </div>
     </div>
+    <p-toast></p-toast>
   `,
   styles: `
     p-password {
@@ -83,10 +87,12 @@ import { Router } from '@angular/router';
         width: 75%;
       }
     }
-  `
+  `,
+  providers: [MessageService]
 })
 export class LoginComponent implements OnInit {
   protected loginService: any = inject(LoginService);
+  protected messageService: any = inject(MessageService);
   protected router = inject(Router);
 
   formBuilder = inject(FormBuilder);
@@ -104,7 +110,7 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/']);
       } else {
         // Tratamento de erro de login inválido
-        alert('Login inválido! Por favor, tente novamente.');
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Login inválido! Por favor, tente novamente.' })
         this.formulario.reset();
       }
     }

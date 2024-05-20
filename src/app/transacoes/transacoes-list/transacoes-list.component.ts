@@ -111,10 +111,6 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     .content {
       width: 100%;
     }
-    .scrollTransactions {
-      width: 100%;
-      max-height: calc(100vh - (67px + 64px + 64px + 66px));
-    }
     .transacao-empty {
       display: flex;
       align-items: center;
