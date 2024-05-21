@@ -9,6 +9,7 @@ import { catchError, lastValueFrom } from 'rxjs';
 import { FixedForm } from '../model/fixed.model';
 import { FixasModalComponent } from './fixas-modal/fixas-modal.component';
 import { ButtonModule } from 'primeng/button';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-fixas',
@@ -33,10 +34,13 @@ import { ButtonModule } from 'primeng/button';
       align-items: center;
       justify-content: end;
     }
-  `
+  `,
+  providers: [MessageService]
 })
 export class FixasComponent {
   protected fixedService: Fixas = inject(FixasService);
+  protected messageService: any = inject(MessageService);
+
   editFixed!: FixedForm | undefined;
   modalVisible: boolean = false;
   fixed = signal<FixedForm[]>([]);
@@ -52,7 +56,7 @@ export class FixasComponent {
     this.paginator.rows = rows;
     const data = await lastValueFrom(this.fixedService.getFixed(first, rows, filters).pipe(
       catchError(error => {
-        //this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao recuperar cadastro ' + error.error.message })
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao recuperar fixas: ' + error.error.message })
         return [];
       })
     ))

@@ -4,7 +4,7 @@ export interface FixedForm {
   updatedAt: Date;
   value: number;
   type: string;
-  date_inclusion: Date;
+  day_inclusion: number;
   description: string;
   tags?: string[] | [];
   status: boolean;

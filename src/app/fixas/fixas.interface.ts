@@ -14,7 +14,7 @@ export interface Fixas {
 
 export interface FixasFilter {
   description: string,
-  date_inclusion: Date,
+  day_inclusion: number,
   tags: string[],
   type: string,
   status: boolean,

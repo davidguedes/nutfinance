@@ -1,9 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { CardModule } from 'primeng/card';
 import { ActionButtonComponent } from '../shared/action-button/action-button.component';
 import { TransacoesModalComponent } from '../transacoes/transacoes-modal/modal.component';
+import { Graficos } from './chart.interface';
+import { ChartService } from './chart.service';
+import { catchError, lastValueFrom, of } from 'rxjs';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-home',
@@ -22,7 +26,7 @@ import { TransacoesModalComponent } from '../transacoes/transacoes-modal/modal.c
           <div class="flex justify-content-between mb-3">
             <div>
               <span class="block text-500 font-medium mb-3">Fixas</span>
-              <div class="text-900 font-medium text-xl">152</div>
+              <div class="text-900 font-medium text-xl">{{fixed}}</div>
             </div>
             <div class="flex align-items-center justify-content-center bg-blue-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
               <i class="pi pi-shopping-cart text-blue-500 text-xl"></i>
@@ -37,7 +41,7 @@ import { TransacoesModalComponent } from '../transacoes/transacoes-modal/modal.c
           <div class="flex justify-content-between mb-3">
             <div>
               <span class="block text-500 font-medium mb-3">Ganho</span>
-              <div class="text-900 font-medium text-xl">R$2.100</div>
+              <div class="text-900 font-medium text-xl">{{profit | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</div>
             </div>
             <div class="flex align-items-center justify-content-center bg-orange-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
               <i class="pi pi-wallet text-orange-500 text-xl"></i>
@@ -56,11 +60,17 @@ import { TransacoesModalComponent } from '../transacoes/transacoes-modal/modal.c
       <app-action-button (functionButton)="this.modalVisible = true"></app-action-button>
       <app-transacos-modal (toggleVisible)="modalVisible = false" [visible]="modalVisible" ></app-transacos-modal>
     </div>
-  `
+  `,
+  providers: [MessageService]
 })
 export class HomeComponent implements OnInit {
+  protected chartService: Graficos = inject(ChartService);
+  protected messageService: any = inject(MessageService);
+
   modalVisible: boolean = false;
   chartData: any;
+  fixed: number = 0;
+  profit: number = 0;
 
   chartOptions: any;
 
@@ -68,62 +78,76 @@ export class HomeComponent implements OnInit {
     this.initChart();
   }
 
-  initChart() {
-        const documentStyle = getComputedStyle(document.documentElement);
-        const textColor = documentStyle.getPropertyValue('--text-color');
-        const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
-        const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+  async initChart() {
+    this.fixed = await lastValueFrom(this.chartService.getFixed().pipe(
+      catchError(error => {
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao recuperar fixas: ' + error.error.message });
+        return of(0);
+      })
+    ));
 
-        this.chartData = {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-            datasets: [
-                {
-                    label: 'First Dataset',
-                    data: [65, 59, 80, 81, 56, 55, 40],
-                    fill: false,
-                    backgroundColor: documentStyle.getPropertyValue('--bluegray-700'),
-                    borderColor: documentStyle.getPropertyValue('--bluegray-700'),
-                    tension: .4
-                },
-                {
-                    label: 'Second Dataset',
-                    data: [28, 48, 40, 19, 86, 27, 90],
-                    fill: false,
-                    backgroundColor: documentStyle.getPropertyValue('--green-600'),
-                    borderColor: documentStyle.getPropertyValue('--green-600'),
-                    tension: .4
-                }
-            ]
-        };
+    this.profit = await lastValueFrom(this.chartService.getProfit().pipe(
+      catchError(error => {
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao recuperar ganhos: ' + error.error.message });
+        return of(0);
+      })
+    ));
 
-        this.chartOptions = {
-            plugins: {
-                legend: {
-                    labels: {
-                        color: textColor
-                    }
-                }
+    const documentStyle = getComputedStyle(document.documentElement);
+    const textColor = documentStyle.getPropertyValue('--text-color');
+    const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
+    const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+
+    this.chartData = {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [
+            {
+                label: 'First Dataset',
+                data: [65, 59, 80, 81, 56, 55, 40],
+                fill: false,
+                backgroundColor: documentStyle.getPropertyValue('--bluegray-700'),
+                borderColor: documentStyle.getPropertyValue('--bluegray-700'),
+                tension: .4
             },
-            scales: {
-                x: {
-                    ticks: {
-                        color: textColorSecondary
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false
-                    }
-                },
-                y: {
-                    ticks: {
-                        color: textColorSecondary
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false
-                    }
+            {
+                label: 'Second Dataset',
+                data: [28, 48, 40, 19, 86, 27, 90],
+                fill: false,
+                backgroundColor: documentStyle.getPropertyValue('--green-600'),
+                borderColor: documentStyle.getPropertyValue('--green-600'),
+                tension: .4
+            }
+        ]
+    };
+
+    this.chartOptions = {
+        plugins: {
+            legend: {
+                labels: {
+                    color: textColor
                 }
             }
-        };
+        },
+        scales: {
+            x: {
+                ticks: {
+                    color: textColorSecondary
+                },
+                grid: {
+                    color: surfaceBorder,
+                    drawBorder: false
+                }
+            },
+            y: {
+                ticks: {
+                    color: textColorSecondary
+                },
+                grid: {
+                    color: surfaceBorder,
+                    drawBorder: false
+                }
+            }
+        }
+    };
   }
 }
