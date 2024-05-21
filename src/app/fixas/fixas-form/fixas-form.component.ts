@@ -5,7 +5,6 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
 import { InputSwitchModule } from 'primeng/inputswitch';
-import { TransactionForm } from '../../model/transaction.model';
 import { ErroFormComponent } from '../../shared/erro-form/erro-form.component';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -63,12 +62,12 @@ import { FixedForm } from '../../model/fixed.model';
             <div class="input-field d-column">
               <div class="input-campos" style="display: flex; width: 100%">
                 <p-floatLabel [style]="{'width': '100%'}">
-                  <p-calendar [style]="{'width': '100%'}" id="date_inclusion" class="calendar-cadastro" formControlName="date_inclusion" [style]="{'min-width': '100%'}" appendTo="body"></p-calendar>
-                  <label for="date_inclusion">Dt. Inclusão*</label>
+                  <p-inputNumber styleClass="input-styling" id="day_inclusion" formControlName="day_inclusion" [min]="1" [max]="28"> </p-inputNumber>
+                  <label for="day_inclusion">Dia Inclusão*</label>
                 </p-floatLabel>
               </div>
-              <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Selecione a data de inclusão
-              " nameField="date_inclusion"></app-erro-form>
+              <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Selecione o dia de inclusão
+              " nameField="day_inclusion"></app-erro-form>
             </div>
           </div>
 
@@ -157,7 +156,7 @@ export class FixasFormComponent implements OnInit {
         description: [this.edit.description, [Validators.required]],
         value: [this.edit.value, [Validators.required]],
         type: [this.edit.type, [Validators.required]],
-        date_inclusion: [new Date(this.edit.date_inclusion), [Validators.required]],
+        day_inclusion: [this.edit.day_inclusion, [Validators.required]],
         tags: [this.edit.tags],
       });
     } else {
@@ -165,7 +164,7 @@ export class FixasFormComponent implements OnInit {
         description: [null, [Validators.required]],
         value: [null, [Validators.required]],
         type: ['D', [Validators.required]],
-        date_inclusion: [null, [Validators.required]],
+        day_inclusion: [null, [Validators.required]],
         tags: [[]],
       });
     }

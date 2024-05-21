@@ -10,9 +10,9 @@ export class LoginService {
 
   constructor() { }
 
-  login(password: string | null): boolean {
+  login(email: string, password: string): boolean {
     // Aqui você pode adicionar sua lógica de autenticação real, como chamar um serviço de API
-    if (password === 'admin') {
+    if (email === 'd2vid.guedes@gmail.com' && password === 'admin') {
       localStorage.setItem('isLoggedIn', 'true');
       this.isLoggedInSubject.next(true); // Atualiza o valor para true
       return true;

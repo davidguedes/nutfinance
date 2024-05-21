@@ -29,7 +29,7 @@ import { FixasDeleteComponent } from '../fixas-delete/fixas-delete.component';
             <td><span class="p-column-title">Descrição</span>{{ fixa.description }}</td>
             <td><span class="p-column-title">Valor</span>{{ fixa.value | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
             <td><span class="p-column-title">Tipo</span>{{ fixa.type == 'D' ? 'Gasto' : 'Ganho' }}</td>
-            <td><span class="p-column-title">Dt. Lançamento</span>{{ fixa.date_inclusion | date:'dd/MM/yyyy' }}</td>
+            <td><span class="p-column-title">Dia Inclusão</span>{{ fixa.day_inclusion }}</td>
             <td><span class="p-column-title">Status</span>{{ fixa.status == true ? 'Ativo' : 'Inativo' }}</td>
             <td>
               <span class="p-column-title">Funções</span>

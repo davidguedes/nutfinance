@@ -26,13 +26,8 @@ export class FixasService {
       params += `&description=${filters.description}`
     }
 
-    if(filters.date_inclusion) {
-      let dateInclusion = filters.date_inclusion.toLocaleDateString('pt-BR');
-      let partesData = dateInclusion.split('/');
-
-      // Formatando a data no padrão americano 'mm/dd/yyyy'
-      let dataUS = partesData[1] + '/' + partesData[0] + '/' + partesData[2];
-      params += `&inclusion_date=${dataUS}`
+    if(filters.day_inclusion) {
+      params += `&day_inclusion=${filters.day_inclusion}`
     }
 
     if(filters.tags?.length > 0) {
