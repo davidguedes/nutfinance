@@ -10,4 +10,5 @@ export interface TransactionForm {
   description: string;
   tags?: string[] | [];
   user_id: string;
+  date?: string;
 }

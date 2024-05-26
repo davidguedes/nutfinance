@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { TransactionForm } from '../model/transaction.model';
 import { enviroment } from '../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TransacoesFilter } from './transacoes.interface';
 
@@ -12,35 +12,33 @@ export class TransacoesService {
   private readonly API = `${enviroment.API}/transaction`
   protected http = inject(HttpClient);
 
-  getTransactions(filters: TransacoesFilter): Observable<any> {
-    console.log('filters: ', filters);
-    let params = `?first=${filters.offset}`;
-    params += `&type=${filters.type}`
-    params += `&sort=${filters.sort}`
+  getTransactions(filters: TransacoesFilter, user_id: string): Observable<any> {
+    let params = new HttpParams()
+      .set('user_id', user_id)
+      .set('first', filters.offset.toString())
+      .set('type', filters.type)
+      .set('sort', filters.sort);
 
-    if(filters.initial_date_transaction) {
-      let initialDate = filters.initial_date_transaction.toLocaleDateString('pt-BR');
-      let partesData = initialDate.split('/');
-
-      // Formatando a data no padrão americano 'mm/dd/yyyy'
-      let dataUS = partesData[1] + '/' + partesData[0] + '/' + partesData[2];
-      params += `&initial_date_transaction=${dataUS}`
+    if (filters.initial_date_transaction) {
+      const initialDate = this.formatDate(filters.initial_date_transaction);
+      params = params.set('initial_date_transaction', initialDate);
     }
 
-    if(filters.final_date_transaction) {
-      let finalDate = filters.final_date_transaction.toLocaleDateString('pt-BR');
-      let partesData = finalDate.split('/');
-
-      // Formatando a data no padrão americano 'mm/dd/yyyy'
-      let dataUS = partesData[1] + '/' + partesData[0] + '/' + partesData[2];
-      params += `&final_date_transaction=${dataUS}`
+    if (filters.final_date_transaction) {
+      const finalDate = this.formatDate(filters.final_date_transaction);
+      params = params.set('final_date_transaction', finalDate);
     }
 
-    if(filters.tags?.length > 0) {
-      params += `&tags=${filters.tags}`
+    if (filters.tags && filters.tags.length > 0) {
+      params = params.set('tags', filters.tags.join(','));
     }
 
-    return this.http.get(`${this.API}${params}`);
+    return this.http.get(this.API, { params });
+  }
+
+  private formatDate(date: Date): string {
+    const [day, month, year] = date.toLocaleDateString('pt-BR').split('/');
+    return `${month}/${day}/${year}`;
   }
 
   createTransaction(data: TransactionForm): Observable<any>{

@@ -2,8 +2,8 @@ import { Observable } from "rxjs";
 import { TransactionForm } from "../model/transaction.model";
 
 export interface Graficos {
-  getFixed(): Observable<number>;
-  getProfit(): Observable<number>;
+  getFixed(user_id: string): Observable<number>;
+  getProfit(user_id: string): Observable<number>;
 }
 
 export interface GraficosFilter {
