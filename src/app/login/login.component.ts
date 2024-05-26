@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { InputTextModule } from 'primeng/inputtext';
+import { EMPTY, Observable, catchError, lastValueFrom, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -123,16 +124,21 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  login(): void {
+  login() {
     if(this.formulario.valid) {
-      if (this.loginService.login(this.formulario.get('email')?.value, this.formulario.get('password')?.value)) {
+      let { email, password } = this.formulario.value;
+
+      lastValueFrom(this.loginService.login(email, password).pipe(
+        catchError(error => {
+          return throwError(() => new Error(error.message));;
+        })
+      )).then(() => {
         this.router.navigate(['/']);
-      } else {
-        // Tratamento de erro de login inválido
-        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Login inválido! Por favor, tente novamente.' })
+      }).catch((error) => {
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: `Login inválido! Por favor, tente novamente. ${error.message}` })
         this.formulario.reset();
         this.emailInput.nativeElement.focus();
-      }
+      });
     } else {
       Object.keys(this.formulario.controls).forEach((campo) => {
         const controle = this.formulario.get(campo);

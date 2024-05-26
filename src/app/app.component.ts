@@ -49,18 +49,17 @@ export class AppComponent implements OnInit, OnDestroy {
   sidebarVisible: boolean = false;
   protected translate: TranslateService = inject(TranslateService);
   protected primeNGConfig: PrimeNGConfig = inject(PrimeNGConfig);
-  protected loginService: any = inject(LoginService);
+  protected authService: any = inject(LoginService);
   logged: boolean = false;
 
   subscription: Subscription[] = [];
 
   ngOnInit(): void {
-    this.subscription.push(this.loginService.isLoggedIn$.subscribe((isLoggedIn: boolean) => {
-      console.log('isLoggedIn: ', isLoggedIn);
-      this.logged = isLoggedIn;
-
-      if(!this.logged)
-        localStorage.removeItem('isLoggedIn');
+    this.subscription.push(this.authService.token$.subscribe((token: string | null) => {
+      if (!token || this.authService.isTokenExpired(token))
+        this.logged = false;
+      else
+        this.logged = true;
     }));
 
     this.translate.setDefaultLang('pt');

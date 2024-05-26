@@ -1,32 +1,76 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { enviroment } from '../../environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { jwtDecode } from 'jwt-decode';
+
+interface LoginResponse {
+  token: string;
+  user: any;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
-  private isLoggedInSubject = new BehaviorSubject<boolean>(false); // Inicializa com false
+  private readonly API = `${enviroment.API}/auth`
+  protected http = inject(HttpClient);
+  private tokenSubject: BehaviorSubject<string | null>;
+  public token$: Observable<string | null>;
+  public user: any = null;
 
-  isLoggedIn$ = this.isLoggedInSubject.asObservable(); // Expondo como um Observable
+  constructor() {
+    const token = localStorage.getItem('token');
+    this.tokenSubject = new BehaviorSubject<string | null>(token);
+    this.token$ = this.tokenSubject.asObservable();
+  }
 
-  constructor() { }
+  login(email: string, password: string): Observable<any> {
+    return this.http.post(`${this.API}/login`, { email, password }).pipe(
+      tap((response: any) => {
+        this.setToken(response.token);
+        this.user = response.user;
 
-  login(email: string, password: string): boolean {
-    // Aqui você pode adicionar sua lógica de autenticação real, como chamar um serviço de API
-    if (email === 'd2vid.guedes@gmail.com' && password === 'admin') {
-      localStorage.setItem('isLoggedIn', 'true');
-      this.isLoggedInSubject.next(true); // Atualiza o valor para true
-      return true;
-    }
-    return false;
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('user', JSON.stringify(response.user));
+      })
+    );
   }
 
   logout(): void {
-    localStorage.removeItem('isLoggedIn');
-    this.isLoggedInSubject.next(false); // Atualiza o valor para false
+    this.setToken(null);
+    localStorage.removeItem('user');
   }
 
-  // Método para verificar se o usuário está autenticado
+  getUser() {
+    const user = this.user ? this.user : localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('token') ?? null;
+  }
+
+  isTokenExpired(token: string): boolean {
+    const decodedToken: any = jwtDecode(token);
+    const currentTime = Date.now() / 1000;
+    return decodedToken.exp < currentTime;
+  }
+
   isLoggedIn(): boolean {
-    return localStorage.getItem('isLoggedIn') === 'true';
+    const token = this.getToken();
+    if(!token)
+      return false;
+
+    return !this.isTokenExpired(token);
+  }
+
+  private setToken(token: string | null) {
+    if (token) {
+      localStorage.setItem('token', token);
+    } else {
+      localStorage.removeItem('token');
+    }
+    this.tokenSubject.next(token);
   }
 }
