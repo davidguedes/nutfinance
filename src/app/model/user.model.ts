@@ -4,4 +4,7 @@ export interface UserForm {
   email: string;
   createdAt: Date;
   updatedAt: Date;
+  closingDate: number;
+  password: string;
+  status: boolean;
 }
