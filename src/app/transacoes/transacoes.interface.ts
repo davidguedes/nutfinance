@@ -2,7 +2,7 @@ import { Observable } from "rxjs";
 import { TransactionForm } from "../model/transaction.model";
 
 export interface Transacoes {
-  getTransactions(filters: any): Observable<TransactionForm[]>;
+  getTransactions(filters: any, user_id: string): Observable<TransactionForm[]>;
   saveData(data: TransactionForm): void;
   createTransaction(data: TransactionForm): Observable<any>;
   updateTransaction(data: TransactionForm): Observable<any>;

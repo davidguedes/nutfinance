@@ -29,6 +29,7 @@ export class LoginService {
     return this.http.post(`${this.API}/login`, { email, password }).pipe(
       tap((response: any) => {
         this.setToken(response.token);
+        console.log('response.user: ', response.user);
         this.user = response.user;
 
         localStorage.setItem('token', response.token);
@@ -44,7 +45,7 @@ export class LoginService {
 
   getUser() {
     const user = this.user ? this.user : localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
+    return user ? typeof(user) == 'string' ? JSON.parse(user) : user : null;
   }
 
   getToken(): string | null {

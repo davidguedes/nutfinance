@@ -39,6 +39,13 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
             @for(item of transacoes; track item.id; let idx = $index; let primeiro = $first){
                 <div #transacao class="transacao-item">
                     @if(idx !== transacoes.length-1 || isLoading || last){
+                      @if(item.date) {
+                        <div class="flex justify-content-center align-items-center flex-column xl:flex-row xl:align-items-center p-4 gap-4" [class]="'border-top-1 surface-border'">
+                          <div class="text-2xl font-bold text-900">{{item.date}}</div>
+                        </div>
+                      }
+
+                      @else {
                       <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4" [ngClass]="{ 'border-top-1 surface-border': !primeiro, 'first-item' : primeiro }">
                         <div class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
                             <div class="flex flex-column align-items-center sm:align-items-start gap-3">
@@ -69,6 +76,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
                             </div>
                         </div>
                       </div>
+                      }
                     }@else {
                       @defer(on viewport(); when isLoading){
                         <div style="width: 100%; height: 10rem; display: flex; justify-content: center; align-items: center">

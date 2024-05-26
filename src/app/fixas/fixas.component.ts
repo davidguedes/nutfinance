@@ -10,6 +10,7 @@ import { FixedForm } from '../model/fixed.model';
 import { FixasModalComponent } from './fixas-modal/fixas-modal.component';
 import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
+import { UserForm } from '../model/user.model';
 
 @Component({
   selector: 'app-fixas',
@@ -38,6 +39,7 @@ import { MessageService } from 'primeng/api';
   providers: [MessageService]
 })
 export class FixasComponent {
+  private user: UserForm = {} as UserForm;
   protected fixedService: Fixas = inject(FixasService);
   protected messageService: any = inject(MessageService);
 
@@ -54,7 +56,7 @@ export class FixasComponent {
     this.loading = true;
     this.paginator.first = first;
     this.paginator.rows = rows;
-    const data = await lastValueFrom(this.fixedService.getFixed(first, rows, filters).pipe(
+    const data = await lastValueFrom(this.fixedService.getFixed(first, rows, filters, this.user.id).pipe(
       catchError(error => {
         this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao recuperar fixas: ' + error.error.message })
         return [];

@@ -1,3 +1,4 @@
+import { UserForm } from './../model/user.model';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
@@ -8,6 +9,7 @@ import { Graficos } from './chart.interface';
 import { ChartService } from './chart.service';
 import { catchError, lastValueFrom, of } from 'rxjs';
 import { MessageService } from 'primeng/api';
+import { LoginService } from '../login/login.service';
 
 @Component({
   selector: 'app-home',
@@ -64,8 +66,10 @@ import { MessageService } from 'primeng/api';
   providers: [MessageService]
 })
 export class HomeComponent implements OnInit {
+  private user: UserForm = {} as UserForm;
   protected chartService: Graficos = inject(ChartService);
   protected messageService: any = inject(MessageService);
+  protected authService: any = inject(LoginService);
 
   modalVisible: boolean = false;
   chartData: any;
@@ -75,18 +79,19 @@ export class HomeComponent implements OnInit {
   chartOptions: any;
 
   ngOnInit(): void {
+    this.user = this.authService.getUser();
     this.initChart();
   }
 
   async initChart() {
-    this.fixed = await lastValueFrom(this.chartService.getFixed().pipe(
+    this.fixed = await lastValueFrom(this.chartService.getFixed(this.user.id).pipe(
       catchError(error => {
         this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao recuperar fixas: ' + error.error.message });
         return of(0);
       })
     ));
 
-    this.profit = await lastValueFrom(this.chartService.getProfit().pipe(
+    this.profit = await lastValueFrom(this.chartService.getProfit(this.user.id).pipe(
       catchError(error => {
         this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao recuperar ganhos: ' + error.error.message });
         return of(0);
@@ -99,18 +104,18 @@ export class HomeComponent implements OnInit {
     const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
     this.chartData = {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho'],
         datasets: [
             {
-                label: 'First Dataset',
+                label: 'Gastos',
                 data: [65, 59, 80, 81, 56, 55, 40],
                 fill: false,
-                backgroundColor: documentStyle.getPropertyValue('--bluegray-700'),
-                borderColor: documentStyle.getPropertyValue('--bluegray-700'),
+                backgroundColor: documentStyle.getPropertyValue('--red-700'),
+                borderColor: documentStyle.getPropertyValue('--red-700'),
                 tension: .4
             },
             {
-                label: 'Second Dataset',
+                label: 'Ganhos',
                 data: [28, 48, 40, 19, 86, 27, 90],
                 fill: false,
                 backgroundColor: documentStyle.getPropertyValue('--green-600'),

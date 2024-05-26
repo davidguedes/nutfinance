@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { enviroment } from '../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { FixasFilter } from './fixas.interface';
 import { Observable } from 'rxjs';
 import { FixedForm } from '../model/fixed.model';
@@ -12,29 +12,28 @@ export class FixasService {
   private readonly API = `${enviroment.API}/fixed`
   protected http = inject(HttpClient);
 
-  getFixed(first: number, rows: number, filters: FixasFilter): Observable<any> {
-    console.log('rows: ', rows);
-    console.log('first: ', first);
-    console.log('filters: ', filters);
-    let params = `?first=${first}`;
-    params += `&rows=${rows}`;
-    params += `&type=${filters.type}`
-    params += `&sort=${filters.sort}`
-    params += `&status=${filters.status}`
+  getFixed(first: number, rows: number, filters: FixasFilter, user_id: string): Observable<any> {
+    let params = new HttpParams()
+      .set('user_id', user_id)
+      .set('first', first.toString())
+      .set('rows', rows.toString())
+      .set('type', filters.type)
+      .set('sort', filters.sort)
+      .set('status', filters.status);
 
-    if(filters.description) {
-      params += `&description=${filters.description}`
+    if (filters.description) {
+      params = params.set('description', filters.description);
     }
 
-    if(filters.day_inclusion) {
-      params += `&day_inclusion=${filters.day_inclusion}`
+    if (filters.day_inclusion) {
+      params = params.set('day_inclusion', filters.day_inclusion);
     }
 
-    if(filters.tags?.length > 0) {
-      params += `&tags=${filters.tags}`
+    if (filters.tags && filters.tags.length > 0) {
+      params = params.set('tags', filters.tags.join(','));
     }
 
-    return this.http.get(`${this.API}${params}`);
+    return this.http.get(this.API, { params });
   }
 
   createFixed(data: FixedForm): Observable<any>{
