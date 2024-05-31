@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, inject } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, inject } from '@angular/core';
 import { TransacoesListComponent } from './transacoes-list/transacoes-list.component';
 import { TransacoesFilterComponent } from './transacoes-filter/transacoes-filter.component';
 import { TransactionForm } from '../model/transaction.model';
@@ -7,6 +7,7 @@ import { TransacoesService } from './transacoes.service';
 import { Transacoes } from './transacoes.interface';
 import { TransacoesFilter } from './transacoes.interface';
 import { UserForm } from '../model/user.model';
+import { LoginService } from '../login/login.service';
 
 @Component({
   selector: 'app-transacoes',
@@ -20,9 +21,10 @@ import { UserForm } from '../model/user.model';
   `,
   styles: [``]
 })
-export class TransacoesComponent {
+export class TransacoesComponent implements OnInit {
   private user: UserForm = {} as UserForm;
   protected transactionService: Transacoes = inject(TransacoesService);
+  protected authService: any = inject(LoginService);
   @ViewChild(TransacoesListComponent) listTransactions!: TransacoesListComponent;
   transacoess: TransactionForm[] = [];
 
@@ -30,6 +32,10 @@ export class TransacoesComponent {
   loadingContent: boolean = false;
   filters: TransacoesFilter = {} as TransacoesFilter;
   last: boolean = false;
+
+  ngOnInit(): void {
+    this.user = this.authService.getUser();
+  }
 
   async onFilter(filters: TransacoesFilter) {
     //console.log('Os filtros: ', filters);

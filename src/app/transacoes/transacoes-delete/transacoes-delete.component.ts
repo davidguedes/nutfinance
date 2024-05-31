@@ -12,7 +12,7 @@ import { catchError, lastValueFrom } from 'rxjs';
   standalone: true,
   imports: [ButtonModule, ToastModule, ConfirmDialogModule],
   template: `
-    <p-button severity="danger" (click)="confirm()" icon="pi pi-trash"></p-button>
+    <p-button severity="danger" [disabled]="disabledBtn" (click)="confirm()" icon="pi pi-trash"></p-button>
 
     <p-toast></p-toast>
     <p-confirmDialog #cd>
@@ -41,6 +41,7 @@ export class TransacoesDeleteComponent {
   protected messageService: any = inject(MessageService);
   protected transactionService: Transacoes = inject(TransacoesService);
   @Input() idTransaction!: string;
+  @Input() disabledBtn!: boolean;
   @Output() deleteButton = new EventEmitter<boolean>();
 
   confirm() {
