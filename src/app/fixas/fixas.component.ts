@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FixasListComponent } from './fixas-list/fixas-list.component';
 import { FixasFilterComponent } from './fixas-filter/fixas-filter.component';
 import { TransacoesService } from '../transacoes/transacoes.service';
@@ -11,6 +11,7 @@ import { FixasModalComponent } from './fixas-modal/fixas-modal.component';
 import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
 import { UserForm } from '../model/user.model';
+import { LoginService } from '../login/login.service';
 
 @Component({
   selector: 'app-fixas',
@@ -38,10 +39,11 @@ import { UserForm } from '../model/user.model';
   `,
   providers: [MessageService]
 })
-export class FixasComponent {
+export class FixasComponent implements OnInit {
   private user: UserForm = {} as UserForm;
   protected fixedService: Fixas = inject(FixasService);
   protected messageService: any = inject(MessageService);
+  protected authService: any = inject(LoginService);
 
   editFixed!: FixedForm | undefined;
   modalVisible: boolean = false;
@@ -49,6 +51,10 @@ export class FixasComponent {
   loading: boolean = false;
   filters: FixasFilter = {} as FixasFilter;
   paginator: Paginator = { first: 0, rows: 10, total: 0 };
+
+  ngOnInit(): void {
+    this.user = this.authService.getUser();
+  }
 
   async onFilter(first: number, rows: number, filters: any) {
     console.log('passou pelo onFilter')

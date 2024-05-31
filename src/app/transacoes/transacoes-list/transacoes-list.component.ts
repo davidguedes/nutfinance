@@ -71,8 +71,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
                             </div>
                             <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
                               <span class="text-2xl font-semibold">{{item.value | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</span>
-                              <app-transacoes-delete (deleteButton)="isLoading = false; findTransactions(-1, transacoes, true)" [idTransaction]="item.id" />
-                              <p-button icon="pi pi-pencil" (click)="editTransaction = item; modalVisible = true"></p-button>
+                              <app-transacoes-delete [disabledBtn]="item.closing_id ? true : false" (deleteButton)="isLoading = false; findTransactions(-1, transacoes, true)" [idTransaction]="item.id" />
+                              <p-button icon="pi pi-pencil" [disabled]="item.closing_id ? true : false" (click)="editTransaction = item; modalVisible = true"></p-button>
                             </div>
                         </div>
                       </div>

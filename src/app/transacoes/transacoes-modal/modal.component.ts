@@ -7,6 +7,8 @@ import { MessageService } from 'primeng/api';
 import { Transacoes } from '../transacoes.interface';
 import { TransacoesService } from '../transacoes.service';
 import { catchError, lastValueFrom } from 'rxjs';
+import { LoginService } from '../../login/login.service';
+import { UserForm } from '../../model/user.model';
 
 @Component({
     selector: 'app-transacos-modal',
@@ -22,17 +24,24 @@ import { catchError, lastValueFrom } from 'rxjs';
     imports: [DialogModule, TransacoesFormComponent, ToastModule],
     providers: [MessageService]
 })
-export class TransacoesModalComponent {
-
+export class TransacoesModalComponent implements OnInit {
   @Input() transactionEdit!: TransactionForm | undefined;
   @Input({ transform: booleanAttribute }) visible: boolean = false;
   @Output() toggleVisible = new EventEmitter();
   protected transactionService: Transacoes = inject(TransacoesService);
   protected messageService = inject(MessageService);
+  protected authService: any = inject(LoginService);
+  private user: UserForm = {} as UserForm;
   alter: boolean = false;
+
+  ngOnInit(): void {
+    this.user = this.authService.getUser();
+  }
 
   async createTransacao(formulario: TransactionForm) {
     const dadosFormulario = formulario;
+    formulario.user_id = this.user.id;
+
     let textDetail = ``;
     //this.transactionService.saveData(dadosFormulario)
     if(dadosFormulario.id) {

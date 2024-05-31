@@ -11,4 +11,5 @@ export interface TransactionForm {
   tags?: string[] | [];
   user_id: string;
   date?: string;
+  closing_id?: string;
 }
