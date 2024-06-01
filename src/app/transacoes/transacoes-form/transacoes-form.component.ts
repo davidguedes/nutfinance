@@ -76,7 +76,7 @@ import { ChipsModule } from 'primeng/chips';
               <div class="input-field d-column">
                 <div class="input-campos" style="display: flex; width: 100%">
                   <p-floatLabel [style]="{'width': '100%'}">
-                    <p-inputNumber styleClass="input-styling" id="totalInstallmentNumber" formControlName="totalInstallmentNumber" [showButtons]="true" [min]="0"></p-inputNumber>
+                    <p-inputNumber styleClass="input-styling" id="totalInstallmentNumber" formControlName="totalInstallmentNumber" [showButtons]="true" [min]="2"></p-inputNumber>
                     <label for="totalInstallmentNumber">Nº Recorrência</label>
                   </p-floatLabel>
                 </div>
