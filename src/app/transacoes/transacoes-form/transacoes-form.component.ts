@@ -62,33 +62,33 @@ import { ChipsModule } from 'primeng/chips';
             <div class="input-field">
               <div class="input-campos" style="display: flex; width: 100%; align-items:center;">
                 <div class="input-name" style="padding: 13px; min-width: 30%">
-                  <span>Recorrência*</span>
+                  <span>Parcelado*</span>
                 </div>
                 <div class="inpu-switch">
-                  <p-inputSwitch formControlName="recurrence"></p-inputSwitch>
+                  <p-inputSwitch formControlName="isInstallment"></p-inputSwitch>
                 </div>
               </div>
             </div>
           </div>
 
-          @if(this.formulario.get('recurrence')?.value === true){
+          @if(this.formulario.get('isInstallment')?.value === true){
             <div class="form-input">
               <div class="input-field d-column">
                 <div class="input-campos" style="display: flex; width: 100%">
                   <p-floatLabel [style]="{'width': '100%'}">
-                    <p-inputNumber styleClass="input-styling" id="number_recurrence" formControlName="number_recurrence" [showButtons]="true" [min]="0"></p-inputNumber>
-                    <label for="number_recurrence">Nº Recorrência</label>
+                    <p-inputNumber styleClass="input-styling" id="totalInstallmentNumber" formControlName="totalInstallmentNumber" [showButtons]="true" [min]="0"></p-inputNumber>
+                    <label for="totalInstallmentNumber">Nº Recorrência</label>
                   </p-floatLabel>
                 </div>
               </div>
             </div>
           }
 
-          @if(this.formulario.get('number_recurrence')?.value > 0) {
+          @if(this.formulario.get('totalInstallmentNumber')?.value > 0) {
             <div style="margin: 0px 20px 20px 20px;">
               <div class="input-field d-column">
                 <div class="input-campos" style="display: flex; width: 100%; margin: 0px 5px">
-                  <span>Valor total:&nbsp;</span> <span style="font-weight: bolder">{{(this.formulario.get('value')?.value * this.formulario.get('number_recurrence')?.value) | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</span>
+                  <span>Valor total:&nbsp;</span> <span style="font-weight: bolder">{{(this.formulario.get('value')?.value * this.formulario.get('totalInstallmentNumber')?.value) | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</span>
                 </div>
               </div>
             </div>
@@ -193,8 +193,8 @@ export class TransacoesFormComponent implements OnInit {
         description: [this.edit.description, [Validators.required]],
         value: [this.edit.value, [Validators.required]],
         type: [this.edit.type, [Validators.required]],
-        recurrence: [this.edit.recurrence, [Validators.required]],
-        number_recurrence: this.edit.number_recurrence,
+        isInstallment: [this.edit.isInstallment, [Validators.required]],
+        totalInstallmentNumber: this.edit.totalInstallmentNumber,
         date_transaction: [new Date(this.edit.date_transaction), [Validators.required]],
         tags: [this.edit.tags],
       });
@@ -203,8 +203,8 @@ export class TransacoesFormComponent implements OnInit {
         description: [null, [Validators.required]],
         value: [null, [Validators.required]],
         type: ['D', [Validators.required]],
-        recurrence: [false, [Validators.required]],
-        number_recurrence: [0],
+        isInstallment: [false, [Validators.required]],
+        totalInstallmentNumber: [0],
         date_transaction: [null, [Validators.required]],
         tags: [[]],
       });

@@ -4,8 +4,9 @@ export interface TransactionForm {
   updatedAt: Date;
   value: number;
   type: string;
-  recurrence: boolean;
-  number_recurrence?: number;
+  isInstallment: boolean;
+  installmentNumber?: number;
+  totalInstallmentNumber?: number;
   date_transaction: Date;
   description: string;
   tags?: string[] | [];

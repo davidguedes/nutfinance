@@ -41,13 +41,13 @@ import { TriStateCheckboxModule } from 'primeng/tristatecheckbox';
         </div>
         <div class="input-filter">
           <p-floatLabel>
-            <p-calendar id="initial_date_transaction" [showIcon]="true" dateFormat="dd/mm/yy" formControlName="initial_date_transaction" (onSelect)="emitFilter()" (onClear)="emitFilter()" [showClear]="true"></p-calendar>
+            <p-calendar id="initial_date_transaction" [showIcon]="true" dateFormat="dd/mm/yy" formControlName="initial_date_transaction" (onSelect)="emitFilter()" (onClear)="emitFilter()" [showClear]="true" [maxDate]="formulario.get('final_date_transaction')?.value"></p-calendar>
             <label for="initial_date_transaction">Dt. Início Transação</label>
           </p-floatLabel>
         </div>
         <div class="input-filter">
           <p-floatLabel>
-            <p-calendar id="final_date_transaction" [showIcon]="true" dateFormat="dd/mm/yy" formControlName="final_date_transaction" (onSelect)="emitFilter()" (onClear)="emitFilter()" [showClear]="true"></p-calendar>
+            <p-calendar id="final_date_transaction" [showIcon]="true" dateFormat="dd/mm/yy" formControlName="final_date_transaction" (onSelect)="emitFilter()" (onClear)="emitFilter()" [showClear]="true" [minDate]="formulario.get('initial_date_transaction')?.value"></p-calendar>
             <label for="final_date_transaction">Dt. Final Transação</label>
           </p-floatLabel>
         </div>
@@ -114,6 +114,14 @@ export class TransacoesFilterComponent implements OnInit {
   @Output() onFilter = new EventEmitter();
   formBuilder = inject(FormBuilder);
   formulario!: FormGroup;
+  maxDate: Date;
+  today: Date;
+
+  constructor() {
+    const today = new Date();
+    this.today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    this.maxDate = new Date(today.getFullYear(), today.getMonth() + 1, 0); // Último dia do mês atual
+  }
 
   ngOnInit(): void {
     this.formulario = this.formBuilder.group({
@@ -122,9 +130,15 @@ export class TransacoesFilterComponent implements OnInit {
       tags: [null, [Validators.required]],
       type: [null],
       sort: [true],
-    })
+    }, { validator: this.dateRangeValidator })
 
     this.emitFilter();
+  }
+
+  dateRangeValidator(group: FormGroup) {
+    const initialDate = group.get('initial_date_transaction')?.value;
+    const finalDate = group.get('final_date_transaction')?.value;
+    return initialDate && finalDate && initialDate > finalDate ? { dateRangeInvalid: true } : null;
   }
 
   clear() {
