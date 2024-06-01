@@ -18,7 +18,7 @@ import { FixedForm } from '../../model/fixed.model';
   template: `
     <div class="cadastro-forms" style="display: flex; width: 100%; justify-content: center; flex-direction: column">
       <div class="formulario">
-        <form [formGroup]="formulario">
+        <form [formGroup]="formulario" (keydown.enter)="submitForm()">
           <div class="form-input">
             <div class="input-field d-column">
               <div class="input-campos">
