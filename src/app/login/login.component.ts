@@ -31,7 +31,7 @@ import { EMPTY, Observable, catchError, lastValueFrom, throwError } from 'rxjs';
         <div class="logo">
           <img width="50" src="../../assets/svg/logo.svg" alt="Logotipo NutFinance">
         </div>
-        <form [formGroup]="formulario">
+        <form [formGroup]="formulario" (keydown.enter)="submitForm()">
           <div class="form-input">
             <div class="input-field d-column">
               <div class="input-campos">
