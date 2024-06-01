@@ -60,9 +60,9 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
                                       <p-tag [value]="tag"></p-tag>
                                     }
                                 </div>
-                                @if(item.recurrence) {
+                                @if(item.isInstallment) {
                                   <div>
-                                    <i class="pi pi-undo"></i> {{item.number_recurrence == 0 ? 'Repetir todo mês.' : calcularParcelasExecutadas(item.date_transaction, item.number_recurrence ?? 0)}}
+                                    <i class="pi pi-undo"></i> {{item.installmentNumber}}/{{item.totalInstallmentNumber}}
                                   </div>
                                 }
                                 <div>
