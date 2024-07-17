@@ -7,6 +7,8 @@ import { FixedForm } from '../../model/fixed.model';
 import { Fixas } from '../fixas.interface';
 import { FixasService } from '../fixas.service';
 import { FixasFormComponent } from '../fixas-form/fixas-form.component';
+import { LoginService } from '../../login/login.service';
+import { UserForm } from '../../model/user.model';
 
 @Component({
   selector: 'app-fixas-modal',
@@ -22,16 +24,24 @@ import { FixasFormComponent } from '../fixas-form/fixas-form.component';
   imports: [DialogModule, ToastModule, FixasFormComponent],
   providers: [MessageService]
 })
-export class FixasModalComponent {
+export class FixasModalComponent implements OnInit {
   @Input() fixedEdit!: FixedForm | undefined;
   @Input({ transform: booleanAttribute }) visible: boolean = false;
   @Output() toggleVisible = new EventEmitter();
   protected fixedService: Fixas = inject(FixasService);
   protected messageService = inject(MessageService);
+  protected authService: any = inject(LoginService);
+  private user: UserForm = {} as UserForm;
   alter: boolean = false;
+
+  ngOnInit(): void {
+    this.user = this.authService.getUser();
+  }
 
   async createFixa(formulario: FixedForm) {
     const dadosFormulario = formulario;
+    formulario.user_id = this.user.id;
+
     let textDetail = ``;
     //this.transactionService.saveData(dadosFormulario)
     if(dadosFormulario.id) {
