@@ -42,7 +42,7 @@ import { FixasDeleteComponent } from '../fixas-delete/fixas-delete.component';
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="5">
+            <td colspan="6">
               <div class="empty-list">
                 <span><b>Nenhum resultado encontrado</b></span>
               </div>
