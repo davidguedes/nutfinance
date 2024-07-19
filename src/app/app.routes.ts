@@ -1,9 +1,11 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { authGuard } from './guards/auth.guard';
+import { RegisterComponent } from './register/register.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'NutFinance - Login'} },
+  { path: 'register', component: RegisterComponent, data: { title: 'NutFinance - Sign Up'} },
   { path: 'transacoes', canActivate: [authGuard], loadChildren: () => import('./transacoes/transacoes.module').then((m) => m.TransacoesModule), data: { title: 'NutFinance - Transações'} },
   { path: 'fixas', canActivate: [authGuard], loadChildren: () => import('./fixas/fixas.module').then((m) => m.FixasModule), data: { title: 'NutFinance - Fixas'} },
   { path: 'perfil', canActivate: [authGuard], loadChildren: () => import('./perfil/perfil.module').then((m) => m.PerfilModule), data: { title: 'NutFinance - Perfil'} },

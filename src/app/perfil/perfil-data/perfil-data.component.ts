@@ -48,7 +48,7 @@ import { LoginService } from '../../login/login.service';
             <div class="input-field d-column">
               <div class="input-campos">
                 <p-floatLabel [style]="{'width': '100%'}">
-                  <p-inputNumber styleClass="input-styling" id="closing_date" formControlName="closing_date" [minlength]="1" [maxlength]="28"> </p-inputNumber>
+                  <p-inputNumber styleClass="input-styling" id="closing_date" formControlName="closing_date" [min]="1" [max]="28"> </p-inputNumber>
                   <label for="closing_date">Dia de fechamento*</label>
                 </p-floatLabel>
               </div>

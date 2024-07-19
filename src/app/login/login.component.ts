@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { InputTextModule } from 'primeng/inputtext';
-import { EMPTY, Observable, catchError, lastValueFrom, throwError } from 'rxjs';
+import { catchError, lastValueFrom, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -58,6 +58,9 @@ import { EMPTY, Observable, catchError, lastValueFrom, throwError } from 'rxjs';
         <div class="buttons-form">
           <div class="button"><p-button [style]="{'width': '100%', 'background-color':'#2196F3', 'border': '1px solid #2196F3'}" label="Login" (click)="login()"></p-button></div>
         </div>
+        <div class="anchor-register">
+          <a [href]="'/register'">Cadastre-se</a>
+        </div>
       </div>
     </div>
     <p-toast></p-toast>
@@ -94,6 +97,10 @@ import { EMPTY, Observable, catchError, lastValueFrom, throwError } from 'rxjs';
     }
     .buttons-form {
       margin-top: 20px
+    }
+    .anchor-register {
+      margin-top: 20px;
+      text-align: center;
     }
     @media (max-width: 992px) {
       .login-form {
