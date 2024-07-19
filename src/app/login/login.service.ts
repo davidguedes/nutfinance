@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import { enviroment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
@@ -29,11 +29,16 @@ export class LoginService {
     return this.http.post(`${this.API}/login`, { email, password }).pipe(
       tap((response: any) => {
         this.setToken(response.token);
-        console.log('response.user: ', response.user);
+        //console.log('response.user: ', response.user);
         this.user = response.user;
 
         localStorage.setItem('token', response.token);
         localStorage.setItem('user', JSON.stringify(response.user));
+      }),
+      catchError(error => {
+        //console.error('Login error: ', error);
+        // Process the error and return an Observable error
+        return throwError(() => new Error(error.error.message));
       })
     );
   }

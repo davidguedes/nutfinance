@@ -142,6 +142,7 @@ export class LoginComponent implements OnInit {
       )).then(() => {
         this.router.navigate(['/']);
       }).catch((error) => {
+        console.log(error);
         this.messageService.add({ severity: 'error', summary: 'Erro', detail: `Login inválido! Por favor, tente novamente. ${error.message}` })
         this.formulario.reset();
         this.emailInput.nativeElement.focus();
