@@ -190,7 +190,7 @@ export class RegisterComponent implements OnInit {
       }
       let { name, email, password, closing_date } = this.formulario.value;
 
-      const createTransaction = await lastValueFrom(this.registerService.register(name, email, password, closing_date).pipe(
+      const createUser = await lastValueFrom(this.registerService.register(name, email, password, closing_date).pipe(
         catchError(error => {
           this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro! ' + error.error.message })
           return error;
