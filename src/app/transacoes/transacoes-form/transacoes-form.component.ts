@@ -1,3 +1,4 @@
+import { CategoriasService } from './../../categorias/categorias.service';
 import { Component, EventEmitter, Input, OnInit, Output, booleanAttribute, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -10,11 +11,16 @@ import { ErroFormComponent } from '../../shared/erro-form/erro-form.component';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { ChipsModule } from 'primeng/chips';
+import { DropdownModule } from 'primeng/dropdown';
+import { CategoryDropDown, CategoryForm } from '../../model/category.model';
+import { UserForm } from '../../model/user.model';
+import { LoginService } from '../../login/login.service';
+import { catchError, lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-transacoes-form',
   standalone: true,
-  imports: [CommonModule, ButtonModule, ReactiveFormsModule, ErroFormComponent, InputTextModule, InputNumberModule, FloatLabelModule, CalendarModule, InputSwitchModule, ChipsModule],
+  imports: [CommonModule, ButtonModule, ReactiveFormsModule, ErroFormComponent, InputTextModule, InputNumberModule, FloatLabelModule, CalendarModule, InputSwitchModule, ChipsModule, DropdownModule],
   template: `
     <div class="cadastro-forms" style="display: flex; width: 100%; justify-content: center; flex-direction: column">
       <div class="formulario">
@@ -110,6 +116,20 @@ import { ChipsModule } from 'primeng/chips';
           <div class="form-input">
             <div class="input-field d-column">
               <div class="input-campos">
+                <p-dropdown
+                  formControlName="category"
+                  [options]="categorias"
+                  optionLabel="name"
+                  optionValue="id"
+                  placeholder="Selecione uma categoria" />
+              </div>
+              <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Selecione uma categoria" nameField="category"></app-erro-form>
+            </div>
+          </div>
+
+          <div class="form-input">
+            <div class="input-field d-column">
+              <div class="input-campos">
                 <p-floatLabel [style]="{'width': '100%'}">
                   <p-chips styleClass="input-styling" formControlName="tags" [style]="{'width': '100%'}"></p-chips>
                   <label for="tags">Tags</label>
@@ -131,6 +151,14 @@ import { ChipsModule } from 'primeng/chips';
   `,
   styles: `
     p-inputNumber {
+      width: 100%!important;
+    }
+
+    p-dropdown {
+      width: 100%!important;
+    }
+
+    ::ng-deep div.p-dropdown {
       width: 100%!important;
     }
 
@@ -175,14 +203,18 @@ import { ChipsModule } from 'primeng/chips';
         grid-template-columns: 1fr;
       }
     }
-  `
+  `,
+
 })
 export class TransacoesFormComponent implements OnInit {
   @Input({ transform: booleanAttribute }) fastForm: boolean = false;
   @Input() edit!: TransactionForm | undefined;
   @Output() onSubmit = new EventEmitter();
   @Output() closeModal = new EventEmitter<boolean>();
-
+  private user: UserForm = {} as UserForm;
+  protected authService: any = inject(LoginService);
+  protected categoryService: any = inject(CategoriasService);
+  categorias: any[] = [];
   formBuilder = inject(FormBuilder);
   formulario!: FormGroup;
 
@@ -196,6 +228,7 @@ export class TransacoesFormComponent implements OnInit {
         isInstallment: [this.edit.isInstallment, [Validators.required]],
         totalInstallmentNumber: this.edit.totalInstallmentNumber,
         date_transaction: [new Date(this.edit.date_transaction), [Validators.required]],
+        category: [this.edit.category_id, [Validators.required]],
         tags: [this.edit.tags],
       });
     } else {
@@ -206,6 +239,7 @@ export class TransacoesFormComponent implements OnInit {
         isInstallment: [false, [Validators.required]],
         totalInstallmentNumber: [0],
         date_transaction: [null, [Validators.required]],
+        category: [null, [Validators.required]],
         tags: [[]],
       });
     }
@@ -213,6 +247,9 @@ export class TransacoesFormComponent implements OnInit {
     if(!this.fastForm) {
       //this.formulario.get('con_no_senha')?.addValidators(Validators.required)
     }
+
+    this.user = this.authService.getUser();
+    this.getCategorias();
   }
 
   submitForm() {
@@ -234,5 +271,17 @@ export class TransacoesFormComponent implements OnInit {
   close() {
     this.clear();
     this.closeModal.emit(true);
+  }
+
+  async getCategorias() {
+    const categorias: CategoryDropDown[] = await lastValueFrom(this.categoryService.getCategoryByUser(this.user.id).pipe(
+      catchError(error => {
+        console.log('Error: ', error.message);
+        //this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao recuperar cadastro ' + error.error.message })
+        return [];
+      })
+    ));
+
+    this.categorias = categorias ?? [];
   }
 }

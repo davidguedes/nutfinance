@@ -5,7 +5,7 @@ import { ChartModule } from 'primeng/chart';
 import { CardModule } from 'primeng/card';
 import { ActionButtonComponent } from '../shared/action-button/action-button.component';
 import { TransacoesModalComponent } from '../transacoes/transacoes-modal/modal.component';
-import { Graficos } from './chart.interface';
+import { PieChartData, Graficos } from './chart.interface';
 import { ChartService } from './chart.service';
 import { catchError, lastValueFrom, of } from 'rxjs';
 import { MessageService } from 'primeng/api';
@@ -22,7 +22,7 @@ import { LoginService } from '../login/login.service';
     TransacoesModalComponent
   ],
   template: `
-    <div class="grid">
+    <div class="grid flex align-items-center justify-content-center">
       <div class="col-12 lg:col-6 xl:col-6">
         <p-card class="card mb-0">
           <div class="flex justify-content-between mb-3">
@@ -53,7 +53,13 @@ import { LoginService } from '../login/login.service';
           <span class="text-500">desde a semana passada</span>
         </p-card>
       </div>
-      <div class="col-12 xl:col-12" style="background: white">
+      <div class="col-12 sm:col-12 md:col-6 lg:col-6 xl:col-6" style="background: white">
+        <div class="card">
+            <h5>Gastos por categoria</h5>
+              <p-chart type="doughnut" [data]="spendingCategory" [options]="optionsChartPie" />
+          </div>
+      </div>
+      <div class="col-12 sm:col-12 md:col-6 lg:col-6 xl:col-6" style="background: white">
         <div class="card">
             <h5>Bar Chart</h5>
               <p-chart id="chart-item" type="line" [data]="chartData" [options]="chartOptions" [responsive]="true"></p-chart>
@@ -75,6 +81,9 @@ export class HomeComponent implements OnInit {
   chartData: any;
   fixed: number = 0;
   profit: number = 0;
+  spendingCategory: PieChartData = {} as PieChartData;
+  optionsChartPie: any = {};
+  teste: PieChartData = {} as PieChartData;
 
   chartOptions: any;
 
@@ -154,5 +163,27 @@ export class HomeComponent implements OnInit {
             }
         }
     };
+
+    let value = await lastValueFrom(this.chartService.getSpendingCategory(this.user.id).pipe(
+      catchError(error => {
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao recuperar gastos por categoria: ' + error.error.message });
+        return of({ labels: [], datasets: [{ data: [], backgroundColor: [], hoverBackgroundColor: [] }] });
+      })
+    ));
+
+    this.optionsChartPie = {
+      cutout: '60%',
+      plugins: {
+        legend: {
+          labels: {
+            color: '#4b5563'
+          }
+        }
+      },
+      responsive: true,
+      scales: {}
+    }
+
+    this.spendingCategory = value;
   }
 }
