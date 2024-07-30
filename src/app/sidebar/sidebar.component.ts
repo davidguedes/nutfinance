@@ -47,6 +47,23 @@ export class SidebarComponent implements OnInit {
             command: () => {this.router.navigate(['/fixas']); this.toggleVisible(false)}
         },
         {
+          label: 'Categorias',
+          icon: 'pi pi-fw pi-th-large',
+          command: () => {this.router.navigate(['/categorias']); this.toggleVisible(false)}
+        },
+        {
+          label: 'Orçamentos',
+          icon: 'pi pi-fw pi-calculator',
+          command: () => {this.router.navigate(['/orcamentos']); this.toggleVisible(false)},
+          disabled: true
+        },
+        {
+          label: 'Gráficos',
+          icon: 'pi pi-fw pi-chart-pie',
+          command: () => {this.router.navigate(['/']); this.toggleVisible(false)},
+          disabled: true
+        },
+        {
             label: 'Perfil',
             icon: 'pi pi-fw pi-user',
             command: () => {this.router.navigate(['/perfil']); this.toggleVisible(false)}

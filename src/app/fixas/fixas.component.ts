@@ -1,7 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FixasListComponent } from './fixas-list/fixas-list.component';
 import { FixasFilterComponent } from './fixas-filter/fixas-filter.component';
-import { TransacoesService } from '../transacoes/transacoes.service';
 import { Fixas, FixasFilter } from './fixas.interface';
 import { FixasService } from './fixas.service';
 import { Paginator } from '../model/paginator.model';
