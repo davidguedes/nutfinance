@@ -147,7 +147,6 @@ export class TransacoesFilterComponent implements OnInit {
   }
 
   emitFilter() {
-    console.log('this.formulario: ', this.formulario.value);
     this.onFilter.emit(this.formulario.value);
   }
 }

@@ -15,7 +15,7 @@ import { UserForm } from '../../model/user.model';
     standalone: true,
     template: `
       <p-dialog header="Transação" [(visible)]="visible" (onHide)="toggleVisible.emit({visible: false, alter: alter})" [draggable]="false" [resizable]="false" [modal]="true" [style]="{width: '50vw'}" [breakpoints]="{ '960px': '75vw', '660px': '90vw' }">
-        <app-transacoes-form (onSubmit)="createTransacao($event)" [edit]="transactionEdit" (closeModal)="close($event)"></app-transacoes-form>
+        <app-transacoes-form (onSubmit)="createTransacao($event)" [categorias]="budgetCategory" [edit]="transactionEdit" (closeModal)="close($event)"></app-transacoes-form>
       </p-dialog>
       <p-toast></p-toast>
     `,
@@ -25,6 +25,10 @@ import { UserForm } from '../../model/user.model';
     providers: [MessageService]
 })
 export class TransacoesModalComponent implements OnInit {
+  @Input() budgetCategory: any = {
+    expense: [],
+    income: []
+  };
   @Input() transactionEdit!: TransactionForm | undefined;
   @Input({ transform: booleanAttribute }) visible: boolean = false;
   @Output() toggleVisible = new EventEmitter();

@@ -111,7 +111,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
       <app-action-button (functionButton)="editTransaction = undefined; this.modalVisible = true"></app-action-button>
 
       @if (modalVisible) {
-        <app-transacos-modal (toggleVisible)="hideModal($event)" [transactionEdit]="editTransaction" [visible]="modalVisible" ></app-transacos-modal>
+        <app-transacos-modal (toggleVisible)="hideModal($event)" [budgetCategory]="categorias" [transactionEdit]="editTransaction" [visible]="modalVisible" ></app-transacos-modal>
       }
     </div>
   `,
@@ -148,6 +148,7 @@ export class TransacoesListComponent implements OnInit {
   @Input() isLoading: boolean = false;
   @Input() loadingContent: boolean = false;
   @Input() last: boolean = false;
+  @Input() categorias: any = {};
 
   ngOnInit(): void {
   }

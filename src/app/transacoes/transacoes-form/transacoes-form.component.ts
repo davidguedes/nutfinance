@@ -12,10 +12,11 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { ChipsModule } from 'primeng/chips';
 import { DropdownModule } from 'primeng/dropdown';
-import { CategoryDropDown, CategoryForm } from '../../model/category.model';
 import { UserForm } from '../../model/user.model';
 import { LoginService } from '../../login/login.service';
 import { catchError, lastValueFrom } from 'rxjs';
+import { Orcamentos } from '../../orcamentos/orcamentos.interface';
+import { OrcamentosService } from '../../orcamentos/orcamentos.service';
 
 @Component({
   selector: 'app-transacoes-form',
@@ -118,8 +119,8 @@ import { catchError, lastValueFrom } from 'rxjs';
               <div class="input-campos">
                 <p-dropdown
                   formControlName="category"
-                  [options]="categorias"
-                  optionLabel="name"
+                  [options]="formulario.get('type')?.value === 'R' ? categorias.income : categorias.expense"
+                  optionLabel="category"
                   optionValue="id"
                   placeholder="Selecione uma categoria" />
               </div>
@@ -214,11 +215,20 @@ export class TransacoesFormComponent implements OnInit {
   private user: UserForm = {} as UserForm;
   protected authService: any = inject(LoginService);
   protected categoryService: any = inject(CategoriasService);
-  categorias: any[] = [];
+  protected budgetService: Orcamentos = inject(OrcamentosService);
+  @Input() categorias: any = {
+    expense: [],
+    income: []
+  };
   formBuilder = inject(FormBuilder);
   formulario!: FormGroup;
 
   ngOnInit(): void {
+    this.user = this.authService.getUser();
+    if(this.categorias.expense == 0 && this.categorias.income == 0) {
+      this.getCategorias();
+    }
+
     if(this.edit) {
       this.formulario = this.formBuilder.group({
         id: [this.edit.id, [Validators.required]],
@@ -228,7 +238,7 @@ export class TransacoesFormComponent implements OnInit {
         isInstallment: [this.edit.isInstallment, [Validators.required]],
         totalInstallmentNumber: this.edit.totalInstallmentNumber,
         date_transaction: [new Date(this.edit.date_transaction), [Validators.required]],
-        category: [this.edit.category_id, [Validators.required]],
+        category: [this.edit.budgetCategory_id, [Validators.required]],
         tags: [this.edit.tags],
       });
     } else {
@@ -247,9 +257,6 @@ export class TransacoesFormComponent implements OnInit {
     if(!this.fastForm) {
       //this.formulario.get('con_no_senha')?.addValidators(Validators.required)
     }
-
-    this.user = this.authService.getUser();
-    this.getCategorias();
   }
 
   submitForm() {
@@ -274,7 +281,7 @@ export class TransacoesFormComponent implements OnInit {
   }
 
   async getCategorias() {
-    const categorias: CategoryDropDown[] = await lastValueFrom(this.categoryService.getCategoryByUser(this.user.id).pipe(
+    const categorias: any[] = await lastValueFrom(this.budgetService.getCategory(this.user.id).pipe(
       catchError(error => {
         console.log('Error: ', error.message);
         //this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao recuperar cadastro ' + error.error.message })
@@ -282,6 +289,10 @@ export class TransacoesFormComponent implements OnInit {
       })
     ));
 
-    this.categorias = categorias ?? [];
+    if(categorias.length > 0) {
+      this.categorias.income = categorias.filter(cat => cat.type == 'income') ?? [];
+      this.categorias.expense = categorias.filter(cat => cat.type == 'expense') ?? [];
+    } else
+      this.categorias = [];
   }
 }

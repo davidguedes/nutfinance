@@ -15,7 +15,7 @@ import { UserForm } from '../../model/user.model';
   standalone: true,
   template: `
     <p-dialog header="Fixas" [(visible)]="visible" (onHide)="toggleVisible.emit({visible: false, alter: alter})" [draggable]="false" [resizable]="false" [modal]="true" [style]="{width: '50vw'}" [breakpoints]="{ '960px': '75vw', '660px': '90vw' }">
-      <app-fixas-form (onSubmit)="createFixa($event)" [edit]="fixedEdit" (closeModal)="close($event)"></app-fixas-form>
+      <app-fixas-form [categorias]="budgetCategory" (onSubmit)="createFixa($event)" [edit]="fixedEdit" (closeModal)="close($event)"></app-fixas-form>
     </p-dialog>
     <p-toast></p-toast>
   `,
@@ -25,6 +25,10 @@ import { UserForm } from '../../model/user.model';
   providers: [MessageService]
 })
 export class FixasModalComponent implements OnInit {
+  @Input() budgetCategory: any = {
+    expense: [],
+    income: []
+  };
   @Input() fixedEdit!: FixedForm | undefined;
   @Input({ transform: booleanAttribute }) visible: boolean = false;
   @Output() toggleVisible = new EventEmitter();

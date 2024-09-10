@@ -83,7 +83,6 @@ export class CategoriasFilterComponent implements OnInit {
   }
 
   emitFilter() {
-    console.log('this.formulario: ', this.formulario.value);
     this.onFilter.emit(this.formulario.value);
   }
 }

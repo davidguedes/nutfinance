@@ -11,6 +11,8 @@ import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
 import { UserForm } from '../model/user.model';
 import { LoginService } from '../login/login.service';
+import { OrcamentosService } from '../orcamentos/orcamentos.service';
+import { Orcamentos } from '../orcamentos/orcamentos.interface';
 
 @Component({
   selector: 'app-fixas',
@@ -24,7 +26,7 @@ import { LoginService } from '../login/login.service';
       <app-fixas-filter (onFilter)="onFilter(0, paginator.rows, $event)"></app-fixas-filter>
       <app-fixas-list [fixas]="fixed()" [paginator]="paginator" [loading]="loading" (editFixed)="editFixed = $event; modalVisible = !modalVisible" (getFixedList)="onFilter(paginator.first, paginator.rows, filters)"/>
       @if (modalVisible) {
-        <app-fixas-modal (toggleVisible)="hideModal($event)" [fixedEdit]="editFixed" [visible]="modalVisible" ></app-fixas-modal>
+        <app-fixas-modal (toggleVisible)="hideModal($event)" [budgetCategory]="categorias" [fixedEdit]="editFixed" [visible]="modalVisible" ></app-fixas-modal>
       }
     </div>
   `,
@@ -43,6 +45,11 @@ export class FixasComponent implements OnInit {
   protected fixedService: Fixas = inject(FixasService);
   protected messageService: any = inject(MessageService);
   protected authService: any = inject(LoginService);
+  protected budgetService: Orcamentos = inject(OrcamentosService);
+  categorias: any = {
+    expense: [],
+    income: []
+  };
 
   editFixed!: FixedForm | undefined;
   modalVisible: boolean = false;
@@ -53,10 +60,10 @@ export class FixasComponent implements OnInit {
 
   ngOnInit(): void {
     this.user = this.authService.getUser();
+    this.getCategorias();
   }
 
   async onFilter(first: number, rows: number, filters: any) {
-    console.log('passou pelo onFilter')
     this.filters = filters;
     this.loading = true;
     this.paginator.first = first;
@@ -80,5 +87,21 @@ export class FixasComponent implements OnInit {
       this.loading = false;
       this.onFilter(this.paginator.first, this.paginator.rows, this.filters)
     }
+  }
+
+  async getCategorias() {
+    const categorias: any[] = await lastValueFrom(this.budgetService.getCategory(this.user.id).pipe(
+      catchError(error => {
+        console.log('Error: ', error.message);
+        //this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao recuperar cadastro ' + error.error.message })
+        return [];
+      })
+    ));
+
+    if(categorias.length > 0) {
+      this.categorias.income = categorias.filter(cat => cat.type == 'income') ?? [];
+      this.categorias.expense = categorias.filter(cat => cat.type == 'expense') ?? [];
+    } else
+      this.categorias = [];
   }
 }
