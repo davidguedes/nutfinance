@@ -8,6 +8,8 @@ import { Transacoes } from './transacoes.interface';
 import { TransacoesFilter } from './transacoes.interface';
 import { UserForm } from '../model/user.model';
 import { LoginService } from '../login/login.service';
+import { OrcamentosService } from '../orcamentos/orcamentos.service';
+import { Orcamentos } from '../orcamentos/orcamentos.interface';
 
 @Component({
   selector: 'app-transacoes',
@@ -16,7 +18,7 @@ import { LoginService } from '../login/login.service';
   template: `
     <div>
       <transacoes-filter (onFilter)="onFilter($event)"></transacoes-filter>
-      <transacoes-list [loadingContent]="loadingContent" (searchTransactions)="searchTransactions($event)" (clear)="transacoess = []" [transacoes]="transacoess" [isLoading]="loading" [last]="last"></transacoes-list>
+      <transacoes-list [categorias]="categorias" [loadingContent]="loadingContent" (searchTransactions)="searchTransactions($event)" (clear)="transacoess = []" [transacoes]="transacoess" [isLoading]="loading" [last]="last"></transacoes-list>
     </div>
   `,
   styles: [``]
@@ -25,6 +27,11 @@ export class TransacoesComponent implements OnInit {
   private user: UserForm = {} as UserForm;
   protected transactionService: Transacoes = inject(TransacoesService);
   protected authService: any = inject(LoginService);
+  protected budgetService: Orcamentos = inject(OrcamentosService);
+  categorias: any = {
+    expense: [],
+    income: []
+  };
   @ViewChild(TransacoesListComponent) listTransactions!: TransacoesListComponent;
   transacoess: TransactionForm[] = [];
 
@@ -35,17 +42,16 @@ export class TransacoesComponent implements OnInit {
 
   ngOnInit(): void {
     this.user = this.authService.getUser();
+    this.getCategorias();
   }
 
   async onFilter(filters: TransacoesFilter) {
-    //console.log('Os filtros: ', filters);
     this.filters = filters;
     this.transacoess = [];
     this.searchTransactions(this.transacoess);
   }
 
   async searchTransactions(event: Array<TransactionForm>) {
-    //console.log('O event aqui ó: ', event);
       this.filters.offset = event.length;
       const transactions: TransactionForm[] = await lastValueFrom(this.transactionService.getTransactions(this.filters, this.user.id).pipe(
         catchError(error => {
@@ -54,8 +60,6 @@ export class TransacoesComponent implements OnInit {
           return [];
         })
       ));
-
-      //console.log('vai setar o loading. transactions', transactions, " this.transacoess: ",this.transacoess);
 
       if(transactions.length > 0) {
         setTimeout(async () => {
@@ -66,8 +70,6 @@ export class TransacoesComponent implements OnInit {
         this.listTransactions.loadingContent = true;
         this.listTransactions.isLoading = false;
       }
-
-      console.log('loading ', this.loading);
   }
 
   setTransacoes (transacoes: TransactionForm[], searchTransacoes: TransactionForm[]): TransactionForm[]{
@@ -81,15 +83,10 @@ export class TransacoesComponent implements OnInit {
     this.listTransactions.loadingContent = true;
 
     let dataMesesAnos: any = this.mesesEAnos(transacoes);
-    //console.log('dataMesesAnos: ', dataMesesAnos);
-    //console.log('typeof dataMesesAnos: ', typeof(dataMesesAnos));
 
     let data = this.ordernarLista(dataMesesAnos);
-    //console.log('data: ', data);
-    //console.log('typeof data: ', typeof(data));
 
     transacoes = this.inserirDivisao(data, transacoes);
-    //console.log('transacoes: ', transacoes);
 
     return transacoes;
   }
@@ -139,5 +136,21 @@ export class TransacoesComponent implements OnInit {
     });
 
     return result;
+  }
+
+  async getCategorias() {
+    const categorias: any[] = await lastValueFrom(this.budgetService.getCategory(this.user.id).pipe(
+      catchError(error => {
+        console.log('Error: ', error.message);
+        //this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao recuperar cadastro ' + error.error.message })
+        return [];
+      })
+    ));
+
+    if(categorias.length > 0) {
+      this.categorias.income = categorias.filter(cat => cat.type == 'income') ?? [];
+      this.categorias.expense = categorias.filter(cat => cat.type == 'expense') ?? [];
+    } else
+      this.categorias = [];
   }
 }

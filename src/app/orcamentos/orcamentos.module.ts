@@ -5,7 +5,6 @@ import { OrcamentosRoutingModule } from './orcamentos-routing.module';
 
 
 @NgModule({
-  declarations: [],
   imports: [
     CommonModule,
     OrcamentosRoutingModule

@@ -26,7 +26,6 @@ export class CategoriasService {
   }
 
   getCategoryByUser(user_id: string): Observable<any> {
-    console.log('Chega aqui ó!!!', user_id)
     let params = new HttpParams()
       .set('user_id', user_id);
 

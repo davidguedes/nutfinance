@@ -29,7 +29,6 @@ export class LoginService {
     return this.http.post(`${this.API}/login`, { email, password }).pipe(
       tap((response: any) => {
         this.setToken(response.token);
-        //console.log('response.user: ', response.user);
         this.user = response.user;
 
         localStorage.setItem('token', response.token);

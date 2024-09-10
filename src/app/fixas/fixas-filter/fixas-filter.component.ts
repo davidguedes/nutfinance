@@ -121,7 +121,6 @@ export class FixasFilterComponent {
   }
 
   emitFilter() {
-    console.log('this.formulario: ', this.formulario.value);
     this.onFilter.emit(this.formulario.value);
   }
 

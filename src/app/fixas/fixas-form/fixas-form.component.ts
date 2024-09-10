@@ -10,11 +10,17 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { ChipsModule } from 'primeng/chips';
 import { FixedForm } from '../../model/fixed.model';
+import { catchError, lastValueFrom } from 'rxjs';
+import { OrcamentosService } from '../../orcamentos/orcamentos.service';
+import { Orcamentos } from '../../orcamentos/orcamentos.interface';
+import { LoginService } from '../../login/login.service';
+import { UserForm } from '../../model/user.model';
+import { DropdownModule } from 'primeng/dropdown';
 
 @Component({
   selector: 'app-fixas-form',
   standalone: true,
-  imports: [CommonModule, ButtonModule, ReactiveFormsModule, ErroFormComponent, InputTextModule, InputNumberModule, FloatLabelModule, CalendarModule, InputSwitchModule, ChipsModule],
+  imports: [CommonModule, ButtonModule, ReactiveFormsModule, ErroFormComponent, InputTextModule, InputNumberModule, FloatLabelModule, CalendarModule, InputSwitchModule, ChipsModule, DropdownModule],
   template: `
     <div class="cadastro-forms" style="display: flex; width: 100%; justify-content: center; flex-direction: column">
       <div class="formulario">
@@ -74,6 +80,20 @@ import { FixedForm } from '../../model/fixed.model';
           <div class="form-input">
             <div class="input-field d-column">
               <div class="input-campos">
+                <p-dropdown
+                  formControlName="category"
+                  [options]="formulario.get('type')?.value === 'R' ? categorias.income : categorias.expense"
+                  optionLabel="category"
+                  optionValue="id"
+                  placeholder="Selecione uma categoria" />
+              </div>
+              <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Selecione uma categoria" nameField="category"></app-erro-form>
+            </div>
+          </div>
+
+          <div class="form-input">
+            <div class="input-field d-column">
+              <div class="input-campos">
                 <p-floatLabel [style]="{'width': '100%'}">
                   <p-chips styleClass="input-styling" formControlName="tags" [style]="{'width': '100%'}"></p-chips>
                   <label for="tags">Tags</label>
@@ -95,6 +115,14 @@ import { FixedForm } from '../../model/fixed.model';
   `,
   styles: `
     p-inputNumber {
+      width: 100%!important;
+    }
+
+    p-dropdown {
+      width: 100%!important;
+    }
+
+    ::ng-deep div.p-dropdown {
       width: 100%!important;
     }
 
@@ -142,14 +170,26 @@ import { FixedForm } from '../../model/fixed.model';
   `
 })
 export class FixasFormComponent implements OnInit {
+  protected budgetService: Orcamentos = inject(OrcamentosService);
+  protected authService: any = inject(LoginService);
+  private user: UserForm = {} as UserForm;
+
   @Input() edit!: FixedForm | undefined;
   @Output() onSubmit = new EventEmitter();
   @Output() closeModal = new EventEmitter<boolean>();
+  @Input() categorias: any = {
+    expense: [],
+    income: []
+  };
 
   formBuilder = inject(FormBuilder);
   formulario!: FormGroup;
 
   ngOnInit(): void {
+    this.user = this.authService.getUser();
+    if(this.categorias.length == 0)
+      this.getCategorias();
+
     if(this.edit) {
       this.formulario = this.formBuilder.group({
         id: [this.edit.id, [Validators.required]],
@@ -157,6 +197,7 @@ export class FixasFormComponent implements OnInit {
         value: [this.edit.value, [Validators.required]],
         type: [this.edit.type, [Validators.required]],
         day_inclusion: [this.edit.day_inclusion, [Validators.required]],
+        category: [this.edit.budgetCategory_id, [Validators.required]],
         tags: [this.edit.tags],
       });
     } else {
@@ -165,6 +206,7 @@ export class FixasFormComponent implements OnInit {
         value: [null, [Validators.required]],
         type: ['D', [Validators.required]],
         day_inclusion: [null, [Validators.required]],
+        category: [null, [Validators.required]],
         tags: [[]],
       });
     }
@@ -189,5 +231,21 @@ export class FixasFormComponent implements OnInit {
   close() {
     this.clear();
     this.closeModal.emit(true);
+  }
+
+  async getCategorias() {
+    const categorias: any[] = await lastValueFrom(this.budgetService.getCategory(this.user.id).pipe(
+      catchError(error => {
+        console.log('Error: ', error.message);
+        //this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao recuperar cadastro ' + error.error.message })
+        return [];
+      })
+    ));
+
+    if(categorias.length > 0) {
+      this.categorias.income = categorias.filter(cat => cat.type == 'income') ?? [];
+      this.categorias.expense = categorias.filter(cat => cat.type == 'expense') ?? [];
+    } else
+      this.categorias = [];
   }
 }

@@ -13,5 +13,5 @@ export interface TransactionForm {
   user_id: string;
   date?: string;
   closing_id?: string;
-  category_id: string;
+  budgetCategory_id: string;
 }
