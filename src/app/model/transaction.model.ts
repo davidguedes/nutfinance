@@ -1,5 +1,6 @@
 export interface TransactionForm {
   id: string;
+  id_offline?: number;
   createdAt: Date;
   updatedAt: Date;
   value: number;

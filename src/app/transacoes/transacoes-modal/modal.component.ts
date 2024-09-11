@@ -9,6 +9,8 @@ import { TransacoesService } from '../transacoes.service';
 import { catchError, lastValueFrom } from 'rxjs';
 import { LoginService } from '../../login/login.service';
 import { UserForm } from '../../model/user.model';
+import { ConnectionService } from '../../connection.service';
+import { OfflineService } from '../../offline-service/offline-service.service';
 
 @Component({
     selector: 'app-transacos-modal',
@@ -35,40 +37,91 @@ export class TransacoesModalComponent implements OnInit {
   protected transactionService: Transacoes = inject(TransacoesService);
   protected messageService = inject(MessageService);
   protected authService: any = inject(LoginService);
+  protected offlineService = inject(OfflineService); // Novo serviço
+  protected connectionService = inject(ConnectionService); // Serviço de conexão
+
   private user: UserForm = {} as UserForm;
   alter: boolean = false;
+  isOnline: boolean = true;
 
   ngOnInit(): void {
     this.user = this.authService.getUser();
+
+    // Monitorando a conexão
+    this.connectionService.getConnectionStatus().subscribe(status => {
+      this.isOnline = status;
+      if (this.isOnline) {
+        this.syncOfflineTransactions(); // Sincronizar quando online
+      }
+    });
   }
 
   async createTransacao(formulario: TransactionForm) {
     const dadosFormulario = formulario;
     formulario.user_id = this.user.id;
 
-    let textDetail = ``;
-    //this.transactionService.saveData(dadosFormulario)
-    if(dadosFormulario.id) {
-      const updateTransaction = await lastValueFrom(this.transactionService.updateTransaction(dadosFormulario).pipe(
-        catchError(error => {
-          this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao atualizar cadastro ' + error.error.message })
-          return error;
-        })
-      ));
-      textDetail = "Sucesso ao atualizar transação";
+    if (!this.isOnline) {
+      // Salvar offline se estiver desconectado
+      await this.offlineService.saveOfflineTransaction(dadosFormulario);
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Offline',
+        detail: 'Transação salva offline. Será sincronizada quando a conexão for restabelecida.'
+      });
     } else {
-      const createTransaction = await lastValueFrom(this.transactionService.createTransaction(dadosFormulario).pipe(
-        catchError(error => {
-          this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao realizar cadastro ' + error.error.message })
-          return error;
-        })
-      ));
-      textDetail = "Sucesso ao incluir transação";
+      // Caso online, salvar diretamente no servidor
+      try {
+        await this.saveTransactionOnline(dadosFormulario);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Transação registrada com sucesso!'
+        });
+      } catch (error) {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Erro ao registrar transação'
+        });
+      }
     }
 
-    this.messageService.add({ severity: 'success', summary: 'Success', detail: textDetail });
     this.alter = true;
     this.close(true);
+  }
+
+  async saveTransactionOnline(transaction: TransactionForm) {
+    if (transaction.id) {
+      return await lastValueFrom(this.transactionService.updateTransaction(transaction).pipe(
+        catchError(error => {
+          throw error;
+        })
+      ));
+    } else {
+      return await lastValueFrom(this.transactionService.createTransaction(transaction).pipe(
+        catchError(error => {
+          throw error;
+        })
+      ));
+    }
+  }
+
+  async syncOfflineTransactions() {
+    const offlineTransactions = await this.offlineService.getOfflineTransactions();
+
+    for (const transacao of offlineTransactions) {
+      try {
+        await this.saveTransactionOnline(transacao); // Enviar ao servidor
+        await this.offlineService.deleteTransaction(transacao.id_offline!); // Remover transação offline após sincronização
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sincronizado',
+          detail: `Transação "${transacao.description}" sincronizada com sucesso.`
+        });
+      } catch (error) {
+        console.log('Erro ao sincronizar transação:', error);
+      }
+    }
   }
 
   close(close: boolean) {

@@ -36,7 +36,7 @@ import { SkeletonModule } from 'primeng/skeleton';
   ],
   template: `
     <div class="content">
-        <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - (67px + 64px + 64px + 66px))' }" styleClass="custombar1">
+        <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - (67px + 62px + 36px))' }" styleClass="custombar1">
           @if (loadingContent) {
             @for(item of transacoes; track item.id; let primeiro = $first; let idx = $index;){
                 <div #transacao class="transacao-item">
