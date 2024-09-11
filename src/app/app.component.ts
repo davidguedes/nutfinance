@@ -1,18 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { PrimeNGConfig } from 'primeng/api';
+import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { ActionButtonComponent } from './shared/action-button/action-button.component';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { LoginService } from './login/login.service';
+import { ConnectionService } from './connection.service';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, SidebarComponent, ToolbarComponent, ActionButtonComponent],
+  imports: [CommonModule, RouterOutlet, SidebarComponent, ToolbarComponent, ActionButtonComponent, ToastModule],
   template: `
     <div class="layout-wrapper">
       @if (logged) {
@@ -28,6 +30,7 @@ import { LoginService } from './login/login.service';
         </div>
       </div>
     </div>
+    <p-toast></p-toast>
   `,
   styles: `
     .layout-main-container {
@@ -42,17 +45,41 @@ import { LoginService } from './login/login.service';
       flex: 1 1 auto;
     }
   `,
-  providers: [TranslateModule]
+  providers: [TranslateModule, MessageService]
 })
 export class AppComponent implements OnInit, OnDestroy {
   title: string = 'nutfinance';
   sidebarVisible: boolean = false;
+  private connectionService: ConnectionService = inject(ConnectionService);
   protected translate: TranslateService = inject(TranslateService);
   protected primeNGConfig: PrimeNGConfig = inject(PrimeNGConfig);
   protected authService: any = inject(LoginService);
+  protected messageService = inject(MessageService);
+
   logged: boolean = false;
+  isOnline:boolean = true;
 
   subscription: Subscription[] = [];
+
+  constructor(){
+    this.connectionService.getConnectionStatus().subscribe(status => {
+      this.isOnline = status;
+      console.log('Status da conexão:', this.isOnline ? 'Online' : 'Offline');
+      if(!this.isOnline) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Offline',
+          detail: 'Sem conexão com a internet'
+        });
+      } else {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Online',
+          detail: 'Conexão estabelecida'
+        });
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.subscription.push(this.authService.token$.subscribe((token: string | null) => {
