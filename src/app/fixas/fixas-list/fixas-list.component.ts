@@ -13,7 +13,7 @@ import { FixasDeleteComponent } from '../fixas-delete/fixas-delete.component';
   imports: [CommonModule, TableModule, ButtonModule, PaginatorComponent, FixasModalComponent, FixasDeleteComponent],
   template: `
     <div class="content">
-      <p-table [value]="fixas" [loading]="loading" styleClass="p-datatable-gridlines" [tableStyle]="{ 'min-width': '100%' }" responsiveLayout="stack" [breakpoint]="'960px'">
+      <p-table [value]="fixas" [loading]="loading" styleClass="p-datatable-gridlines" responsiveLayout="stack" [breakpoint]="'960px'" [tableStyle]="{'min-width': '50rem'}">
         <ng-template pTemplate="header">
           <tr>
             <th>Descrição</th>
@@ -26,12 +26,12 @@ import { FixasDeleteComponent } from '../fixas-delete/fixas-delete.component';
         </ng-template>
         <ng-template pTemplate="body" let-fixa let-columns="columns">
           <tr>
-            <td><span class="p-column-title">Descrição</span>{{ fixa.description }}</td>
-            <td><span class="p-column-title">Valor</span>{{ fixa.value | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
-            <td><span class="p-column-title">Tipo</span>{{ fixa.type == 'D' ? 'Gasto' : 'Ganho' }}</td>
-            <td><span class="p-column-title">Dia Inclusão</span>{{ fixa.day_inclusion }}</td>
-            <td><span class="p-column-title">Status</span>{{ fixa.status == true ? 'Ativo' : 'Inativo' }}</td>
-            <td>
+            <td style="white-space: normal"><span class="p-column-title">Descrição</span>{{ fixa.description }}</td>
+            <td style="white-space: normal"><span class="p-column-title">Valor</span>{{ fixa.value | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
+            <td style="white-space: normal"><span class="p-column-title">Tipo</span>{{ fixa.type == 'D' ? 'Gasto' : 'Ganho' }}</td>
+            <td style="white-space: normal"><span class="p-column-title">Dia Inclusão</span>{{ fixa.day_inclusion }}</td>
+            <td style="white-space: normal"><span class="p-column-title">Status</span>{{ fixa.status == true ? 'Ativo' : 'Inativo' }}</td>
+            <td style="white-space: normal">
               <span class="p-column-title">Funções</span>
               <div style="display: flex;">
                 <app-fixas-delete (deleteButton)="loading = false; getFixedList.emit(true)" [idFixed]="fixa.id" style="margin-right: 10px;" />
