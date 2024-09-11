@@ -29,7 +29,7 @@ import { catchError, lastValueFrom, throwError } from 'rxjs';
     <div class="container">
       <div class="login-form">
         <div class="logo">
-          <img width="50" src="../../assets/svg/logo.svg" alt="Logotipo NutFinance">
+          <img width="150" src="../../assets/png/logo.png" alt="Logotipo NutFinance">
         </div>
         <form [formGroup]="formulario" (keydown.enter)="login()">
           <div class="form-input">
