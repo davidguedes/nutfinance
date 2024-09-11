@@ -30,6 +30,13 @@ export class ChartService {
     return this.http.get(`${this.API}/profit`, { params: httpParams });
   }
 
+  getExpense(user_id: string): Observable<any> {
+    let httpParams = new HttpParams();
+    httpParams = httpParams.set('user_id', user_id);
+
+    return this.http.get(`${this.API}/expense`, { params: httpParams });
+  }
+
   getSpendingCategory(user_id: string): Observable<any> {
     let httpParams = new HttpParams();
     httpParams = httpParams.set('user_id', user_id);
