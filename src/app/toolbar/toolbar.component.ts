@@ -12,10 +12,10 @@ import { Router } from '@angular/router';
   <div class="card">
       <p-menubar [model]="items">
           <ng-template pTemplate="start">
-            <img width="45" src="assets/png/icon.png" alt="Logotipo NutFinance" (click)="router.navigate(['/'])">
+            <p-button icon="pi pi-bars" (onClick)="toggleVisible(!valueSidebarVisible)" [rounded]="true" [text]="true"></p-button>
           </ng-template>
           <ng-template pTemplate="end">
-            <p-button icon="pi pi-bars" (onClick)="toggleVisible(!valueSidebarVisible)" [rounded]="true" [text]="true"></p-button>
+            <img width="45" src="assets/png/icon.png" alt="Logotipo NutFinance" (click)="router.navigate(['/'])">
           </ng-template>
       </p-menubar>
   </div>

@@ -11,7 +11,7 @@ import { LoginService } from '../login/login.service';
   imports: [SidebarModule, MenuModule],
   template: `
     <p-sidebar [(visible)]="valueSidebarVisible" (onHide)="toggleVisible($event)">
-      <h3>Sidebar</h3>
+      <h3>Nutfinance</h3>
       <p-menu [model]="items"></p-menu>
     </p-sidebar>
   `,
