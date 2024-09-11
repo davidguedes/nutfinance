@@ -6,62 +6,74 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { TriStateCheckboxModule } from 'primeng/tristatecheckbox';
+import { AccordionModule } from 'primeng/accordion';
 
 @Component({
   selector: 'transacoes-filter',
   standalone: true,
-  imports: [TriStateCheckboxModule, ReactiveFormsModule, CalendarModule, FloatLabelModule, ChipsModule, InputSwitchModule, ButtonModule],
+  imports: [TriStateCheckboxModule, ReactiveFormsModule, CalendarModule, FloatLabelModule, ChipsModule, InputSwitchModule, ButtonModule, AccordionModule],
   template: `
-    <form [formGroup]="formulario">
-      <div class="content-form">
-        <div class="input-campos" style="display: flex; width: 100%; align-items:center; justify-content: center;">
-          <span
-            (click)="formulario.get('sort')?.setValue(formulario.get('sort')?.value === true || formulario.get('sort')?.value === null ? false : true); emitFilter()"
-            [class]="formulario.get('sort')?.value || formulario.get('sort')?.value === null ? 'pi pi-sort-amount-down' : 'pi pi-sort-amount-up'"
-            style="cursor: pointer;"
-            inputId="sort"
-          ></span>
-          <label (click)="formulario.get('sort')?.setValue(formulario.get('sort')?.value === true || formulario.get('sort')?.value === null ? false : true); emitFilter()" for="sort" style="cursor: pointer;">
-            {{formulario.get('sort')?.value || formulario.get('sort')?.value === null ? 'Decrescente' : 'Crescente'}}
-          </label>
-        </div>
-        <div class="input-filter">
-          <div class="input-campos" style="display: flex; width: 100%; align-items:center; justify-content: center;">
-            <div class="input-name" style="padding: 13px; width: 30%">
-              <span>Tipo</span>
-            </div>
-            <div class="input-switch" style="display: flex; align-items: center; justify-content: center;">
-              <p-triStateCheckbox formControlName="type" (onChange)="emitFilter()" inputId="type" />
-              <label for="type">
-                <span [style]="{'margin-left': '10px', 'padding': '10px', 'background-color': formulario.get('type')?.value === null ? '#0ea5e96e' : formulario.get('type')?.value === true ? '#27ff006e' : '#ff00006e', 'border-radius': '10px'}">{{ formulario.value.type === null ? 'Todos' : formulario.value.type === true ? 'Ganhos' : 'Gastos'}}</span>
+    <p-accordion class="w-full" expandIcon="pi pi-search-plus" collapseIcon="pi pi-search-minus">
+      <p-accordionTab>
+        <ng-template pTemplate="header">
+          <span class="flex align-items-center gap-2 w-full">
+            <span class="font-bold white-space-nowrap">
+              Filtro
+            </span>
+          </span>
+        </ng-template>
+        <form [formGroup]="formulario">
+          <div class="content-form">
+            <div class="input-campos" style="display: flex; width: 100%; align-items:center; justify-content: center;">
+              <span
+                (click)="formulario.get('sort')?.setValue(formulario.get('sort')?.value === true || formulario.get('sort')?.value === null ? false : true); emitFilter()"
+                [class]="formulario.get('sort')?.value || formulario.get('sort')?.value === null ? 'pi pi-sort-amount-down' : 'pi pi-sort-amount-up'"
+                style="cursor: pointer;"
+                inputId="sort"
+              ></span>
+              <label (click)="formulario.get('sort')?.setValue(formulario.get('sort')?.value === true || formulario.get('sort')?.value === null ? false : true); emitFilter()" for="sort" style="cursor: pointer;">
+                {{formulario.get('sort')?.value || formulario.get('sort')?.value === null ? 'Decrescente' : 'Crescente'}}
               </label>
-              <!--p-inputSwitch formControlName="types" (ngModelChange)="emitFilter()" [falseValue]="'D'" [trueValue]="'R'"></p-inputSwitch><span [style]="{'margin-left': '5px', 'padding': '10px', 'background-color': formulario.get('types')?.value === 'R' ? '#27ff006e' : '#ff00006e', 'border-radius': '10px'}">{{formulario.get('types')?.value === 'R' ? 'Ganho' : 'Gasto'}}</span-->
+            </div>
+            <div class="input-filter">
+              <div class="input-campos" style="display: flex; width: 100%; align-items:center; justify-content: center;">
+                <div class="input-name" style="padding: 13px; width: 30%">
+                  <span>Tipo</span>
+                </div>
+                <div class="input-switch" style="display: flex; align-items: center; justify-content: center;">
+                  <p-triStateCheckbox formControlName="type" (onChange)="emitFilter()" inputId="type" />
+                  <label for="type">
+                    <span [style]="{'margin-left': '10px', 'padding': '10px', 'background-color': formulario.get('type')?.value === null ? '#0ea5e96e' : formulario.get('type')?.value === true ? '#27ff006e' : '#ff00006e', 'border-radius': '10px'}">{{ formulario.value.type === null ? 'Todos' : formulario.value.type === true ? 'Ganhos' : 'Gastos'}}</span>
+                  </label>
+                  <!--p-inputSwitch formControlName="types" (ngModelChange)="emitFilter()" [falseValue]="'D'" [trueValue]="'R'"></p-inputSwitch><span [style]="{'margin-left': '5px', 'padding': '10px', 'background-color': formulario.get('types')?.value === 'R' ? '#27ff006e' : '#ff00006e', 'border-radius': '10px'}">{{formulario.get('types')?.value === 'R' ? 'Ganho' : 'Gasto'}}</span-->
+                </div>
+              </div>
+            </div>
+            <div class="input-filter">
+              <p-floatLabel>
+                <p-calendar id="initial_date_transaction" [showIcon]="true" dateFormat="dd/mm/yy" formControlName="initial_date_transaction" (onSelect)="emitFilter()" (onClear)="emitFilter()" [showClear]="true" [maxDate]="formulario.get('final_date_transaction')?.value"></p-calendar>
+                <label for="initial_date_transaction">Dt. Início Transação</label>
+              </p-floatLabel>
+            </div>
+            <div class="input-filter">
+              <p-floatLabel>
+                <p-calendar id="final_date_transaction" [showIcon]="true" dateFormat="dd/mm/yy" formControlName="final_date_transaction" (onSelect)="emitFilter()" (onClear)="emitFilter()" [showClear]="true" [minDate]="formulario.get('initial_date_transaction')?.value"></p-calendar>
+                <label for="final_date_transaction">Dt. Final Transação</label>
+              </p-floatLabel>
+            </div>
+            <div class="input-filter">
+              <p-floatLabel>
+                <p-chips formControlName="tags" (onAdd)="emitFilter()" (onRemove)="emitFilter()" (onClear)="emitFilter()" [showClear]="true"></p-chips>
+                <label for="tags">Tags</label>
+              </p-floatLabel>
+            </div>
+            <div class="input-filter">
+              <p-button icon="pi pi-eraser" severity="warning" [style]="{'width': '100%'}" label="Limpar" (click)="clear()"></p-button>
             </div>
           </div>
-        </div>
-        <div class="input-filter">
-          <p-floatLabel>
-            <p-calendar id="initial_date_transaction" [showIcon]="true" dateFormat="dd/mm/yy" formControlName="initial_date_transaction" (onSelect)="emitFilter()" (onClear)="emitFilter()" [showClear]="true" [maxDate]="formulario.get('final_date_transaction')?.value"></p-calendar>
-            <label for="initial_date_transaction">Dt. Início Transação</label>
-          </p-floatLabel>
-        </div>
-        <div class="input-filter">
-          <p-floatLabel>
-            <p-calendar id="final_date_transaction" [showIcon]="true" dateFormat="dd/mm/yy" formControlName="final_date_transaction" (onSelect)="emitFilter()" (onClear)="emitFilter()" [showClear]="true" [minDate]="formulario.get('initial_date_transaction')?.value"></p-calendar>
-            <label for="final_date_transaction">Dt. Final Transação</label>
-          </p-floatLabel>
-        </div>
-        <div class="input-filter">
-          <p-floatLabel>
-            <p-chips formControlName="tags" (onAdd)="emitFilter()" (onRemove)="emitFilter()" (onClear)="emitFilter()" [showClear]="true"></p-chips>
-            <label for="tags">Tags</label>
-          </p-floatLabel>
-        </div>
-        <div class="input-filter">
-          <p-button icon="pi pi-eraser" severity="warning" [style]="{'width': '100%'}" label="Limpar" (click)="clear()"></p-button>
-        </div>
-      </div>
-    </form>
+        </form>
+      </p-accordionTab>
+    </p-accordion>
   `,
   styles: [`
     .content-form {
