@@ -33,7 +33,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     <div class="container">
       <div class="login-form">
         <div class="logo">
-          <img width="50" src="../../assets/svg/logo.svg" alt="Logotipo NutFinance">
+          <img width="150" src="../../assets/png/logo.png" alt="Logotipo NutFinance">
         </div>
         <div *ngIf="!finishRegister">
           <form [formGroup]="formulario" (keydown.enter)="register()">

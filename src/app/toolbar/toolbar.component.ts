@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
   <div class="card">
       <p-menubar [model]="items">
           <ng-template pTemplate="start">
-            <img width="45" src="assets/svg/logo.svg" alt="Logotipo NutFinance" (click)="router.navigate(['/'])">
+            <img width="45" src="assets/png/icon.png" alt="Logotipo NutFinance" (click)="router.navigate(['/'])">
           </ng-template>
           <ng-template pTemplate="end">
             <p-button icon="pi pi-bars" (onClick)="toggleVisible(!valueSidebarVisible)" [rounded]="true" [text]="true"></p-button>
