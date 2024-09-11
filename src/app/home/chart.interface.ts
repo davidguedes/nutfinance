@@ -3,6 +3,7 @@ import { Observable } from "rxjs";
 export interface Graficos {
   getFixed(user_id: string): Observable<number>;
   getProfit(user_id: string): Observable<number>;
+  getExpense(user_id: string): Observable<number>;
   getSpendingCategory(user_id: string): Observable<PieChartData>;
   getComparative(user_id: string): Observable<any>;
 }

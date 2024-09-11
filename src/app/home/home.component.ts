@@ -10,6 +10,7 @@ import { ChartService } from './chart.service';
 import { catchError, lastValueFrom, of } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { LoginService } from '../login/login.service';
+import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'app-home',
@@ -19,7 +20,8 @@ import { LoginService } from '../login/login.service';
     CardModule,
     ChartModule,
     ActionButtonComponent,
-    TransacoesModalComponent
+    TransacoesModalComponent,
+    SkeletonModule
   ],
   template: `
     <div class="grid flex align-items-center justify-content-center">
@@ -27,47 +29,86 @@ import { LoginService } from '../login/login.service';
         <p-card class="card mb-0">
           <div class="flex justify-content-between mb-3">
             <div>
-              <span class="block text-500 font-medium mb-3">Transações</span>
-              <div class="text-900 font-medium text-xl">{{transactions}}</div>
+              <span class="block text-500 font-medium mb-3">Ganhos</span>
+              @if(profit == null) {
+                <p-skeleton width="8rem" />
+              } @else {
+                <div class="text-900 font-medium text-xl">{{profit | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</div>
+              }
             </div>
-            <div class="flex align-items-center justify-content-center bg-blue-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
-              <i class="pi pi-shopping-cart text-blue-500 text-xl"></i>
+            <div class="flex align-items-center justify-content-center bg-green-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
+              <i class="pi pi-dollar text-green-500 text-xl"></i>
             </div>
           </div>
-          <span class="text-green-500 font-medium">2 novas </span>
-          <span class="text-500">desde a última visita</span>
+          <!--span class="text-green-500 font-medium">%2+ </span>
+          <span class="text-500">desde a semana passada</span-->
         </p-card>
       </div>
       <div class="col-12 lg:col-6 xl:col-6">
         <p-card class="card mb-0">
           <div class="flex justify-content-between mb-3">
             <div>
-              <span class="block text-500 font-medium mb-3">Ganho</span>
-              <div class="text-900 font-medium text-xl">{{profit | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</div>
+              <span class="block text-500 font-medium mb-3">Gastos</span>
+              @if(expense == null) {
+                <p-skeleton width="8rem" />
+              } @else {
+                <div class="text-900 font-medium text-xl">{{expense | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</div>
+              }
             </div>
-            <div class="flex align-items-center justify-content-center bg-orange-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
-              <i class="pi pi-wallet text-orange-500 text-xl"></i>
+            <div class="flex align-items-center justify-content-center bg-red-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
+              <i class="pi pi-shopping-cart text-red-500 text-xl"></i>
             </div>
           </div>
-          <span class="text-green-500 font-medium">%2+ </span>
-          <span class="text-500">desde a semana passada</span>
+          <!--span class="text-green-500 font-medium">2 novas </span>
+          <span class="text-500">desde a última visita</span-->
         </p-card>
       </div>
       <div class="col-12 sm:col-12 md:col-6 lg:col-6 xl:col-6" style="background: white">
         <div class="card">
             <h5>Gastos por categoria</h5>
+            @if(!spendingCategory) {
+              <div class="flex  align-items-center justify-content-center">
+                <p-skeleton shape="circle" size="25rem" />
+              </div>
+            } @else {
               <p-chart type="doughnut" [data]="spendingCategory" [options]="optionsChartPie" />
+            }
           </div>
       </div>
       <div class="col-12 sm:col-12 md:col-6 lg:col-6 xl:col-6" style="background: white">
         <div class="card">
             <h5>Ganhos e Gastos mensais</h5>
+            @if(!chartData) {
+              <div class="flex  align-items-end">
+                <p-skeleton width="2rem" height="20rem" class="mr-2" />
+                <p-skeleton width="2rem" height="18rem" class="mr-2" />
+                <p-skeleton width="2rem" height="19rem" class="mr-2" />
+                <p-skeleton width="2rem" height="16rem" class="mr-2" />
+                <p-skeleton width="2rem" height="14rem" class="mr-2" />
+                <p-skeleton width="2rem" height="20rem" class="mr-2" />
+                <p-skeleton width="2rem" height="18rem" class="mr-2" />
+                <p-skeleton width="2rem" height="19rem" class="mr-2" />
+                <p-skeleton width="2rem" height="16rem" class="mr-2" />
+                <p-skeleton width="2rem" height="14rem" class="mr-2" />
+                <p-skeleton width="2rem" height="20rem" class="mr-2" />
+                <p-skeleton width="2rem" height="18rem" class="mr-2" />
+                <p-skeleton width="2rem" height="19rem" class="mr-2" />
+                <p-skeleton width="2rem" height="16rem" class="mr-2" />
+                <p-skeleton width="2rem" height="14rem" class="mr-2" />
+              </div>
+            } @else {
               <p-chart id="chart-item" type="line" [data]="chartData" [options]="chartOptions" [responsive]="true"></p-chart>
+            }
           </div>
       </div>
       <app-action-button (functionButton)="this.modalVisible = true"></app-action-button>
       <app-transacos-modal (toggleVisible)="modalVisible = false" [visible]="modalVisible" ></app-transacos-modal>
     </div>
+  `,
+  styles: `
+    ::ng-deep .p-card .p-card-content {
+      padding: 0px;
+    }
   `,
   providers: [MessageService]
 })
@@ -78,9 +119,10 @@ export class HomeComponent implements OnInit {
   protected authService: any = inject(LoginService);
 
   modalVisible: boolean = false;
-  chartData: any;
+  chartData: any = null;
   transactions: number = 0;
-  profit: number = 0;
+  profit: number | null = null;
+  expense: number | null = null;
   spendingCategory: PieChartData = {} as PieChartData;
   optionsChartPie: any = {};
   teste: PieChartData = {} as PieChartData;
@@ -103,6 +145,13 @@ export class HomeComponent implements OnInit {
     this.profit = await lastValueFrom(this.chartService.getProfit(this.user.id).pipe(
       catchError(error => {
         this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao recuperar ganhos: ' + error.error.message });
+        return of(0);
+      })
+    ));
+
+    this.expense = await lastValueFrom(this.chartService.getExpense(this.user.id).pipe(
+      catchError(error => {
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao recuperar gastos: ' + error.error.message });
         return of(0);
       })
     ));
