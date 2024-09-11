@@ -35,7 +35,7 @@ import { LoginService } from './login/login.service';
       flex-direction: column;
       min-height: calc(100vh - 67px);
       justify-content: space-between;
-      padding: 4rem;
+      padding: 1rem;
     }
 
     .layout-main {

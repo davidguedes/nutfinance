@@ -66,8 +66,8 @@ import { SkeletonModule } from 'primeng/skeleton';
       <div class="col-12 sm:col-12 md:col-6 lg:col-6 xl:col-6" style="background: white">
         <div class="card">
             <h5>Gastos por categoria</h5>
-            @if(!spendingCategory) {
-              <div class="flex  align-items-center justify-content-center">
+            @if(spendingCategory) {
+              <div class="flex align-items-center justify-content-center">
                 <p-skeleton shape="circle" size="25rem" />
               </div>
             } @else {
@@ -78,23 +78,18 @@ import { SkeletonModule } from 'primeng/skeleton';
       <div class="col-12 sm:col-12 md:col-6 lg:col-6 xl:col-6" style="background: white">
         <div class="card">
             <h5>Ganhos e Gastos mensais</h5>
-            @if(!chartData) {
-              <div class="flex  align-items-end">
-                <p-skeleton width="2rem" height="20rem" class="mr-2" />
-                <p-skeleton width="2rem" height="18rem" class="mr-2" />
-                <p-skeleton width="2rem" height="19rem" class="mr-2" />
-                <p-skeleton width="2rem" height="16rem" class="mr-2" />
-                <p-skeleton width="2rem" height="14rem" class="mr-2" />
-                <p-skeleton width="2rem" height="20rem" class="mr-2" />
-                <p-skeleton width="2rem" height="18rem" class="mr-2" />
-                <p-skeleton width="2rem" height="19rem" class="mr-2" />
-                <p-skeleton width="2rem" height="16rem" class="mr-2" />
-                <p-skeleton width="2rem" height="14rem" class="mr-2" />
-                <p-skeleton width="2rem" height="20rem" class="mr-2" />
-                <p-skeleton width="2rem" height="18rem" class="mr-2" />
-                <p-skeleton width="2rem" height="19rem" class="mr-2" />
-                <p-skeleton width="2rem" height="16rem" class="mr-2" />
-                <p-skeleton width="2rem" height="14rem" class="mr-2" />
+            @if(chartData) {
+              <div class="flex align-items-end justify-content-center">
+                <p-skeleton width="2rem" height="20rem" class="mr-1" />
+                <p-skeleton width="2rem" height="18rem" class="mr-1" />
+                <p-skeleton width="2rem" height="19rem" class="mr-1" />
+                <p-skeleton width="2rem" height="16rem" class="mr-1" />
+                <p-skeleton width="2rem" height="14rem" class="mr-1" />
+                <p-skeleton width="2rem" height="20rem" class="mr-1" />
+                <p-skeleton width="2rem" height="18rem" class="mr-1" />
+                <p-skeleton width="2rem" height="19rem" class="mr-1" />
+                <p-skeleton width="2rem" height="16rem" class="mr-1" />
+                <p-skeleton width="2rem" height="14rem" class="mr-1" />
               </div>
             } @else {
               <p-chart id="chart-item" type="line" [data]="chartData" [options]="chartOptions" [responsive]="true"></p-chart>
