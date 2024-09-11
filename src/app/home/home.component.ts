@@ -123,9 +123,8 @@ export class HomeComponent implements OnInit {
   transactions: number = 0;
   profit: number | null = null;
   expense: number | null = null;
-  spendingCategory: PieChartData = {} as PieChartData;
+  spendingCategory: PieChartData | null = null;
   optionsChartPie: any = {};
-  teste: PieChartData = {} as PieChartData;
 
   chartOptions: any;
 
