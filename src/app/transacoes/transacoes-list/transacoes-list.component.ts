@@ -13,6 +13,7 @@ import { LoadingComponentComponent } from '../../shared/loading-component/loadin
 import { ActionButtonComponent } from '../../shared/action-button/action-button.component';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'transacoes-list',
@@ -30,49 +31,50 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     ActionButtonComponent,
     TransacoesModalComponent,
     ScrollPanelModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    SkeletonModule
   ],
   template: `
     <div class="content">
         <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - (67px + 64px + 64px + 66px))' }" styleClass="custombar1">
           @if (loadingContent) {
-            @for(item of transacoes; track item.id; let idx = $index; let primeiro = $first){
+            @for(item of transacoes; track item.id; let primeiro = $first; let idx = $index;){
                 <div #transacao class="transacao-item">
                     @if(idx !== transacoes.length-1 || isLoading || last){
                       @if(item.date) {
-                        <div class="flex justify-content-center align-items-center flex-column xl:flex-row xl:align-items-center p-4 gap-4" [class]="'border-top-1 surface-border'">
+                        <div class="flex justify-content-center align-items-center flex-column xl:flex-row xl:align-items-center p-4 gap-4" [ngClass]="primeiro ? 'first-item' : 'border-top-1 surface-border'">
                           <div class="text-2xl font-bold text-900">{{item.date}}</div>
                         </div>
                       }
 
                       @else {
-                      <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4" [ngClass]="{ 'border-top-1 surface-border': !primeiro, 'first-item' : primeiro }">
+                      <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4" [ngClass]="primeiro ? 'first-item' : 'border-top-1 surface-border'">
                         <div class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
                             <div class="flex flex-column align-items-center sm:align-items-start gap-3">
                                 <div class="text-2xl font-bold text-900">{{ item.description }}</div>
                                 <div class="flex align-items-center gap-3">
+                                    <div><i class="pi pi-calendar"></i> {{item.date_transaction | date:'dd/MM/yyyy'}}</div>
+                                    @if(item.isInstallment) {
+                                      <div>
+                                        <i class="pi pi-undo"></i> {{item.installmentNumber}}/{{item.totalInstallmentNumber}}
+                                      </div>
+                                    }
                                     <span class="flex align-items-center gap-2">
-                                        <i class="pi pi-tag"></i>
-                                        <!--span class="font-semibold">{{ item.category }}</span-->
+                                      <i class="pi pi-tag"></i>
+                                      <!--span class="font-semibold">{{ item.category }}</span-->
                                     </span>
                                     <p-tag [value]="item.type == 'D' ? 'Gasto' : 'Ganho'" [severity]="getSeverity(item)"></p-tag>
                                     @for (tag of item.tags; track tag) {
                                       <p-tag [value]="tag"></p-tag>
                                     }
                                 </div>
-                                @if(item.isInstallment) {
-                                  <div>
-                                    <i class="pi pi-undo"></i> {{item.installmentNumber}}/{{item.totalInstallmentNumber}}
-                                  </div>
-                                }
-                                <div>
-                                  <i class="pi pi-calendar"></i> {{item.date_transaction | date:'dd/MM/yyyy'}}
-                                </div>
                             </div>
                             <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
                               <span class="text-2xl font-semibold">{{item.value | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</span>
-                              <app-transacoes-delete [disabledBtn]="item.closing_id ? true : false" (deleteButton)="isLoading = false; findTransactions(-1, transacoes, true)" [idTransaction]="item.id" />
-                              <p-button icon="pi pi-pencil" [disabled]="item.closing_id ? true : false" (click)="editTransaction = item; modalVisible = true"></p-button>
+                              <div>
+                                <app-transacoes-delete [disabledBtn]="item.closing_id ? true : false" (deleteButton)="isLoading = false; findTransactions(-1, transacoes, true)" [idTransaction]="item.id" />
+                                <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [disabled]="item.closing_id ? true : false" (click)="editTransaction = item; modalVisible = true"></p-button>
+                              </div>
                             </div>
                         </div>
                       </div>
@@ -99,12 +101,53 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
             }
           }
           @else {
-            <div style="width: 100%; height: 10rem; display: flex; justify-content: center; align-items: center">
+            <!--div style="width: 100%; height: 10rem; display: flex; justify-content: center; align-items: center">
               <div class="spinner" style="">
                 <p-progressSpinner></p-progressSpinner>
               </div>
-            </div>
+            </div-->
+            <div class="transacao-item">
+                <div class="flex justify-content-center align-items-center flex-column xl:flex-row xl:align-items-center p-4 gap-4">
+                  <div class="text-2xl font-bold text-900"><p-skeleton width="8rem" height="2rem" borderRadius="16px" /></div>
+                </div>
+              </div>
 
+            @for(e of [].constructor(10); track e){
+              <div class="transacao-item">
+                <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 border-top-1 surface-border">
+                  <div class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
+                      <div class="flex flex-column align-items-center sm:align-items-start gap-3">
+                          <div class="text-2xl font-bold text-900"><p-skeleton width="8rem" height="2rem" styleClass="mb-2" borderRadius="16px" /></div>
+                          <div class="flex align-items-center gap-3">
+                              <span class="flex align-items-center gap-2">
+                                <i class="pi pi-calendar"></i>
+                              </span>
+                              <p-skeleton height="1rem" width="6rem" borderRadius="16px" />
+
+                              <span class="flex align-items-center gap-2">
+                                <i class="pi pi-undo"></i>
+                              </span>
+                              <p-skeleton height="1rem" width="4rem" borderRadius="16px" />
+
+                              <span class="flex align-items-center gap-2">
+                                <i class="pi pi-tag"></i>
+                              </span>
+                              <p-skeleton height="1rem" width="4rem" />
+                              <p-skeleton height="1rem" width="4rem" />
+                              <p-skeleton height="1rem" width="4rem" />
+                          </div>
+                      </div>
+                      <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
+                        <p-skeleton height="2rem" width="8rem" borderRadius="16px" />
+                        <div class="flex">
+                          <p-skeleton shape="circle" size="2rem" styleClass="mr-2" />
+                          <p-skeleton shape="circle" size="2rem" styleClass="mr-2" />
+                        </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            }
           }
       </p-scrollPanel>
 
@@ -130,9 +173,9 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
         font-size: 18px;
       }
     }
-    .first-item {
+    /*.first-item {
       border-top: 1px solid #00000059;
-    }
+    }*/
 
     p-tabview {
       width: 100%

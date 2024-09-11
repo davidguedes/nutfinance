@@ -8,15 +8,17 @@ import { LoginService } from '../login/login.service';
 import { catchError, lastValueFrom } from 'rxjs';
 import { OrcamentosService } from './orcamentos.service';
 import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-orcamentos',
   standalone: true,
-  imports: [ButtonModule, OrcamentosFormComponent],
+  imports: [ButtonModule, OrcamentosFormComponent, ToastModule],
   template: `
     <div>
       <app-orcamentos-form (onSubmit)="updateBudget($event)"></app-orcamentos-form>
     </div>
+    <p-toast></p-toast>
   `,
   styles: `
     .new-register {
