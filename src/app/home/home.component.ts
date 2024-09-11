@@ -66,9 +66,9 @@ import { SkeletonModule } from 'primeng/skeleton';
       <div class="col-12 sm:col-12 md:col-6 lg:col-6 xl:col-6" style="background: white">
         <div class="card">
             <h5>Gastos por categoria</h5>
-            @if(spendingCategory) {
+            @if(!spendingCategory) {
               <div class="flex align-items-center justify-content-center">
-                <p-skeleton shape="circle" size="25rem" />
+                <p-skeleton shape="circle" size="22rem" />
               </div>
             } @else {
               <p-chart type="doughnut" [data]="spendingCategory" [options]="optionsChartPie" />
@@ -78,7 +78,7 @@ import { SkeletonModule } from 'primeng/skeleton';
       <div class="col-12 sm:col-12 md:col-6 lg:col-6 xl:col-6" style="background: white">
         <div class="card">
             <h5>Ganhos e Gastos mensais</h5>
-            @if(chartData) {
+            @if(!chartData) {
               <div class="flex align-items-end justify-content-center">
                 <p-skeleton width="2rem" height="20rem" class="mr-1" />
                 <p-skeleton width="2rem" height="18rem" class="mr-1" />
