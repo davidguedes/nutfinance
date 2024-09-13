@@ -15,11 +15,13 @@ import { OrcamentosService } from '../orcamentos.service';
 import { Orcamentos } from '../orcamentos.interface';
 import { catchError, lastValueFrom } from 'rxjs';
 import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   selector: 'app-orcamentos-form',
   standalone: true,
-  imports: [CommonModule, ButtonModule, ReactiveFormsModule, ErroFormComponent, InputTextModule, FloatLabelModule, InputNumberModule, CalendarModule, AccordionModule, ColorPickerModule],
+  imports: [CommonModule, ButtonModule, ReactiveFormsModule, ErroFormComponent, InputTextModule, FloatLabelModule, InputNumberModule, CalendarModule, AccordionModule, ColorPickerModule, ToastModule, TagModule],
   template: `
     <div class="cadastro-forms" style="display: flex; width: 100%; justify-content: center; flex-direction: column">
       <div class="formulario">
@@ -33,6 +35,17 @@ import { MessageService } from 'primeng/api';
                 </p-floatLabel>
               </div>
               <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite o total de gastos planejados" nameField="totalExpense"></app-erro-form>
+            </div>
+          </div>
+          <div class="form-input">
+            <div class="input-field d-column">
+              <div class="input-campos">
+                <p-floatLabel [style]="{'width': '100%'}">
+                  <p-inputNumber [disabled]="true" styleClass="input-styling" id="totalIncome" formControlName="totalIncome" [minFractionDigits]="2" mode="currency" currency="BRL" locale="pt-BR"> </p-inputNumber>
+                  <label for="totalIncome">Total Ganhos*</label>
+                </p-floatLabel>
+              </div>
+              <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite o total de gastos planejados" nameField="totalIncome"></app-erro-form>
             </div>
           </div>
           <div class="categorias-orcamento">
@@ -74,7 +87,11 @@ import { MessageService } from 'primeng/api';
                         <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite o total de ganhos planejados" nameField="amount"></app-erro-form>
                       </div>
                     </div>
-                    <p-button icon="pi pi-trash" [style]="{'width': '100%', 'background-color':'#ef4444', 'border': '1px solid #ef4444'}" label="Remover" (click)="removeCategory('income', index)"></p-button>
+                    @if (item.get('default')?.getRawValue()) {
+                      <p-tag value="Categoria Padrão" />
+                    } @else {
+                      <p-button icon="pi pi-trash" [style]="{'width': '100%', 'background-color':'#ef4444', 'border': '1px solid #ef4444'}" label="Remover" (click)="removeCategory('income', index)"></p-button>
+                    }
                   </div>
                 }
               </div>
@@ -116,7 +133,11 @@ import { MessageService } from 'primeng/api';
                         <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite o total de ganhos planejados" nameField="amount"></app-erro-form>
                       </div>
                     </div>
-                    <p-button icon="pi pi-trash" [style]="{'width': '100%', 'background-color':'#ef4444', 'border': '1px solid #ef4444'}" label="Remover" (click)="removeCategory('expense', index)"></p-button>
+                    @if (item.get('default')?.getRawValue()) {
+                      <p-tag value="Categoria Padrão" />
+                    } @else {
+                      <p-button icon="pi pi-trash" [style]="{'width': '100%', 'background-color':'#ef4444', 'border': '1px solid #ef4444'}" label="Remover" (click)="removeCategory('expense', index)"></p-button>
+                    }
                   </div>
                 }
               </div>
@@ -127,12 +148,11 @@ import { MessageService } from 'primeng/api';
         <div class="buttons-form">
           <div class="button"><p-button icon="pi pi-check" [style]="{'width': '100%', 'background-color':'#2196F3', 'border': '1px solid #2196F3'}" label="Salvar" (click)="submitForm()"></p-button></div>
 
-          <div class="button"><p-button icon="pi pi-eraser" [style]="{'width': '100%', 'background-color':'#fab710', 'border': '1px solid #fab710'}" label="Limpar" (click)="clear()"></p-button></div>
-
           <div class="button"><p-button icon="pi pi-times" [style]="{'width': '100%', 'background-color':'#D32F2F', 'border': '1px solid #D32F2F'}" label="Cancelar" (click)="close()"></p-button></div>
         </div>
       </div>
     </div>
+    <p-toast position="top-center"></p-toast>
   `,
   styles: `
     p-inputNumber {
@@ -164,7 +184,7 @@ import { MessageService } from 'primeng/api';
     .buttons-form {
       display: grid;
       grid-gap: 10px;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
     }
 
     .form-category {
@@ -203,7 +223,6 @@ export class OrcamentosFormComponent implements OnInit {
   protected messageService: any = inject(MessageService);
 
   @Output() onSubmit = new EventEmitter();
-  @Output() closeModal = new EventEmitter<boolean>();
 
   formBuilder = inject(FormBuilder);
   formulario!: FormGroup;
@@ -241,7 +260,8 @@ export class OrcamentosFormComponent implements OnInit {
           color: [cat.color],
           name: [cat.category, Validators.required],
           amount: [cat.amount, [Validators.required, Validators.min(0)]],
-          type: [cat.type, [Validators.required]]
+          type: [cat.type, [Validators.required]],
+          default: [cat.default]
         });
 
         if(cat.type == 'expense') {
@@ -261,15 +281,35 @@ export class OrcamentosFormComponent implements OnInit {
     return this.formulario.get('expenseCategories') as FormArray;
   }
 
+  markFormGroupTouched(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach((campo) => {
+      const controle = formGroup.get(campo);
+      controle?.markAsDirty();
+      controle?.markAsTouched();
+
+      if (controle instanceof FormGroup) {
+        this.markFormGroupTouched(controle);
+      } else if (controle instanceof FormArray) {
+        controle.controls.forEach((ctrl) => {
+          if (ctrl instanceof FormGroup) {
+            this.markFormGroupTouched(ctrl);
+          } else {
+            ctrl.markAsDirty();
+            ctrl.markAsTouched();
+          }
+        });
+      }
+    });
+  }
+
   submitForm() {
     if(this.formulario.valid) {
-      this.onSubmit.emit(this.formulario.value);
+      if(this.incomeCategories.length == 0 || this.expenseCategories.length == 0) {
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao atualizar orçamento. Ganhos e gastos precisam ter pelo menos uma categoria!'});
+      } else
+        this.onSubmit.emit(this.formulario.value);
     } else {
-      Object.keys(this.formulario.controls).forEach((campo) => {
-        const controle = this.formulario.get(campo);
-        controle?.markAsDirty();
-        controle?.markAsTouched();
-      })
+      this.markFormGroupTouched(this.formulario);
     }
   }
 
@@ -312,10 +352,11 @@ export class OrcamentosFormComponent implements OnInit {
     this.expenseCategories.clear();
     this.validateTotal('income');
     this.validateTotal('expense');
+
+    this.getOrcamento();
   }
 
   close() {
     this.clear();
-    this.closeModal.emit(true);
   }
 }

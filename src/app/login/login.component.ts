@@ -63,7 +63,7 @@ import { catchError, lastValueFrom, throwError } from 'rxjs';
         </div>
       </div>
     </div>
-    <p-toast></p-toast>
+    <p-toast position="top-center"></p-toast>
   `,
   styles: `
     p-password {

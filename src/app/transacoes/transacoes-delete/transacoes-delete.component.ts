@@ -14,7 +14,7 @@ import { catchError, lastValueFrom } from 'rxjs';
   template: `
     <p-button severity="danger" [rounded]="true" [text]="true" [disabled]="disabledBtn" (click)="confirm()" icon="pi pi-trash"></p-button>
 
-    <p-toast></p-toast>
+    <p-toast position="top-center"></p-toast>
     <p-confirmDialog #cd>
         <ng-template pTemplate="headless" let-message>
             <div class="flex flex-column align-items-center p-5 surface-overlay border-round">

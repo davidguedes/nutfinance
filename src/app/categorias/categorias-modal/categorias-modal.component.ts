@@ -19,7 +19,7 @@ import { catchError, lastValueFrom } from 'rxjs';
     <p-dialog header="Categorias" [(visible)]="visible" (onHide)="toggleVisible.emit({visible: false, alter: alter})" [draggable]="false" [resizable]="false" [modal]="true" [style]="{width: '50vw'}" [breakpoints]="{ '960px': '75vw', '660px': '90vw' }">
       <app-categorias-form (onSubmit)="createCategoria($event)" [edit]="categoryEdit" (closeModal)="close($event)"></app-categorias-form>
     </p-dialog>
-    <p-toast></p-toast>
+    <p-toast position="top-center"></p-toast>
   `,
   styles: `
   `

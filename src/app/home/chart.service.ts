@@ -50,4 +50,11 @@ export class ChartService {
 
     return this.http.get(`${this.API}/comparative`, { params: httpParams });
   }
+
+  getProgressOfMonth(user_id: string): Observable<any> {
+    let httpParams = new HttpParams();
+    httpParams = httpParams.set('user_id', user_id);
+
+    return this.http.get(`${this.API}/progressOfMonth`, { params: httpParams });
+  }
 }

@@ -102,7 +102,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
         </div>
       </div>
     </div>
-    <p-toast></p-toast>
+    <p-toast position="top-center"></p-toast>
   `,
   styles: `
     p-inputNumber {
