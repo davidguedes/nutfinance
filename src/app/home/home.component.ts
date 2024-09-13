@@ -5,7 +5,7 @@ import { ChartModule } from 'primeng/chart';
 import { CardModule } from 'primeng/card';
 import { ActionButtonComponent } from '../shared/action-button/action-button.component';
 import { TransacoesModalComponent } from '../transacoes/transacoes-modal/modal.component';
-import { PieChartData, Graficos } from './chart.interface';
+import { PieChartData, Graficos, DoubleBarChartData } from './chart.interface';
 import { ChartService } from './chart.service';
 import { catchError, lastValueFrom, of } from 'rxjs';
 import { MessageService } from 'primeng/api';
@@ -96,6 +96,27 @@ import { SkeletonModule } from 'primeng/skeleton';
             }
           </div>
       </div>
+      <div class="col-12 sm:col-12 md:col-6 lg:col-6 xl:col-6" style="background: white">
+        <div class="card">
+            <h5>Progresso do mês</h5>
+            @if(!progressOfMonth) {
+              <div class="flex align-items-end justify-content-center">
+                <p-skeleton width="2rem" height="20rem" class="mr-1" />
+                <p-skeleton width="2rem" height="18rem" class="mr-1" />
+                <p-skeleton width="2rem" height="19rem" class="mr-1" />
+                <p-skeleton width="2rem" height="16rem" class="mr-1" />
+                <p-skeleton width="2rem" height="14rem" class="mr-1" />
+                <p-skeleton width="2rem" height="20rem" class="mr-1" />
+                <p-skeleton width="2rem" height="18rem" class="mr-1" />
+                <p-skeleton width="2rem" height="19rem" class="mr-1" />
+                <p-skeleton width="2rem" height="16rem" class="mr-1" />
+                <p-skeleton width="2rem" height="14rem" class="mr-1" />
+              </div>
+            } @else {
+              <p-chart [type]="progressOfMonth?.type" [data]="progressOfMonth?.data" [options]="progressOfMonth?.options" [responsive]="true" />
+            }
+          </div>
+      </div>
       <app-action-button (functionButton)="this.modalVisible = true"></app-action-button>
       <app-transacos-modal (toggleVisible)="modalVisible = false" [visible]="modalVisible" ></app-transacos-modal>
     </div>
@@ -119,6 +140,7 @@ export class HomeComponent implements OnInit {
   profit: number | null = null;
   expense: number | null = null;
   spendingCategory: PieChartData | null = null;
+  progressOfMonth: any | null = null;
   optionsChartPie: any = {};
 
   chartOptions: any;
@@ -168,7 +190,15 @@ export class HomeComponent implements OnInit {
 
     let comparativeData = this.prepareDataComparative(comparative);
 
-    console.log('Comparativo: ', comparative)
+    let progressOfMonthData = await lastValueFrom(this.chartService.getProgressOfMonth(this.user.id).pipe(
+      catchError(error => {
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao recuperar progresso do mês: ' + error.error.message });
+        return of({ labels: [], datasets: [{ data: [], backgroundColor: [], hoverBackgroundColor: [] }] });
+      })
+    ));
+
+    this.progressOfMonth = this.prepareProgressOfMonth(progressOfMonthData);
+    console.log('progressOfMonth: ', this.progressOfMonth);
 
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
@@ -247,5 +277,62 @@ export class HomeComponent implements OnInit {
     let valuesDespesa = data.valores.filter((m: any) => m.type === 'D').map((m: any) => m.value) ?? [];
 
     return {titles, valuesReceita, valuesDespesa};
+  }
+  prepareProgressOfMonth(dataValues: any): any {
+    const documentStyle = getComputedStyle(document.documentElement);
+    const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
+    const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+    const textColor = documentStyle.getPropertyValue('--text-color');
+
+    const labels = dataValues.map((item: any) => item.name);
+    const actualAmounts = dataValues.map((item: any) => item.actualAmount);
+    const predictedAmounts = dataValues.map((item: any) => item.predictedAmount);
+
+    const type: string = 'bar';
+    const data: any = {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Valor Real',
+          data: actualAmounts,
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1,
+        },
+        {
+          label: 'Valor Previsto',
+          data: predictedAmounts,
+          backgroundColor: 'rgba(153, 102, 255, 0.2)',
+          borderColor: 'rgba(153, 102, 255, 1)',
+          borderWidth: 1,
+        },
+      ],
+    };
+
+    const options: any = {
+      scales: {
+        y: {
+          beginAtZero: true,
+        },
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: function(context: any) {
+              let label = context.dataset.label || '';
+              if (label) {
+                label += ': ';
+              }
+              if (context.parsed.y !== null) {
+                label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
+              }
+              return label;
+            }
+          }
+        }
+      }
+    }
+
+    return {type, data, options};
   }
 }

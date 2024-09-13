@@ -17,7 +17,7 @@ import { UserForm } from '../../model/user.model';
     <p-dialog header="Fixas" [(visible)]="visible" (onHide)="toggleVisible.emit({visible: false, alter: alter})" [draggable]="false" [resizable]="false" [modal]="true" [style]="{width: '50vw'}" [breakpoints]="{ '960px': '75vw', '660px': '90vw' }">
       <app-fixas-form [categorias]="budgetCategory" (onSubmit)="createFixa($event)" [edit]="fixedEdit" (closeModal)="close($event)"></app-fixas-form>
     </p-dialog>
-    <p-toast></p-toast>
+    <p-toast position="top-center"></p-toast>
   `,
   styles: `
   `,

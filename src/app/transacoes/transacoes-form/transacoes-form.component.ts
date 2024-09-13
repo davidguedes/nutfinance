@@ -105,7 +105,7 @@ import { OrcamentosService } from '../../orcamentos/orcamentos.service';
             <div class="input-field d-column">
               <div class="input-campos" style="display: flex; width: 100%">
                 <p-floatLabel [style]="{'width': '100%'}">
-                  <p-calendar [style]="{'width': '100%'}" id="date_transaction" class="calendar-cadastro" formControlName="date_transaction" [style]="{'min-width': '100%'}" appendTo="body"></p-calendar>
+                  <p-calendar [style]="{'width': '100%'}" id="date_transaction" class="calendar-cadastro" formControlName="date_transaction" [style]="{'min-width': '100%'}" appendTo="body" [minDate]="startOfPeriod" [maxDate]="endOfPeriod" [readonlyInput]="true"></p-calendar>
                   <label for="date_transaction">Dt. Transação*</label>
                 </p-floatLabel>
               </div>
@@ -222,9 +222,13 @@ export class TransacoesFormComponent implements OnInit {
   };
   formBuilder = inject(FormBuilder);
   formulario!: FormGroup;
+  startOfPeriod: Date = new Date();
+  endOfPeriod: Date = new Date();
 
   ngOnInit(): void {
     this.user = this.authService.getUser();
+    this.period(this.user.closingDate);
+
     if(this.categorias.expense == 0 && this.categorias.income == 0) {
       this.getCategorias();
     }
@@ -235,7 +239,7 @@ export class TransacoesFormComponent implements OnInit {
         description: [this.edit.description, [Validators.required]],
         value: [this.edit.value, [Validators.required]],
         type: [this.edit.type, [Validators.required]],
-        isInstallment: [this.edit.isInstallment, [Validators.required]],
+        isInstallment: [{value: this.edit.isInstallment, disabled: true}, [Validators.required]],
         totalInstallmentNumber: this.edit.totalInstallmentNumber,
         date_transaction: [new Date(this.edit.date_transaction), [Validators.required]],
         category: [this.edit.budgetCategory_id, [Validators.required]],
@@ -294,5 +298,17 @@ export class TransacoesFormComponent implements OnInit {
       this.categorias.expense = categorias.filter(cat => cat.type == 'expense') ?? [];
     } else
       this.categorias = [];
+  }
+
+  period(closingDate: number) {
+    const now = new Date();
+
+    if (now.getDate() > closingDate) {
+      this.startOfPeriod = new Date(now.getFullYear(), now.getMonth(), closingDate + 1);
+      this.endOfPeriod = new Date(now.getFullYear(), now.getMonth() + 1, closingDate);
+    } else {
+      this.startOfPeriod = new Date(now.getFullYear(), now.getMonth() - 1, closingDate + 1);
+      this.endOfPeriod = new Date(now.getFullYear(), now.getMonth(), closingDate);
+    }
   }
 }

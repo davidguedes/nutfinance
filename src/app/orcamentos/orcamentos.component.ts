@@ -18,7 +18,7 @@ import { ToastModule } from 'primeng/toast';
     <div>
       <app-orcamentos-form (onSubmit)="updateBudget($event)"></app-orcamentos-form>
     </div>
-    <p-toast></p-toast>
+    <p-toast position="top-center"></p-toast>
   `,
   styles: `
     .new-register {
