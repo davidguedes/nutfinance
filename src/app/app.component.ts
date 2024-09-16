@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { LoginService } from './login/login.service';
 import { ConnectionService } from './connection.service';
 import { ToastModule } from 'primeng/toast';
+import { UpdateService } from './update.service';
 
 @Component({
   selector: 'app-root',
@@ -30,7 +31,7 @@ import { ToastModule } from 'primeng/toast';
         </div>
       </div>
     </div>
-    <p-toast position="top-center"></p-toast>
+    <p-toast position="top-center" (onClick)="onMessageClick($event)"></p-toast>
   `,
   styles: `
     .layout-main-container {
@@ -45,12 +46,13 @@ import { ToastModule } from 'primeng/toast';
       flex: 1 1 auto;
     }
   `,
-  providers: [TranslateModule, MessageService]
+  providers: [TranslateModule, MessageService, UpdateService]
 })
 export class AppComponent implements OnInit, OnDestroy {
   title: string = 'nutfinance';
   sidebarVisible: boolean = false;
   private connectionService: ConnectionService = inject(ConnectionService);
+  private updateService: UpdateService = inject(UpdateService);
   protected translate: TranslateService = inject(TranslateService);
   protected primeNGConfig: PrimeNGConfig = inject(PrimeNGConfig);
   protected authService: any = inject(LoginService);
@@ -105,5 +107,12 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subscription.map((s) => {
       if(s) s.unsubscribe();
     });
+  }
+
+  onMessageClick(event: any) {
+    console.log('Clicou!!!!');
+    if (event.detail === 'Clique aqui para atualizar.') {
+      this.updateService.activateUpdate();
+    }
   }
 }
