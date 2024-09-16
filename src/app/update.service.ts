@@ -10,11 +10,11 @@ export class UpdateService {
   private updates = inject(SwUpdate);
 
   constructor() {
-    console.log('pélo menos aqui ele passa');
-    console.log(this.updates);
     if (this.updates.isEnabled) {
       console.log('Entrou nesse if do constructor')
       this.updates.versionUpdates.subscribe(event => {
+        console.log('event.type: ', event.type);
+
         if (event.type === "VERSION_READY") {
           this.promptUser();
           window.location.reload();
