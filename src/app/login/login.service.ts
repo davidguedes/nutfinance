@@ -15,24 +15,26 @@ interface LoginResponse {
 export class LoginService {
   private readonly API = `${enviroment.API}/auth`
   protected http = inject(HttpClient);
-  private tokenSubject: BehaviorSubject<string | null>;
-  public token$: Observable<string | null>;
+  private accessToken = new BehaviorSubject<string | null>(null);
   public user: any = null;
 
   constructor() {
-    const token = localStorage.getItem('token');
-    this.tokenSubject = new BehaviorSubject<string | null>(token);
-    this.token$ = this.tokenSubject.asObservable();
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      this.accessToken.next(token);
+    }
   }
 
   login(email: string, password: string): Observable<any> {
     return this.http.post(`${this.API}/login`, { email, password }).pipe(
       tap((response: any) => {
-        this.setToken(response.token);
         this.user = response.user;
-
-        localStorage.setItem('token', response.token);
         localStorage.setItem('user', JSON.stringify(response.user));
+
+        this.accessToken.next(response.token);
+        localStorage.setItem('accessToken', response.token);
+
+        localStorage.setItem('refreshToken', response.refreshToken);
       }),
       catchError(error => {
         //console.error('Login error: ', error);
@@ -43,7 +45,9 @@ export class LoginService {
   }
 
   logout(): void {
-    this.setToken(null);
+    this.accessToken.next(null);
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
   }
 
@@ -53,7 +57,7 @@ export class LoginService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem('token') ?? null;
+    return localStorage.getItem('accessToken') ?? null;
   }
 
   isTokenExpired(token: string): boolean {
@@ -70,12 +74,21 @@ export class LoginService {
     return !this.isTokenExpired(token);
   }
 
-  private setToken(token: string | null) {
-    if (token) {
-      localStorage.setItem('token', token);
-    } else {
-      localStorage.removeItem('token');
-    }
-    this.tokenSubject.next(token);
+  refreshToken(): Observable<string> {
+    const refreshToken = localStorage.getItem('refreshToken');
+    return this.http.post(`${this.API}/refresh-token`, { refreshToken }).pipe(
+      tap((response: any) => {
+        this.accessToken.next(response.accessToken); // Atualiza o access token
+        localStorage.setItem('accessToken', response.token);
+      })
+    );
+  }
+
+  getAccessToken(): string | null {
+    return this.accessToken.value;
+  }
+
+  isAuthenticated(): boolean {
+    return this.getAccessToken() !== null;
   }
 }
