@@ -13,7 +13,7 @@ export class UpdateService {
     if (this.updates.isEnabled) {
       console.log('Entrou nesse if do constructor')
       this.updates.versionUpdates.subscribe(event => {
-        console.log('event.type: ', event.type);
+        console.log('[0] event.type: ', event);
 
         if (event.type === "VERSION_READY") {
           this.promptUser();
