@@ -11,6 +11,7 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { InputTextModule } from 'primeng/inputtext';
 import { catchError, lastValueFrom, throwError } from 'rxjs';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-login',
@@ -23,49 +24,67 @@ import { catchError, lastValueFrom, throwError } from 'rxjs';
     FloatLabelModule,
     PasswordModule,
     ToastModule,
-    InputTextModule
+    InputTextModule,
+    ProgressSpinnerModule
   ],
   template: `
-    <div class="container">
-      <div class="login-form">
-        <div class="logo">
-          <img width="150" src="../../assets/png/logo.png" alt="Logotipo NutFinance">
-        </div>
-        <form [formGroup]="formulario" (keydown.enter)="login()">
-          <div class="form-input">
-            <div class="input-field d-column">
-              <div class="input-campos">
-                <p-floatLabel [style]="{'width': '100%'}">
-                  <input autofocus pInputText type="text" [style]="{'width': '100%'}" id="email" formControlName="email" #emailInput/>
-                  <label for="email">Login*</label>
-                </p-floatLabel>
-              </div>
-              <app-erro-form class="erro-form-login" [formulario]="formulario" errorText="Digite um email válido" nameField="email"></app-erro-form>
-            </div>
+    @if(loading) {
+      <div class="loading-view">
+        <p-progressSpinner
+        styleClass="w-4rem h-4rem"
+        strokeWidth="8"
+        fill="var(--surface-ground)"
+        animationDuration=".5s" />
+      </div>
+    } @else {
+      <div class="container">
+        <div class="login-form">
+          <div class="logo">
+            <img width="150" src="../../assets/png/logo.png" alt="Logotipo NutFinance">
           </div>
-          <div class="form-input">
-            <div class="input-field d-column">
-              <div class="input-campos">
-                <p-floatLabel [style]="{'width': '100%'}">
-                  <p-password [toggleMask]="true" [feedback]="false" autofocus [style]="{'width': '100%'}" id="password" formControlName="password" (keydown)="onKeyDown($event)"/>
-                  <label for="password">Senha*</label>
-                </p-floatLabel>
+          <form [formGroup]="formulario" (keydown.enter)="login()">
+            <div class="form-input">
+              <div class="input-field d-column">
+                <div class="input-campos">
+                  <p-floatLabel [style]="{'width': '100%'}">
+                    <input autofocus pInputText type="text" [style]="{'width': '100%'}" id="email" formControlName="email" #emailInput/>
+                    <label for="email">Login*</label>
+                  </p-floatLabel>
+                </div>
+                <app-erro-form class="erro-form-login" [formulario]="formulario" errorText="Digite um email válido" nameField="email"></app-erro-form>
               </div>
-              <app-erro-form class="erro-form-login" [formulario]="formulario" errorText="Digite uma senha válida" nameField="password"></app-erro-form>
             </div>
+            <div class="form-input">
+              <div class="input-field d-column">
+                <div class="input-campos">
+                  <p-floatLabel [style]="{'width': '100%'}">
+                    <p-password [toggleMask]="true" [feedback]="false" autofocus [style]="{'width': '100%'}" id="password" formControlName="password" (keydown)="onKeyDown($event)"/>
+                    <label for="password">Senha*</label>
+                  </p-floatLabel>
+                </div>
+                <app-erro-form class="erro-form-login" [formulario]="formulario" errorText="Digite uma senha válida" nameField="password"></app-erro-form>
+              </div>
+            </div>
+          </form>
+          <div class="buttons-form">
+            <div class="button"><p-button [style]="{'width': '100%', 'background-color':'#2196F3', 'border': '1px solid #2196F3'}" label="Login" (click)="login()"></p-button></div>
           </div>
-        </form>
-        <div class="buttons-form">
-          <div class="button"><p-button [style]="{'width': '100%', 'background-color':'#2196F3', 'border': '1px solid #2196F3'}" label="Login" (click)="login()"></p-button></div>
-        </div>
-        <div class="anchor-register">
-          <a [href]="'/register'">Cadastre-se</a>
+          <div class="anchor-register">
+            <a [href]="'/register'">Cadastre-se</a>
+          </div>
         </div>
       </div>
-    </div>
+    }
     <p-toast position="top-center"></p-toast>
   `,
   styles: `
+    .loading-view {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
     p-password {
       width: 100%!important;
     }
@@ -123,6 +142,7 @@ export class LoginComponent implements OnInit {
 
   formBuilder = inject(FormBuilder);
   formulario!: FormGroup;
+  loading: boolean = false;
 
   ngOnInit(): void {
     this.formulario = this.formBuilder.group({
@@ -133,6 +153,7 @@ export class LoginComponent implements OnInit {
 
   login() {
     if(this.formulario.valid) {
+      this.loading = true;
       let { email, password } = this.formulario.value;
 
       lastValueFrom(this.loginService.login(email, password).pipe(
@@ -146,6 +167,8 @@ export class LoginComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Erro', detail: `Login inválido! Por favor, tente novamente. ${error.message}` })
         this.formulario.reset();
         this.emailInput.nativeElement.focus();
+      }).finally(() => {
+        this.loading = false;
       });
     } else {
       Object.keys(this.formulario.controls).forEach((campo) => {

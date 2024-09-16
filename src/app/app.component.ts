@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SidebarComponent } from './sidebar/sidebar.component';
@@ -17,14 +17,14 @@ import { ToastModule } from 'primeng/toast';
   imports: [CommonModule, RouterOutlet, SidebarComponent, ToolbarComponent, ActionButtonComponent, ToastModule],
   template: `
     <div class="layout-wrapper">
-      @if (logged) {
+      @if (isAuthenticated) {
         <app-toolbar  [valueSidebarVisible]="sidebarVisible" (sidebarVisible)="handleSidebarVisible($event)"></app-toolbar>
         <div class="layout-sidebar">
           <app-sidebar [valueSidebarVisible]="sidebarVisible" (sidebarVisible)="handleSidebarVisible($event)"></app-sidebar>
         </div>
       }
 
-      <div [ngClass]="{'layout-main-container': logged}">
+      <div [ngClass]="{'layout-main-container': isAuthenticated}">
         <div class="layout-main">
           <router-outlet></router-outlet>
         </div>
@@ -55,8 +55,9 @@ export class AppComponent implements OnInit, OnDestroy {
   protected primeNGConfig: PrimeNGConfig = inject(PrimeNGConfig);
   protected authService: any = inject(LoginService);
   protected messageService = inject(MessageService);
+  protected router = inject(Router);
 
-  logged: boolean = false;
+  isAuthenticated: boolean = false;
   isOnline:boolean = true;
 
   subscription: Subscription[] = [];
@@ -82,12 +83,13 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscription.push(this.authService.token$.subscribe((token: string | null) => {
-      if (!token || this.authService.isTokenExpired(token))
-        this.logged = false;
-      else
-        this.logged = true;
-    }));
+    this.authService.accessToken.subscribe((token: any) => {
+      this.isAuthenticated = !!token;
+
+      if (!this.isAuthenticated) {
+        this.router.navigate(['/login']);
+      }
+    });
 
     this.translate.setDefaultLang('pt');
     this.subscription.push(

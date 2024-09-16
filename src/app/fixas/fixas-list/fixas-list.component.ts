@@ -13,7 +13,7 @@ import { FixasDeleteComponent } from '../fixas-delete/fixas-delete.component';
   imports: [CommonModule, TableModule, ButtonModule, PaginatorComponent, FixasModalComponent, FixasDeleteComponent],
   template: `
     <div class="content">
-      <p-table [value]="fixas" [loading]="loading" styleClass="p-datatable-gridlines" responsiveLayout="stack" [breakpoint]="'960px'" [tableStyle]="{'min-width': '50rem'}">
+      <p-table [value]="fixas" [loading]="loading" styleClass="p-datatable-gridlines" responsiveLayout="stack" [breakpoint]="'960px'" [tableStyle]="{'min-width': '50rem'}" [scrollable]="false">
         <ng-template pTemplate="header">
           <tr>
             <th>Descrição</th>

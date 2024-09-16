@@ -9,6 +9,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideServiceWorker } from '@angular/service-worker';
 import { OfflineInterceptor } from './interceptors/offline.interceptor.service';
+import { JwtInterceptor } from './interceptors/token.interceptor.service';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -21,6 +22,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch()),
     provideHttpClient(withInterceptorsFromDi()),
     { provide: HTTP_INTERCEPTORS, useClass: OfflineInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     importProvidersFrom([
         TranslateModule.forRoot({
             loader: {
