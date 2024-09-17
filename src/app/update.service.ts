@@ -16,8 +16,8 @@ export class UpdateService {
         console.log('[1] event.type: ', event);
 
         if (event.type === "VERSION_READY") {
+          console.log('Nova versão disponível!');
           this.promptUser();
-          window.location.reload();
         }
       });
     }
