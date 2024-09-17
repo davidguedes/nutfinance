@@ -3,10 +3,11 @@ import { LoginComponent } from './login/login.component';
 import { authGuard } from './guards/auth.guard';
 import { RegisterComponent } from './register/register.component';
 import { OfflinePageComponent } from './offline-page/offline-page.component';
+import { isAuthenticatedGuard } from './guards/is-authenticated.guard';
 
 export const routes: Routes = [
-  { path: 'login', component: LoginComponent, data: { title: 'NutFinance - Login'} },
-  { path: 'register', component: RegisterComponent, data: { title: 'NutFinance - Sign Up'} },
+  { path: 'login', canActivate: [isAuthenticatedGuard], component: LoginComponent, data: { title: 'NutFinance - Login'} },
+  { path: 'register', canActivate: [isAuthenticatedGuard], component: RegisterComponent, data: { title: 'NutFinance - Sign Up'} },
   //{ path: 'categorias', canActivate: [authGuard], loadChildren: () => import('./categorias/categorias.module').then((m) => m.CategoriasModule), data: { title: 'NutFinance - Categorias'} },
   { path: 'transacoes', canActivate: [authGuard], loadChildren: () => import('./transacoes/transacoes.module').then((m) => m.TransacoesModule), data: { title: 'NutFinance - Transações'} },
   { path: 'orcamento', canActivate: [authGuard], loadChildren: () => import('./orcamentos/orcamentos.module').then((m) => m.OrcamentosModule), data: { title: 'NutFinance - Orçamentos'} },
