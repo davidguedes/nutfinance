@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { TableModule } from 'primeng/table';
+import { TableModule } from 'primeng-17.3.0/table';
 import { FixedForm } from '../../model/fixed.model';
 import { ButtonModule } from 'primeng/button';
 import { PaginatorComponent } from '../../shared/paginator/paginator.component';
@@ -13,7 +13,7 @@ import { FixasDeleteComponent } from '../fixas-delete/fixas-delete.component';
   imports: [CommonModule, TableModule, ButtonModule, PaginatorComponent, FixasModalComponent, FixasDeleteComponent],
   template: `
     <div class="content">
-      <p-table [value]="fixas" [loading]="loading" styleClass="p-datatable-gridlines" responsiveLayout="stack" [breakpoint]="'960px'" [tableStyle]="{'min-width': '50rem'}" [scrollable]="false">
+      <p-table [value]="fixas" [loading]="loading" styleClass="p-datatable-gridlines" responsiveLayout="stack" [breakpoint]="'960px'" [tableStyle]="{'min-width': '100%'}" [scrollable]="false">
         <ng-template pTemplate="header">
           <tr>
             <th>Descrição</th>
