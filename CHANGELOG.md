@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.4](https://github.com/davidguedes/nutfinance/compare/v0.0.3...v0.0.4) (2024-09-17)
+
+
+### Features
+
+* adição de outra versão do primeng pra ajuste em tabela no modo pilha ([f81b4ee](https://github.com/davidguedes/nutfinance/commit/f81b4eee4b84da08f44c3e7a97e3c1ad1c72f7ab))
+
 ### [0.0.3](https://github.com/davidguedes/nutfinance/compare/v0.0.2...v0.0.3) (2024-09-16)
 
 
