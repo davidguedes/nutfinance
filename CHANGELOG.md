@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.6](https://github.com/davidguedes/nutfinance/compare/v0.0.4...v0.0.6) (2024-09-17)
+
+
+### Features
+
+* novo guarda de rota para impedir ação de ir para tel ade logi ne registro quando autenticado ([be4b93c](https://github.com/davidguedes/nutfinance/commit/be4b93cbb771cc658cc61330fa6f17c7fe52faba))
+* novo guarda de rota para impedir ação de ir para tel ade logi ne registro quando autenticado ([ad7c51a](https://github.com/davidguedes/nutfinance/commit/ad7c51ab0ef5b5e3ddad3a4c41fdb6764a4a99e1))
+
 ### [0.0.5](https://github.com/davidguedes/nutfinance/compare/v0.0.4...v0.0.5) (2024-09-17)
 
 
