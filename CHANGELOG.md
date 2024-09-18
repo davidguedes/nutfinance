@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.9](https://github.com/davidguedes/nutfinance/compare/v0.0.8...v0.0.9) (2024-09-18)
+
+
+### Bug Fixes
+
+* testando nova solução ([abc39bc](https://github.com/davidguedes/nutfinance/commit/abc39bcd4f3a6b5b8114d021b3955f7698180094))
+
+### [0.0.8](https://github.com/davidguedes/nutfinance/compare/v0.0.7...v0.0.8) (2024-09-18)
+
+
+### Bug Fixes
+
+* ajuste em notificação de nova versão ([40364fb](https://github.com/davidguedes/nutfinance/commit/40364fb88aca11bbc39ac51d48fa25d958732103))
+
 ### [0.0.7](https://github.com/davidguedes/nutfinance/compare/v0.0.6...v0.0.7) (2024-09-17)
 
 ### [0.0.6](https://github.com/davidguedes/nutfinance/compare/v0.0.4...v0.0.6) (2024-09-17)
