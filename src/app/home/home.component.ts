@@ -272,9 +272,9 @@ export class HomeComponent implements OnInit {
   }
 
   prepareDataComparative(data: any): any {
-    let titles = data.meses.map((m: any) => m.title) ?? [];
-    let valuesReceita = data.valores.filter((m: any) => m.type === 'R').map((m: any) => m.value) ?? [];
-    let valuesDespesa = data.valores.filter((m: any) => m.type === 'D').map((m: any) => m.value) ?? [];
+    let titles = data?.meses?.map((m: any) => m.title) ?? [];
+    let valuesReceita = data?.valores?.filter((m: any) => m.type === 'R').map((m: any) => m.value) ?? [];
+    let valuesDespesa = data?.valores?.filter((m: any) => m.type === 'D').map((m: any) => m.value) ?? [];
 
     return {titles, valuesReceita, valuesDespesa};
   }

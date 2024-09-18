@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
 import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SidebarComponent } from './sidebar/sidebar.component';
@@ -11,6 +10,7 @@ import { LoginService } from './login/login.service';
 import { ConnectionService } from './connection.service';
 import { ToastModule } from 'primeng/toast';
 import { UpdateService } from './update.service';
+import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -31,7 +31,7 @@ import { UpdateService } from './update.service';
         </div>
       </div>
     </div>
-    <p-toast position="top-center" (onClick)="onMessageClick($event)"></p-toast>
+    <p-toast position="top-center" (click)="onMessageClick($event)"></p-toast>
   `,
   styles: `
     .layout-main-container {
@@ -65,7 +65,7 @@ export class AppComponent implements OnInit, OnDestroy {
   subscription: Subscription[] = [];
 
   constructor(){
-    this.connectionService.getConnectionStatus().subscribe(status => {
+    this.connectionService.getConnectionStatus().subscribe((status: boolean) => {
       this.isOnline = status;
       console.log('Status da conexão:', this.isOnline ? 'Online' : 'Offline');
       if(!this.isOnline) {
@@ -112,6 +112,7 @@ export class AppComponent implements OnInit, OnDestroy {
   onMessageClick(event: any) {
     console.log('Clicou!!!!');
     if (event.detail === 'Clique aqui para atualizar.') {
+      console.log('entrou no if');
       this.updateService.activateUpdate();
     }
   }
