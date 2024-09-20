@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SidebarComponent } from './sidebar/sidebar.component';
@@ -19,19 +19,19 @@ import { Router, RouterOutlet } from '@angular/router';
   template: `
     <div class="layout-wrapper">
       @if (isAuthenticated) {
-        <app-toolbar  [valueSidebarVisible]="sidebarVisible" (sidebarVisible)="handleSidebarVisible($event)"></app-toolbar>
+        <app-toolbar [valueSidebarVisible]="sidebarVisible" (sidebarVisible)="handleSidebarVisible($event)"></app-toolbar>
         <div class="layout-sidebar">
           <app-sidebar [valueSidebarVisible]="sidebarVisible" (sidebarVisible)="handleSidebarVisible($event)"></app-sidebar>
         </div>
       }
 
-      <div [ngClass]="{'layout-main-container': isAuthenticated}">
+      <div [ngClass]="{'layout-main-container': isAuthenticated}" (swiperight)="isAuthenticated ? handleSidebarVisible(true) : null" (swipeleft)="isAuthenticated ? handleSidebarVisible(false) : null">
         <div class="layout-main">
           <router-outlet></router-outlet>
         </div>
       </div>
     </div>
-    <p-toast position="top-center" (click)="onMessageClick($event)"></p-toast>
+    <p-toast position="top-center" (press)="onMessageClick($event)"></p-toast>
   `,
   styles: `
     .layout-main-container {

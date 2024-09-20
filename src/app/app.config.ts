@@ -1,8 +1,9 @@
 import { ApplicationConfig, importProvidersFrom, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
+import 'hammerjs';
 import { routes } from './app.routes';
-import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
+import { BrowserModule, HammerModule, provideClientHydration } from '@angular/platform-browser';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -32,7 +33,8 @@ export const appConfig: ApplicationConfig = {
             }
         }),
         BrowserModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        HammerModule
     ]),
     provideServiceWorker('ngsw-worker.js', {
         enabled: !isDevMode(),
