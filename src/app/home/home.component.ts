@@ -284,9 +284,9 @@ export class HomeComponent implements OnInit {
     const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
     const textColor = documentStyle.getPropertyValue('--text-color');
 
-    const labels = dataValues.map((item: any) => item.name);
-    const actualAmounts = dataValues.map((item: any) => item.actualAmount);
-    const predictedAmounts = dataValues.map((item: any) => item.predictedAmount);
+    const labels = dataValues?.map((item: any) => item.name);
+    const actualAmounts = dataValues?.map((item: any) => item.actualAmount);
+    const predictedAmounts = dataValues?.map((item: any) => item.predictedAmount);
 
     const type: string = 'bar';
     const data: any = {
