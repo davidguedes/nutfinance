@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { TableModule } from 'primeng-17.3.0/table';
+import { TableModule } from 'primeng/table';
 import { FixedForm } from '../../model/fixed.model';
 import { ButtonModule } from 'primeng/button';
 import { PaginatorComponent } from '../../shared/paginator/paginator.component';

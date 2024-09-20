@@ -22,12 +22,7 @@
     "lib": [
       "ES2022",
       "dom"
-    ],
-    "baseUrl": "./",
-    "paths": {
-      "primeng-17.3.0/*": ["node_modules/primeng@17.3.0"],
-      "primeng/*": ["node_modules/primeng@17.18.10"]
-    }
+    ]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
