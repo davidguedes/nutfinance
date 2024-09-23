@@ -25,6 +25,7 @@ export class UpdateService {
 
   promptUser() {
     this.messageService.add({
+      key: 'version',
       severity: 'info',
       summary: 'Nova versão disponível!',
       detail: 'Clique aqui para atualizar.',

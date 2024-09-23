@@ -32,9 +32,9 @@ export class SidebarComponent implements OnInit {
   ngOnInit() {
     this.items = [
         {
-            label: 'Home',
-            icon: 'pi pi-fw pi-home',
-            command: () => {this.router.navigate(['/']); this.toggleVisible(false)}
+          label: 'Home',
+          icon: 'pi pi-fw pi-home',
+          command: () => {this.router.navigate(['/']); this.toggleVisible(false)}
         },
         {
           label: 'Transações',
@@ -42,9 +42,9 @@ export class SidebarComponent implements OnInit {
           command: () => {this.router.navigate(['/transacoes']); this.toggleVisible(false)}
         },
         {
-            label: 'Fixas',
-            icon: 'pi pi-fw pi-minus',
-            command: () => {this.router.navigate(['/fixas']); this.toggleVisible(false)}
+          label: 'Fixas',
+          icon: 'pi pi-fw pi-minus',
+          command: () => {this.router.navigate(['/fixas']); this.toggleVisible(false)}
         },
         /*{
           label: 'Categorias',
@@ -69,14 +69,14 @@ export class SidebarComponent implements OnInit {
           disabled: true
         },
         {
-            label: 'Perfil',
-            icon: 'pi pi-fw pi-user',
-            command: () => {this.router.navigate(['/perfil']); this.toggleVisible(false)}
+          label: 'Perfil',
+          icon: 'pi pi-fw pi-user',
+          command: () => {this.router.navigate(['/perfil']); this.toggleVisible(false)}
         },
         {
-            label: 'Sair',
-            icon: 'pi pi-fw pi-sign-out',
-            command: () => {this.loginService.logout(), this.router.navigate(['/login']); this.toggleVisible(false)}
+          label: 'Sair',
+          icon: 'pi pi-fw pi-sign-out',
+          command: () => {this.loginService.logout(), this.router.navigate(['/login']); this.toggleVisible(false)}
         }
     ];
   }
