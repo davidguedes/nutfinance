@@ -17,141 +17,147 @@ import { catchError, lastValueFrom } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { TagModule } from 'primeng/tag';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-orcamentos-form',
   standalone: true,
-  imports: [CommonModule, ButtonModule, ReactiveFormsModule, ErroFormComponent, InputTextModule, FloatLabelModule, InputNumberModule, CalendarModule, AccordionModule, ColorPickerModule, ToastModule, TagModule],
+  imports: [CommonModule, ButtonModule, ReactiveFormsModule, ErroFormComponent, InputTextModule, FloatLabelModule, InputNumberModule, CalendarModule, AccordionModule, ColorPickerModule, ToastModule, TagModule, ProgressSpinnerModule],
   template: `
-    <div class="cadastro-forms" style="display: flex; width: 100%; justify-content: center; flex-direction: column">
-      <div class="formulario">
-        <form [formGroup]="formulario" (keydown.enter)="submitForm()">
-          <div class="form-input">
-            <div class="input-field d-column">
-              <div class="input-campos">
-                <p-floatLabel [style]="{'width': '100%'}">
-                  <p-inputNumber [disabled]="true" styleClass="input-styling" id="totalExpense" formControlName="totalExpense" [minFractionDigits]="2" mode="currency" currency="BRL" locale="pt-BR"> </p-inputNumber>
-                  <label for="totalExpense">Total Gastos*</label>
-                </p-floatLabel>
+    @if(loading) {
+      <div>
+        <p-progressSpinner ariaLabel="loading" class="loading-area"/>
+      </div>
+    }
+    @else {
+      <div class="cadastro-forms" style="display: flex; width: 100%; justify-content: center; flex-direction: column">
+        <div class="formulario">
+          <form [formGroup]="formulario" (keydown.enter)="submitForm()">
+            <div class="form-input">
+              <div class="input-field d-column">
+                <div class="input-campos">
+                  <p-floatLabel [style]="{'width': '100%'}">
+                    <p-inputNumber [disabled]="true" styleClass="input-styling" id="totalExpense" formControlName="totalExpense" [minFractionDigits]="2" mode="currency" currency="BRL" locale="pt-BR"> </p-inputNumber>
+                    <label for="totalExpense">Total Gastos*</label>
+                  </p-floatLabel>
+                </div>
+                <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite o total de gastos planejados" nameField="totalExpense"></app-erro-form>
               </div>
-              <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite o total de gastos planejados" nameField="totalExpense"></app-erro-form>
             </div>
-          </div>
-          <div class="form-input">
-            <div class="input-field d-column">
-              <div class="input-campos">
-                <p-floatLabel [style]="{'width': '100%'}">
-                  <p-inputNumber [disabled]="true" styleClass="input-styling" id="totalIncome" formControlName="totalIncome" [minFractionDigits]="2" mode="currency" currency="BRL" locale="pt-BR"> </p-inputNumber>
-                  <label for="totalIncome">Total Ganhos*</label>
-                </p-floatLabel>
+            <div class="form-input">
+              <div class="input-field d-column">
+                <div class="input-campos">
+                  <p-floatLabel [style]="{'width': '100%'}">
+                    <p-inputNumber [disabled]="true" styleClass="input-styling" id="totalIncome" formControlName="totalIncome" [minFractionDigits]="2" mode="currency" currency="BRL" locale="pt-BR"> </p-inputNumber>
+                    <label for="totalIncome">Total Ganhos*</label>
+                  </p-floatLabel>
+                </div>
+                <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite o total de gastos planejados" nameField="totalIncome"></app-erro-form>
               </div>
-              <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite o total de gastos planejados" nameField="totalIncome"></app-erro-form>
             </div>
-          </div>
-          <div class="categorias-orcamento">
-          <p-accordion [activeIndex]="0">
-            {{incomeCategories.controls}}
-            <p-accordionTab [header]="'Ganhos - R$'+formulario.get('totalIncome')?.value">
-              <p-button icon="pi pi-plus" [style]="{'width': '100%', 'background-color':'#2196F3', 'border': '1px solid #2196F3'}" label="Adicionar" (click)="addCategory('income')"></p-button>
-              <div formArrayName="incomeCategories">
-                @for (item of incomeCategories.controls; track item; let index = $index) {
-                  <div class="form-category" [formGroupName]="index">
-                    <div class="form-input">
-                      <div class="input-field d-column">
-                        <div class="input-campos">
-                          <p-floatLabel [style]="{'width': '100%'}">
-                            <p-colorPicker formControlName="color" />
-                          </p-floatLabel>
+            <div class="categorias-orcamento">
+            <p-accordion [activeIndex]="0">
+              <p-accordionTab [header]="'Ganhos - R$'+formulario.get('totalIncome')?.value">
+                <p-button icon="pi pi-plus" [style]="{'width': '100%', 'background-color':'#2196F3', 'border': '1px solid #2196F3'}" label="Adicionar" (click)="addCategory('income')"></p-button>
+                <div formArrayName="incomeCategories">
+                  @for (item of incomeCategories.controls; track item; let index = $index) {
+                    <div class="form-category" [formGroupName]="index">
+                      <div class="form-input">
+                        <div class="input-field d-column">
+                          <div class="input-campos">
+                            <p-floatLabel [style]="{'width': '100%'}">
+                              <p-colorPicker formControlName="color" />
+                            </p-floatLabel>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div class="form-input">
-                      <div class="input-field d-column">
-                        <div class="input-campos">
-                          <p-floatLabel [style]="{'width': '100%'}">
-                            <input pInputText type="text" [style]="{'width': '100%'}" id="name" formControlName="name"/>
-                            <label for="name">Nome categoria*</label>
-                          </p-floatLabel>
-                        </div>
-                        <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite um nome válido" [nameField]="index+'.name'" nameForm="incomeCategories"></app-erro-form>
-                      </div>
-                    </div>
-                    <div class="form-input">
-                      <div class="input-field d-column">
-                        <div class="input-campos">
-                          <p-floatLabel [style]="{'width': '100%'}">
-                            <p-inputNumber styleClass="input-styling" id="amount" formControlName="amount" [minFractionDigits]="2" mode="currency" currency="BRL" locale="pt-BR" (onInput)="validateTotal('income')"></p-inputNumber>
-                            <label for="amount">Total p/ categoria*</label>
-                          </p-floatLabel>
-                        </div>
-                        <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite o total de ganhos planejados" nameField="amount"></app-erro-form>
-                      </div>
-                    </div>
-                    @if (item.get('default')?.getRawValue()) {
-                      <p-tag value="Categoria Padrão" />
-                    } @else {
-                      <p-button icon="pi pi-trash" [style]="{'width': '100%', 'background-color':'#ef4444', 'border': '1px solid #ef4444'}" label="Remover" (click)="removeCategory('income', index)"></p-button>
-                    }
-                  </div>
-                }
-              </div>
-            </p-accordionTab>
-            <p-accordionTab [header]="'Gastos - R$'+formulario.get('totalExpense')?.value">
-            {{expenseCategories.controls}}
-              <p-button icon="pi pi-plus" [style]="{'width': '100%', 'background-color':'#2196F3', 'border': '1px solid #2196F3'}" label="Adicionar" (click)="addCategory('expense')"></p-button>
-              <div formArrayName="expenseCategories">
-              @for (item of expenseCategories.controls; track item; let index = $index) {
-                  <div class="form-category" [formGroupName]="index">
-                    <div class="form-input">
-                      <div class="input-field d-column">
-                        <div class="input-campos">
-                          <p-floatLabel [style]="{'width': '100%'}">
-                            <p-colorPicker formControlName="color" />
-                          </p-floatLabel>
+                      <div class="form-input">
+                        <div class="input-field d-column">
+                          <div class="input-campos">
+                            <p-floatLabel [style]="{'width': '100%'}">
+                              <input pInputText type="text" [style]="{'width': '100%'}" id="name" formControlName="name"/>
+                              <label for="name">Nome categoria*</label>
+                            </p-floatLabel>
+                          </div>
+                          <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite um nome válido" [nameField]="index+'.name'" nameForm="incomeCategories"></app-erro-form>
                         </div>
                       </div>
-                    </div>
-                    <div class="form-input">
-                      <div class="input-field d-column">
-                        <div class="input-campos">
-                          <p-floatLabel [style]="{'width': '100%'}">
-                            <input pInputText type="text" [style]="{'width': '100%'}" id="name" formControlName="name"/>
-                            <label for="name">Nome categoria*</label>
-                          </p-floatLabel>
+                      <div class="form-input">
+                        <div class="input-field d-column">
+                          <div class="input-campos">
+                            <p-floatLabel [style]="{'width': '100%'}">
+                              <p-inputNumber styleClass="input-styling" id="amount" formControlName="amount" [minFractionDigits]="2" mode="currency" currency="BRL" locale="pt-BR" (onInput)="validateTotal('income')"></p-inputNumber>
+                              <label for="amount">Total p/ categoria*</label>
+                            </p-floatLabel>
+                          </div>
+                          <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite o total de ganhos planejados" nameField="amount"></app-erro-form>
                         </div>
-                        <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite um nome válido" [nameField]="index+'.name'" nameForm="expenseCategories"></app-erro-form>
                       </div>
+                      @if (item.get('default')?.getRawValue()) {
+                        <p-tag value="Categoria Padrão" />
+                      } @else {
+                        <p-button icon="pi pi-trash" [style]="{'width': '100%', 'background-color':'#ef4444', 'border': '1px solid #ef4444'}" label="Remover" (click)="removeCategory('income', index)"></p-button>
+                      }
                     </div>
-                    <div class="form-input">
-                      <div class="input-field d-column">
-                        <div class="input-campos">
-                          <p-floatLabel [style]="{'width': '100%'}">
-                            <p-inputNumber styleClass="input-styling" id="amount" formControlName="amount" [minFractionDigits]="2" mode="currency" currency="BRL" locale="pt-BR" (onInput)="validateTotal('expense')"></p-inputNumber>
-                            <label for="amount">Total p/ categoria*</label>
-                          </p-floatLabel>
+                  }
+                </div>
+              </p-accordionTab>
+              <p-accordionTab [header]="'Gastos - R$'+formulario.get('totalExpense')?.value">
+                <p-button icon="pi pi-plus" [style]="{'width': '100%', 'background-color':'#2196F3', 'border': '1px solid #2196F3'}" label="Adicionar" (click)="addCategory('expense')"></p-button>
+                <div formArrayName="expenseCategories">
+                @for (item of expenseCategories.controls; track item; let index = $index) {
+                    <div class="form-category" [formGroupName]="index">
+                      <div class="form-input">
+                        <div class="input-field d-column">
+                          <div class="input-campos">
+                            <p-floatLabel [style]="{'width': '100%'}">
+                              <p-colorPicker formControlName="color" />
+                            </p-floatLabel>
+                          </div>
                         </div>
-                        <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite o total de ganhos planejados" nameField="amount"></app-erro-form>
                       </div>
+                      <div class="form-input">
+                        <div class="input-field d-column">
+                          <div class="input-campos">
+                            <p-floatLabel [style]="{'width': '100%'}">
+                              <input pInputText type="text" [style]="{'width': '100%'}" id="name" formControlName="name"/>
+                              <label for="name">Nome categoria*</label>
+                            </p-floatLabel>
+                          </div>
+                          <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite um nome válido" [nameField]="index+'.name'" nameForm="expenseCategories"></app-erro-form>
+                        </div>
+                      </div>
+                      <div class="form-input">
+                        <div class="input-field d-column">
+                          <div class="input-campos">
+                            <p-floatLabel [style]="{'width': '100%'}">
+                              <p-inputNumber styleClass="input-styling" id="amount" formControlName="amount" [minFractionDigits]="2" mode="currency" currency="BRL" locale="pt-BR" (onInput)="validateTotal('expense')"></p-inputNumber>
+                              <label for="amount">Total p/ categoria*</label>
+                            </p-floatLabel>
+                          </div>
+                          <app-erro-form class="erro-form-cadastro" [formulario]="formulario" errorText="Digite o total de ganhos planejados" nameField="amount"></app-erro-form>
+                        </div>
+                      </div>
+                      @if (item.get('default')?.getRawValue()) {
+                        <p-tag value="Categoria Padrão" />
+                      } @else {
+                        <p-button icon="pi pi-trash" [style]="{'width': '100%', 'background-color':'#ef4444', 'border': '1px solid #ef4444'}" label="Remover" (click)="removeCategory('expense', index)"></p-button>
+                      }
                     </div>
-                    @if (item.get('default')?.getRawValue()) {
-                      <p-tag value="Categoria Padrão" />
-                    } @else {
-                      <p-button icon="pi pi-trash" [style]="{'width': '100%', 'background-color':'#ef4444', 'border': '1px solid #ef4444'}" label="Remover" (click)="removeCategory('expense', index)"></p-button>
-                    }
-                  </div>
-                }
-              </div>
-            </p-accordionTab>
-          </p-accordion>
-          </div>
-        </form>
-        <div class="buttons-form">
-          <div class="button"><p-button icon="pi pi-check" [style]="{'width': '100%', 'background-color':'#2196F3', 'border': '1px solid #2196F3'}" label="Salvar" (click)="submitForm()"></p-button></div>
+                  }
+                </div>
+              </p-accordionTab>
+            </p-accordion>
+            </div>
+          </form>
+          <div class="buttons-form">
+            <div class="button"><p-button icon="pi pi-check" [style]="{'width': '100%', 'background-color':'#2196F3', 'border': '1px solid #2196F3'}" label="Salvar" (click)="submitForm()"></p-button></div>
 
-          <div class="button"><p-button icon="pi pi-times" [style]="{'width': '100%', 'background-color':'#D32F2F', 'border': '1px solid #D32F2F'}" label="Cancelar" (click)="close()"></p-button></div>
+            <div class="button"><p-button icon="pi pi-times" [style]="{'width': '100%', 'background-color':'#D32F2F', 'border': '1px solid #D32F2F'}" label="Cancelar" (click)="close()"></p-button></div>
+          </div>
         </div>
       </div>
-    </div>
+    }
     <p-toast position="top-center"></p-toast>
   `,
   styles: `
@@ -169,6 +175,14 @@ import { TagModule } from 'primeng/tag';
 
     ::ng-deep span.p-calendar {
       width: 100%!important;
+    }
+
+    .loading-area {
+      width: calc(100vw - 16px);
+      height: calc(100vh - 99px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .form-input {
@@ -221,6 +235,7 @@ export class OrcamentosFormComponent implements OnInit {
   protected authService: any = inject(LoginService);
   protected budgetService: Orcamentos = inject(OrcamentosService);
   protected messageService: any = inject(MessageService);
+  loading: boolean = true;
 
   @Output() onSubmit = new EventEmitter();
 
@@ -271,6 +286,8 @@ export class OrcamentosFormComponent implements OnInit {
         }
       })
     }
+
+    this.loading = false;
   }
 
   get incomeCategories() {

@@ -11,11 +11,12 @@ import { ConnectionService } from './connection.service';
 import { ToastModule } from 'primeng/toast';
 import { UpdateService } from './update.service';
 import { Router, RouterOutlet } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, SidebarComponent, ToolbarComponent, ActionButtonComponent, ToastModule],
+  imports: [CommonModule, RouterOutlet, SidebarComponent, ToolbarComponent, ActionButtonComponent, ToastModule, ButtonModule],
   template: `
     <div class="layout-wrapper">
       @if (isAuthenticated) {
@@ -31,7 +32,17 @@ import { Router, RouterOutlet } from '@angular/router';
         </div>
       </div>
     </div>
-    <p-toast position="top-center" (press)="onMessageClick($event)"></p-toast>
+    <p-toast position="top-center" key="connectionStatus"></p-toast>
+    <p-toast position="top-center" key="version">
+      <ng-template let-message pTemplate="message">
+        <div class="flex flex-column align-items-start" style="flex: 1">
+            <div class="font-medium text-lg my-3 text-900">
+              {{ message.summary }}
+            </div>
+            <p-button size="small" label="Atualizar" (onClick)="updateService.activateUpdate()"/>
+        </div>
+      </ng-template>
+    </p-toast>
   `,
   styles: `
     .layout-main-container {
@@ -52,7 +63,7 @@ export class AppComponent implements OnInit, OnDestroy {
   title: string = 'nutfinance';
   sidebarVisible: boolean = false;
   private connectionService: ConnectionService = inject(ConnectionService);
-  private updateService: UpdateService = inject(UpdateService);
+  protected updateService: UpdateService = inject(UpdateService);
   protected translate: TranslateService = inject(TranslateService);
   protected primeNGConfig: PrimeNGConfig = inject(PrimeNGConfig);
   protected authService: any = inject(LoginService);
@@ -70,12 +81,14 @@ export class AppComponent implements OnInit, OnDestroy {
       console.log('Status da conexão:', this.isOnline ? 'Online' : 'Offline');
       if(!this.isOnline) {
         this.messageService.add({
+          key: 'connectionStatus',
           severity: 'warn',
           summary: 'Offline',
           detail: 'Sem conexão com a internet'
         });
       } else {
         this.messageService.add({
+          key: 'connectionStatus',
           severity: 'success',
           summary: 'Online',
           detail: 'Conexão estabelecida'
