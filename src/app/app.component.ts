@@ -1,17 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
-import { MessageService, PrimeNGConfig } from 'primeng/api';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MessageService, PrimeNGConfig } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast';
+import { Subscription } from 'rxjs/internal/Subscription';
+import { ConnectionService } from './connection.service';
+import { LoginService } from './login/login.service';
+import { ActionButtonComponent } from './shared/action-button/action-button.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
-import { ActionButtonComponent } from './shared/action-button/action-button.component';
-import { Subscription } from 'rxjs/internal/Subscription';
-import { LoginService } from './login/login.service';
-import { ConnectionService } from './connection.service';
-import { ToastModule } from 'primeng/toast';
 import { UpdateService } from './update.service';
-import { Router, RouterOutlet } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-root',
@@ -22,11 +22,23 @@ import { ButtonModule } from 'primeng/button';
       @if (isAuthenticated) {
         <app-toolbar [valueSidebarVisible]="sidebarVisible" (sidebarVisible)="handleSidebarVisible($event)"></app-toolbar>
         <div class="layout-sidebar">
-          <app-sidebar [valueSidebarVisible]="sidebarVisible" (sidebarVisible)="handleSidebarVisible($event)"></app-sidebar>
+          <app-sidebar
+            (swipeleft)="handleSidebarVisible(false)"
+            (sidebarVisible)="handleSidebarVisible($event)"
+            [valueSidebarVisible]="sidebarVisible"
+          ></app-sidebar>
         </div>
+
+        @if(!sidebarVisible){
+          <!-- Detecta swipe nas bordas para abrir a sidebar -->
+          <div
+            class="swipe-detect-area"
+            (swiperight)="handleSidebarVisible(true)"
+          ></div>
+        }
       }
 
-      <div [ngClass]="{'layout-main-container': isAuthenticated}" (swiperight)="isAuthenticated ? handleSidebarVisible(true) : null" (swipeleft)="isAuthenticated ? handleSidebarVisible(false) : null">
+      <div [ngClass]="{'layout-main-container': isAuthenticated}" style="touch-action: pan-y;">
         <div class="layout-main">
           <router-outlet></router-outlet>
         </div>
@@ -45,6 +57,17 @@ import { ButtonModule } from 'primeng/button';
     </p-toast>
   `,
   styles: `
+    /* Área lateral para detectar swipe */
+    .swipe-detect-area {
+      position: fixed;
+      top: 68px;
+      bottom: 0;
+      left: 0;
+      width: 10%; /* Limita o swipe à primeira parte da tela (10%) */
+      z-index: 10;
+      touch-action: none; /* Impede a rolagem nesta área */
+    }
+
     .layout-main-container {
       display: flex;
       flex-direction: column;
@@ -113,6 +136,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   handleSidebarVisible(value: boolean) {
+    console.log("e ai hein")
     this.sidebarVisible = value;
   }
 
