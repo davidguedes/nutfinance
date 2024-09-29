@@ -47,6 +47,32 @@ import { FloatLabelModule } from 'primeng/floatlabel';
       grid-template-columns: 1fr 1fr 1fr;
       grid-gap: 10px;
     }
+
+    ::ng-deep span.p-calendar {
+      width: 100%!important;
+    }
+
+    .input-filter {
+      width: 100%;
+    }
+
+    @media (max-width: 1120px) {
+      .content-form {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 920px) {
+      .content-form {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .content-form {
+        grid-template-columns: 1fr;
+      }
+    }
   `
 })
 export class FechamentosFilterComponent {

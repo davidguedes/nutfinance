@@ -82,8 +82,8 @@ import { TriStateCheckboxModule } from 'primeng/tristatecheckbox';
       width: 100%;
     }
 
-    ::ng-deep .p-inputtext, ::ng-deep .p-chips {
-      width: 100%;
+    ::ng-deep .p-inputtext, ::ng-deep .p-chips, ::ng-deep span.p-calendar {
+      width: 100%!important;
     }
 
     @media (max-width: 1360px) {
