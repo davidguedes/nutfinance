@@ -118,7 +118,7 @@ import { SkeletonModule } from 'primeng/skeleton';
           </div>
       </div>
       <app-action-button (functionButton)="this.modalVisible = true"></app-action-button>
-      <app-transacos-modal (toggleVisible)="modalVisible = false" [visible]="modalVisible" ></app-transacos-modal>
+      <app-transacos-modal (newTransaction)="initChart()" (toggleVisible)="modalVisible = false" [visible]="modalVisible" ></app-transacos-modal>
     </div>
   `,
   styles: `
@@ -198,7 +198,7 @@ export class HomeComponent implements OnInit {
     ));
 
     this.progressOfMonth = this.prepareProgressOfMonth(progressOfMonthData);
-    console.log('progressOfMonth: ', this.progressOfMonth);
+    //console.log('progressOfMonth: ', this.progressOfMonth);
 
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');

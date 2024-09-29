@@ -79,7 +79,7 @@ export class LoginService {
     return this.http.post(`${this.API}/refresh-token`, { refreshToken }).pipe(
       tap((response: any) => {
         this.accessToken.next(response.accessToken); // Atualiza o access token
-        localStorage.setItem('accessToken', response.token);
+        localStorage.setItem('accessToken', response.accessToken);
       })
     );
   }

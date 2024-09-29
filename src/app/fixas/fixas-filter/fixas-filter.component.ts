@@ -14,59 +14,59 @@ import { TriStateCheckboxModule } from 'primeng/tristatecheckbox';
   imports: [ReactiveFormsModule, ButtonModule, InputTextModule, FloatLabelModule, ChipsModule, InputSwitchModule, TriStateCheckboxModule, AccordionModule],
   template: `
     <p-accordion class="w-full" expandIcon="pi pi-search-plus" collapseIcon="pi pi-search-minus">
-        <p-accordionTab>
-          <ng-template pTemplate="header">
-            <span class="flex align-items-center gap-2 w-full">
-              <span class="font-bold white-space-nowrap">
-                Filtro
-              </span>
+      <p-accordionTab>
+        <ng-template pTemplate="header">
+          <span class="flex align-items-center gap-2 w-full">
+            <span class="font-bold white-space-nowrap">
+              Filtro
             </span>
-          </ng-template>
-      <form [formGroup]="formulario">
-        <div class="content-form">
-          <div class="input-filter">
-            <p-floatLabel>
-              <input type="text" pInputText (blur)="emitFilter()" (keydown.enter)="emitFilter()" formControlName="description" inputId="description" />
-              <label for="description">Descrição</label>
-            </p-floatLabel>
-          </div>
-          <div class="input-filter">
-            <div class="input-campos" style="display: flex; width: 100%; align-items:center; justify-content: center;">
-              <div class="input-name" style="padding: 13px; width: 30%">
-                <span>Tipo</span>
-              </div>
-              <div class="input-switch" style="display: flex; align-items: center; justify-content: center;">
-                <p-triStateCheckbox formControlName="type" (onChange)="emitFilter()" inputId="type" />
-                <label for="type">
-                  <span [style]="{'margin-left': '10px', 'padding': '10px', 'background-color': formulario.get('type')?.value === null ? '#0ea5e96e' : formulario.get('type')?.value === true ? '#27ff006e' : '#ff00006e', 'border-radius': '10px'}">{{ formulario.value.type === null ? 'Todos' : formulario.value.type === true ? 'Ganhos' : 'Gastos'}}</span>
-                </label>
+          </span>
+        </ng-template>
+        <form [formGroup]="formulario">
+          <div class="content-form">
+            <div class="input-filter">
+              <p-floatLabel>
+                <input type="text" pInputText (blur)="emitFilter()" (keydown.enter)="emitFilter()" formControlName="description" inputId="description" />
+                <label for="description">Descrição</label>
+              </p-floatLabel>
+            </div>
+            <div class="input-filter">
+              <div class="input-campos" style="display: flex; width: 100%; align-items:center; justify-content: center;">
+                <div class="input-name" style="padding: 13px; width: 30%">
+                  <span>Tipo</span>
+                </div>
+                <div class="input-switch" style="display: flex; align-items: center; justify-content: center;">
+                  <p-triStateCheckbox formControlName="type" (onChange)="emitFilter()" inputId="type" />
+                  <label for="type">
+                    <span [style]="{'margin-left': '10px', 'padding': '10px', 'background-color': formulario.get('type')?.value === null ? '#0ea5e96e' : formulario.get('type')?.value === true ? '#27ff006e' : '#ff00006e', 'border-radius': '10px'}">{{ formulario.value.type === null ? 'Todos' : formulario.value.type === true ? 'Ganhos' : 'Gastos'}}</span>
+                  </label>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="input-filter">
-            <p-floatLabel>
-              <p-chips formControlName="tags" (onAdd)="emitFilter()" (onRemove)="emitFilter()" (onClear)="emitFilter()" [showClear]="true"></p-chips>
-              <label for="tags">Tags</label>
-            </p-floatLabel>
-          </div>
-          <div class="input-filter">
-            <div class="input-campos" style="display: flex; width: 100%; align-items:center; justify-content: center;">
-              <div class="input-name" style="padding: 13px; width: 30%">
-                <span>Status</span>
-              </div>
-              <div class="input-switch" style="display: flex; align-items: center; justify-content: center;">
-                <p-triStateCheckbox formControlName="status" (onChange)="emitFilter()" inputId="status" />
-                <label for="status">
-                  <span [style]="{'margin-left': '10px', 'padding': '10px', 'background-color': formulario.get('status')?.value === null ? '#0ea5e96e' : formulario.get('status')?.value === true ? '#27ff006e' : '#ff00006e', 'border-radius': '10px'}">{{ formulario.value.status === null ? 'Todos' : formulario.value.status === true ? 'Ativos' : 'Inativos'}}</span>
-                </label>
+            <div class="input-filter">
+              <p-floatLabel>
+                <p-chips formControlName="tags" (onAdd)="emitFilter()" (onRemove)="emitFilter()" (onClear)="emitFilter()" [showClear]="true"></p-chips>
+                <label for="tags">Tags</label>
+              </p-floatLabel>
+            </div>
+            <div class="input-filter">
+              <div class="input-campos" style="display: flex; width: 100%; align-items:center; justify-content: center;">
+                <div class="input-name" style="padding: 13px; width: 30%">
+                  <span>Status</span>
+                </div>
+                <div class="input-switch" style="display: flex; align-items: center; justify-content: center;">
+                  <p-triStateCheckbox formControlName="status" (onChange)="emitFilter()" inputId="status" />
+                  <label for="status">
+                    <span [style]="{'margin-left': '10px', 'padding': '10px', 'background-color': formulario.get('status')?.value === null ? '#0ea5e96e' : formulario.get('status')?.value === true ? '#27ff006e' : '#ff00006e', 'border-radius': '10px'}">{{ formulario.value.status === null ? 'Todos' : formulario.value.status === true ? 'Ativos' : 'Inativos'}}</span>
+                  </label>
+                </div>
               </div>
             </div>
+            <div class="input-filter">
+              <p-button icon="pi pi-eraser" severity="warning" [style]="{'width': '100%'}" label="Limpar" (click)="clear()"></p-button>
+            </div>
           </div>
-          <div class="input-filter">
-            <p-button icon="pi pi-eraser" severity="warning" [style]="{'width': '100%'}" label="Limpar" (click)="clear()"></p-button>
-          </div>
-        </div>
-      </form>
+        </form>
       </p-accordionTab>
     </p-accordion>
   `,
@@ -135,5 +135,4 @@ export class FixasFilterComponent {
   emitFilter() {
     this.onFilter.emit(this.formulario.value);
   }
-
 }

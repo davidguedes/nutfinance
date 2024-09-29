@@ -37,7 +37,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
               <div class="input-field d-column">
                 <div class="input-campos">
                   <p-floatLabel [style]="{'width': '100%'}">
-                    <p-inputNumber [disabled]="true" styleClass="input-styling" id="totalExpense" formControlName="totalExpense" [minFractionDigits]="2" mode="currency" currency="BRL" locale="pt-BR"> </p-inputNumber>
+                    <p-inputNumber styleClass="input-styling" id="totalExpense" formControlName="totalExpense" [minFractionDigits]="2" mode="currency" currency="BRL" locale="pt-BR"> </p-inputNumber>
                     <label for="totalExpense">Total Gastos*</label>
                   </p-floatLabel>
                 </div>
@@ -48,7 +48,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
               <div class="input-field d-column">
                 <div class="input-campos">
                   <p-floatLabel [style]="{'width': '100%'}">
-                    <p-inputNumber [disabled]="true" styleClass="input-styling" id="totalIncome" formControlName="totalIncome" [minFractionDigits]="2" mode="currency" currency="BRL" locale="pt-BR"> </p-inputNumber>
+                    <p-inputNumber styleClass="input-styling" id="totalIncome" formControlName="totalIncome" [minFractionDigits]="2" mode="currency" currency="BRL" locale="pt-BR"> </p-inputNumber>
                     <label for="totalIncome">Total Ganhos*</label>
                   </p-floatLabel>
                 </div>
@@ -247,8 +247,8 @@ export class OrcamentosFormComponent implements OnInit {
 
     this.formulario = this.formBuilder.group({
       id: [null],
-      totalExpense: [0, Validators.required],
-      totalIncome: [0, Validators.required],
+      totalExpense: [{value: 0, disabled: true}, Validators.required],
+      totalIncome: [{value: 0, disabled: true}, Validators.required],
       incomeCategories: this.formBuilder.array([]),
       expenseCategories: this.formBuilder.array([]),
     });

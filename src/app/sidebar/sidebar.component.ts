@@ -65,8 +65,7 @@ export class SidebarComponent implements OnInit {
         {
           label: 'Fechamentos',
           icon: 'pi pi-fw pi-clipboard',
-          command: () => {this.router.navigate(['/']); this.toggleVisible(false)},
-          disabled: true
+          command: () => {this.router.navigate(['/fechamentos']); this.toggleVisible(false)}
         },
         {
           label: 'Perfil',

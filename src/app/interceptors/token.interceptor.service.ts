@@ -27,7 +27,7 @@ export class JwtInterceptor implements HttpInterceptor {
 
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        console.log('Deu ruim hein')
+        console.log('Deu ruim hein: ', token);
         if (error.status === 401 && (error.error.message === 'Token expirado' || error.error.message === 'Token inválido')) {
           return this.handle401Error(request, next);
         }

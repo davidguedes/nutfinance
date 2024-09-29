@@ -136,7 +136,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   handleSidebarVisible(value: boolean) {
-    console.log("e ai hein")
     this.sidebarVisible = value;
   }
 
