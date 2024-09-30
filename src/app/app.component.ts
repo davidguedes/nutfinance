@@ -124,9 +124,9 @@ export class AppComponent implements OnInit, OnDestroy {
     this.authService.accessToken.subscribe((token: any) => {
       this.isAuthenticated = !!token;
 
-      if (!this.isAuthenticated) {
+      /*if (!this.isAuthenticated) {
         this.router.navigate(['/login']);
-      }
+      }*/
     });
 
     this.translate.setDefaultLang('pt');
