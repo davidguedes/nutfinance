@@ -7,7 +7,7 @@ import { isAuthenticatedGuard } from './guards/is-authenticated.guard';
 
 export const routes: Routes = [
   { path: 'login', canActivate: [isAuthenticatedGuard], component: LoginComponent, data: { title: 'NutFinance - Login'} },
-  { path: 'register', canActivate: [isAuthenticatedGuard], component: RegisterComponent, data: { title: 'NutFinance - Sign Up'} },
+  { path: 'register', component: RegisterComponent, data: { title: 'NutFinance - Sign Up'} },
   //{ path: 'categorias', canActivate: [authGuard], loadChildren: () => import('./categorias/categorias.module').then((m) => m.CategoriasModule), data: { title: 'NutFinance - Categorias'} },
   { path: 'transacoes', canActivate: [authGuard], loadChildren: () => import('./transacoes/transacoes.module').then((m) => m.TransacoesModule), data: { title: 'NutFinance - Transações'} },
   { path: 'orcamento', canActivate: [authGuard], loadChildren: () => import('./orcamentos/orcamentos.module').then((m) => m.OrcamentosModule), data: { title: 'NutFinance - Orçamentos'} },
