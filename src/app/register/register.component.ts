@@ -63,7 +63,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
               <div class="input-field d-column">
                 <div class="input-campos">
                   <p-floatLabel [style]="{'width': '100%'}">
-                    <input autofocus pInputText type="text" [style]="{'width': '100%'}" id="email" formControlName="email"/>
+                    <input pInputText type="text" [style]="{'width': '100%'}" id="email" formControlName="email"/>
                     <label for="email">Email*</label>
                   </p-floatLabel>
                 </div>
@@ -74,7 +74,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
               <div class="input-field d-column">
                 <div class="input-campos">
                   <p-floatLabel [style]="{'width': '100%'}">
-                    <p-password [toggleMask]="true" [feedback]="false" autofocus [style]="{'width': '100%'}" id="password" formControlName="password"/>
+                    <p-password [toggleMask]="true" [feedback]="false" [style]="{'width': '100%'}" id="password" formControlName="password"/>
                     <label for="password">Senha*</label>
                   </p-floatLabel>
                 </div>
@@ -85,7 +85,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
               <div class="input-field d-column">
                 <div class="input-campos">
                   <p-floatLabel [style]="{'width': '100%'}">
-                    <p-password [toggleMask]="true" [feedback]="false" autofocus [style]="{'width': '100%'}" id="confirm_password" formControlName="confirm_password"/>
+                    <p-password [toggleMask]="true" [feedback]="false" [style]="{'width': '100%'}" id="confirm_password" formControlName="confirm_password"/>
                     <label for="confirm_password">Confirmar Senha*</label>
                   </p-floatLabel>
                 </div>
@@ -94,7 +94,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
             </div>
           </form>
           <div class="buttons-form">
-            <div class="button"><p-button [style]="{'width': '100%', 'background-color':'#2196F3', 'border': '1px solid #2196F3'}" label="Cadastrar" (click)="register()"></p-button></div>
+            <div class="button"><p-button [style]="{'width': '100%', 'background-color':'#2196F3', 'border': '1px solid #2196F3'}" label="Cadastrar" (onClick)="register()"></p-button></div>
+            <div class="button"><p-button [style]="{'width': '100%', 'color': '#475569', 'background-color':'#f1f5f9', 'border': '1px solid #f1f5f9', 'margin-top': '10px'}" label="Voltar" (onClick)="router.navigate(['/'])"></p-button></div>
           </div>
         </div>
         <div *ngIf="finishRegister" class="finish-spinner">
@@ -126,19 +127,22 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      padding: 10px;
+      min-height: 100vh; /* Garante que o container ocupe no mínimo 100% da altura da tela */
+      box-sizing: border-box; /* Garante que o padding seja contabilizado corretamente */
     }
     .logo{
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 30px;
+      padding: 15px;
     }
     .login-form {
       background-color: rgba(1, 97, 255, 0.15);
       border-radius: 20px;
       padding: 20px;
-      width: 30%;
+      width: 90%; /* Baseie a largura em porcentagem para torná-la responsiva */
+      max-width: 400px; /* Limita a largura máxima para telas maiores */
     }
     .buttons-form {
       margin-top: 20px
@@ -149,12 +153,12 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
       justify-content: center;
       padding: 20px;
     }
-    @media (max-width: 992px) {
+    @media (min-width: 992px) {
       .login-form {
-        width: 50%;
+        width: 50%; /* Aumenta a largura em telas maiores */
       }
     }
-    @media (max-width: 635px) {
+    @media (min-width: 635px) and (max-width: 991px) {
       .login-form {
         width: 75%;
       }

@@ -16,7 +16,7 @@ import { catchError, lastValueFrom } from 'rxjs';
   imports: [DialogModule, ToastModule, CategoriasFormComponent],
   providers: [MessageService],
   template: `
-    <p-dialog header="Categorias" [(visible)]="visible" (onHide)="toggleVisible.emit({visible: false, alter: alter})" [draggable]="false" [resizable]="false" [modal]="true" [style]="{width: '50vw'}" [breakpoints]="{ '960px': '75vw', '660px': '90vw' }">
+    <p-dialog header="Categorias" [(visible)]="visible" (onHide)="toggleVisible.emit({visible: false, alter: alter})" [draggable]="false" [resizable]="false" [modal]="true" [style]="{width: '50vw'}" [breakpoints]="{ '960px': '75vw', '660px': '90vw', '460px': '100vw' }">
       <app-categorias-form (onSubmit)="createCategoria($event)" [edit]="categoryEdit" (closeModal)="close($event)"></app-categorias-form>
     </p-dialog>
     <p-toast position="top-center"></p-toast>

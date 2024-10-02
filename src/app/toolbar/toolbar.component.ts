@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
             <p-button icon="pi pi-bars" (onClick)="toggleVisible(!valueSidebarVisible)" [rounded]="true" [text]="true"></p-button>
           </ng-template>
           <ng-template pTemplate="end">
-            <img width="45" src="assets/png/icon.png" alt="Logotipo NutFinance" (click)="router.navigate(['/'])">
+            <img width="45" src="assets/png/icon.png" alt="Logotipo NutFinance" (click)="redirectToHome()">
           </ng-template>
       </p-menubar>
   </div>
@@ -26,10 +26,15 @@ export class ToolbarComponent {
   items: MenuItem[] | undefined;
   @Input({ transform: booleanAttribute }) valueSidebarVisible: boolean = false;
   @Output() sidebarVisible = new EventEmitter<boolean>();
+
   protected router = inject(Router);
 
   toggleVisible(value: boolean): void {
     this.valueSidebarVisible = value;
     this.sidebarVisible.emit(this.valueSidebarVisible);
+  }
+
+  redirectToHome(): void {
+    this.router.navigate(['/']);
   }
 }

@@ -16,7 +16,7 @@ import { OfflineService } from '../../offline-service/offline-service.service';
     selector: 'app-transacos-modal',
     standalone: true,
     template: `
-      <p-dialog header="Transação" [(visible)]="visible" (onHide)="toggleVisible.emit({visible: false, alter: alter})" [draggable]="false" [resizable]="false" [modal]="true" [style]="{width: '50vw'}" [breakpoints]="{ '960px': '75vw', '660px': '90vw' }">
+      <p-dialog header="Transação" [(visible)]="visible" (onHide)="toggleVisible.emit({visible: false, alter: alter})" [draggable]="false" [resizable]="false" [modal]="true" [style]="{width: '50vw'}" [breakpoints]="{ '960px': '75vw', '660px': '90vw', '460px': '100vw' }">
         <app-transacoes-form (onSubmit)="createTransacao($event)" [categorias]="budgetCategory" [edit]="transactionEdit" (closeModal)="close($event)"></app-transacoes-form>
       </p-dialog>
       <p-toast position="top-center"></p-toast>
