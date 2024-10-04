@@ -340,9 +340,9 @@ export class OrcamentosFormComponent implements OnInit {
     });
 
     if (type === 'income') {
-      this.incomeCategories.push(categoryForm);
+      this.incomeCategories.insert(0, categoryForm);
     } else {
-      this.expenseCategories.push(categoryForm);
+      this.expenseCategories.insert(0, categoryForm);
     }
   }
 
