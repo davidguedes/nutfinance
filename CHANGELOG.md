@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.18](https://github.com/davidguedes/nutfinance/compare/v0.0.17...v0.0.18) (2024-10-06)
+
+
+### Bug Fixes
+
+* ajuste em saldo ([ec93f06](https://github.com/davidguedes/nutfinance/commit/ec93f06dee8a726a12f8ee9a40f818291cc0028a))
+
 ### [0.0.17](https://github.com/davidguedes/nutfinance/compare/v0.0.16...v0.0.17) (2024-10-06)
 
 ### [0.0.16](https://github.com/davidguedes/nutfinance/compare/v0.0.15...v0.0.16) (2024-10-02)
