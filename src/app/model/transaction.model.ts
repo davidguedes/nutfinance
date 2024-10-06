@@ -1,3 +1,5 @@
+import { BudgetCategoryForm } from "./budget.model";
+
 export interface TransactionForm {
   id: string;
   id_offline?: number;
@@ -15,4 +17,5 @@ export interface TransactionForm {
   date?: string;
   closing_id?: string;
   budgetCategory_id: string;
+  budgetCategory: BudgetCategoryForm;
 }

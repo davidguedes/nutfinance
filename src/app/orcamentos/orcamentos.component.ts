@@ -46,11 +46,11 @@ export class OrcamentosComponent implements OnInit {
 
     const updateBudget = await lastValueFrom(this.orcamentosService.updateBudget(dadosFormulario).pipe(
       catchError(error => {
-        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao atualizar orçamento ' + error.error.message })
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao atualizar planejamento ' + error.error.message })
         return error;
       })
     ));
-    let textDetail = "Sucesso ao atualizar orçamento";
+    let textDetail = "Sucesso ao atualizar planejamento";
 
     this.messageService.add({ severity: 'success', summary: 'Success', detail: textDetail });
   }

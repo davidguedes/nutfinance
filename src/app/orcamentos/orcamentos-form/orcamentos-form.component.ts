@@ -260,7 +260,7 @@ export class OrcamentosFormComponent implements OnInit {
     this.budgetService.getBudget(this.user.id);
     const data = await lastValueFrom(this.budgetService.getBudget(this.user.id).pipe(
       catchError(error => {
-        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao recuperar orçamento: ' + error.error.message })
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao recuperar planejamento: ' + error.error.message })
         return [];
       })
     ));
@@ -322,7 +322,7 @@ export class OrcamentosFormComponent implements OnInit {
   submitForm() {
     if(this.formulario.valid) {
       if(this.incomeCategories.length == 0 || this.expenseCategories.length == 0) {
-        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao atualizar orçamento. Ganhos e gastos precisam ter pelo menos uma categoria!'});
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao atualizar planejamento. Ganhos e gastos precisam ter pelo menos uma categoria!'});
       } else
         this.onSubmit.emit(this.formulario.value);
     } else {

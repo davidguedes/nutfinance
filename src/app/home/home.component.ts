@@ -25,7 +25,7 @@ import { SkeletonModule } from 'primeng/skeleton';
   ],
   template: `
     <div class="grid flex align-items-center justify-content-center">
-      <div class="col-12 lg:col-6 xl:col-6">
+      <div class="col-12 lg:col-4 xl:col-4">
         <p-card class="card mb-0">
           <div class="flex justify-content-between mb-3">
             <div>
@@ -44,7 +44,7 @@ import { SkeletonModule } from 'primeng/skeleton';
           <span class="text-500">desde a semana passada</span-->
         </p-card>
       </div>
-      <div class="col-12 lg:col-6 xl:col-6">
+      <div class="col-12 lg:col-4 xl:col-4">
         <p-card class="card mb-0">
           <div class="flex justify-content-between mb-3">
             <div>
@@ -61,6 +61,27 @@ import { SkeletonModule } from 'primeng/skeleton';
           </div>
           <!--span class="text-green-500 font-medium">2 novas </span>
           <span class="text-500">desde a última visita</span-->
+        </p-card>
+      </div>
+      <div class="col-12 lg:col-4 xl:col-4">
+        <p-card class="card mb-0">
+          <div class="flex justify-content-between mb-3">
+            <div>
+              <span class="block text-500 font-medium mb-3">Saldo</span>
+              @if(balance == null) {
+                <p-skeleton width="8rem" />
+              } @else {
+                <div class="text-900 font-medium text-xl">{{balance | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</div>
+              }
+            </div>
+            @if(balance == null) {
+              <p-skeleton width="2rem" height="2rem"/>
+            } @else {
+              <div class="flex align-items-center justify-content-center border-round" [ngClass]="balance == null || balance < 0 ? 'bg-green-100' : 'bg-red-100' " [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
+                <i class="pi pi-wallet text-xl" [ngClass]="balance == null || balance < 0 ? 'text-green-500' : 'text-red-500' "></i>
+              </div>
+            }
+          </div>
         </p-card>
       </div>
       <div class="col-12 sm:col-12 md:col-6 lg:col-6 xl:col-6" style="background: white">
@@ -139,6 +160,7 @@ export class HomeComponent implements OnInit {
   transactions: number = 0;
   profit: number | null = null;
   expense: number | null = null;
+  balance: number | null = null;
   spendingCategory: PieChartData | null = null;
   progressOfMonth: any | null = null;
   optionsChartPie: any = {};
@@ -171,6 +193,8 @@ export class HomeComponent implements OnInit {
         return of(0);
       })
     ));
+
+    this.balance = this.profit - this.expense + 10000;
 
     let value = await lastValueFrom(this.chartService.getSpendingCategory(this.user.id).pipe(
       catchError(error => {

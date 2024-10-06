@@ -59,6 +59,7 @@ import { SkeletonModule } from 'primeng/skeleton';
                                         <i class="pi pi-undo"></i> {{item.installmentNumber}}/{{item.totalInstallmentNumber}}
                                       </div>
                                     }
+                                    <div class="category-area flex align-items-center"><i class="pi pi-calculator"></i> <span>{{ item.budgetCategory.category}}</span></div>
                                     <span class="flex align-items-center gap-2">
                                       <i class="pi pi-tag"></i>
                                       <!--span class="font-semibold">{{ item.category }}</span-->
@@ -122,19 +123,24 @@ import { SkeletonModule } from 'primeng/skeleton';
                               <span class="flex align-items-center gap-2">
                                 <i class="pi pi-calendar"></i>
                               </span>
-                              <p-skeleton height="1rem" width="6rem" borderRadius="16px" />
+                              <p-skeleton height="1rem" width="4rem" borderRadius="16px" />
 
                               <span class="flex align-items-center gap-2">
                                 <i class="pi pi-undo"></i>
                               </span>
-                              <p-skeleton height="1rem" width="4rem" borderRadius="16px" />
+                              <p-skeleton height="1rem" width="2rem" borderRadius="16px" />
+
+                              <span class="flex align-items-center gap-2">
+                                <i class="pi pi-calculator"></i>
+                              </span>
+                              <p-skeleton height="1rem" width="2rem" borderRadius="16px" />
 
                               <span class="flex align-items-center gap-2">
                                 <i class="pi pi-tag"></i>
                               </span>
-                              <p-skeleton height="1rem" width="4rem" />
-                              <p-skeleton height="1rem" width="4rem" />
-                              <p-skeleton height="1rem" width="4rem" />
+                              <p-skeleton height="1rem" width="2rem" />
+                              <p-skeleton height="1rem" width="2rem" />
+                              <p-skeleton height="1rem" width="2rem" />
                           </div>
                       </div>
                       <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
@@ -161,6 +167,15 @@ import { SkeletonModule } from 'primeng/skeleton';
   styles: `
     .content {
       width: 100%;
+    }
+    .category-area {
+      background-color: #FEFFC0;
+      padding: 5px;
+      border-radius: 10px;
+      span {
+        margin-left: 5px;
+        text-align: center;
+      }
     }
     .transacao-empty {
       display: flex;
