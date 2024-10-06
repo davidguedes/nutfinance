@@ -25,6 +25,9 @@ import { SkeletonModule } from 'primeng/skeleton';
   ],
   template: `
     <div class="grid flex align-items-center justify-content-center">
+    <div class="col-12">
+      <p>{{now | date: 'MMMM, y'}}</p>
+    </div>
       <div class="col-12 lg:col-4 xl:col-4">
         <p-card class="card mb-0">
           <div class="flex justify-content-between mb-3">
@@ -77,8 +80,8 @@ import { SkeletonModule } from 'primeng/skeleton';
             @if(balance == null) {
               <p-skeleton width="2rem" height="2rem"/>
             } @else {
-              <div class="flex align-items-center justify-content-center border-round" [ngClass]="balance == null || balance < 0 ? 'bg-green-100' : 'bg-red-100' " [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
-                <i class="pi pi-wallet text-xl" [ngClass]="balance == null || balance < 0 ? 'text-green-500' : 'text-red-500' "></i>
+              <div class="flex align-items-center justify-content-center border-round" [ngClass]="balance == null || balance < 0 ? 'bg-red-100' : 'bg-green-100' " [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
+                <i class="pi pi-wallet text-xl" [ngClass]="balance == null || balance < 0 ? 'text-red-500' : 'text-green-500' "></i>
               </div>
             }
           </div>
@@ -164,12 +167,15 @@ export class HomeComponent implements OnInit {
   spendingCategory: PieChartData | null = null;
   progressOfMonth: any | null = null;
   optionsChartPie: any = {};
+  now: Date | null = null;
 
   chartOptions: any;
 
   ngOnInit(): void {
     this.user = this.authService.getUser();
     this.initChart();
+
+    this.now = new Date();
   }
 
   async initChart() {
@@ -194,7 +200,7 @@ export class HomeComponent implements OnInit {
       })
     ));
 
-    this.balance = this.profit - this.expense + 10000;
+    this.balance = this.profit - this.expense;
 
     let value = await lastValueFrom(this.chartService.getSpendingCategory(this.user.id).pipe(
       catchError(error => {
