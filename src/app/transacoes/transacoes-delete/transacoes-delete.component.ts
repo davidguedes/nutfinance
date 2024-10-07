@@ -12,7 +12,7 @@ import { catchError, lastValueFrom } from 'rxjs';
   standalone: true,
   imports: [ButtonModule, ToastModule, ConfirmDialogModule],
   template: `
-    <p-button severity="danger" [rounded]="true" [text]="true" [disabled]="disabledBtn" (click)="confirm()" icon="pi pi-trash"></p-button>
+    <!--p-button severity="danger" [rounded]="true" [text]="true" [disabled]="disabledBtn" (click)="confirm()" icon="pi pi-trash"></p-button-->
 
     <p-toast position="top-center"></p-toast>
     <p-confirmDialog #cd>

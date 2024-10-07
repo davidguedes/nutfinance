@@ -26,7 +26,7 @@ import { SkeletonModule } from 'primeng/skeleton';
   template: `
     <div class="grid flex align-items-center justify-content-center">
     <div class="col-12">
-      <p>{{now | date: 'MMMM, y'}}</p>
+      <p>{{now | date: 'MMMM, y' : '' : 'pt-BR'}}</p>
     </div>
       <div class="col-12 lg:col-4 xl:col-4">
         <p-card class="card mb-0">

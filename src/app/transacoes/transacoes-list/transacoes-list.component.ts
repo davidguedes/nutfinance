@@ -1,9 +1,9 @@
+import { TransactionForm } from './../../model/transaction.model';
 import { CommonModule } from '@angular/common';
-import { Component, DEFAULT_CURRENCY_CODE, EventEmitter, Input, LOCALE_ID, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
-import { TransactionForm } from '../../model/transaction.model';
 import { TabViewModule } from 'primeng/tabview';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
@@ -14,6 +14,8 @@ import { ActionButtonComponent } from '../../shared/action-button/action-button.
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SkeletonModule } from 'primeng/skeleton';
+import { ContextMenu, ContextMenuModule } from 'primeng/contextmenu';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'transacoes-list',
@@ -32,10 +34,13 @@ import { SkeletonModule } from 'primeng/skeleton';
     TransacoesModalComponent,
     ScrollPanelModule,
     ProgressSpinnerModule,
-    SkeletonModule
+    SkeletonModule,
+    ContextMenuModule
   ],
   template: `
     <div class="content">
+      <p-contextMenu #cm [model]="items" />
+
         <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - (67px + 62px + 36px))' }" styleClass="custombar1">
           @if (loadingContent) {
             @for(item of transacoes; track item.id; let primeiro = $first; let idx = $index;){
@@ -43,41 +48,42 @@ import { SkeletonModule } from 'primeng/skeleton';
                     @if(idx !== transacoes.length-1 || isLoading || last){
                       @if(item.date) {
                         <div class="flex justify-content-center align-items-center flex-column xl:flex-row xl:align-items-center p-4 gap-4" [ngClass]="primeiro ? 'first-item' : 'border-top-1 surface-border'">
-                          <div class="text-2xl font-bold text-900">{{item.date}}</div>
+                          <div class="text-2xl font-bold text-900">{{item.date }}</div>
                         </div>
                       }
 
                       @else {
-                      <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4" [ngClass]="primeiro ? 'first-item' : 'border-top-1 surface-border'">
-                        <div class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-                            <div class="flex flex-column align-items-center sm:align-items-start gap-3">
-                                <div class="text-2xl font-bold text-900">{{ item.description }}</div>
-                                <div class="flex align-items-center gap-3">
-                                    <div><i class="pi pi-calendar"></i> {{item.date_transaction | date:'dd/MM/yyyy'}}</div>
-                                    @if(item.isInstallment) {
-                                      <div>
-                                        <i class="pi pi-undo"></i> {{item.installmentNumber}}/{{item.totalInstallmentNumber}}
-                                      </div>
-                                    }
-                                    <div class="category-area flex align-items-center"><i class="pi pi-calculator"></i> <span>{{ item.budgetCategory.category}}</span></div>
-                                    <span class="flex align-items-center gap-2">
-                                      <i class="pi pi-tag"></i>
-                                      <!--span class="font-semibold">{{ item.category }}</span-->
-                                    </span>
-                                    <p-tag [value]="item.type == 'D' ? 'Gasto' : 'Ganho'" [severity]="getSeverity(item)"></p-tag>
-                                    @for (tag of item.tags; track tag) {
-                                      <p-tag [value]="tag"></p-tag>
-                                    }
+                      <div class="flex flex-column p-4 gap-2" (contextmenu)="onContextMenu($event, item)" [ngClass]="primeiro ? 'first-item' : 'border-top-1 surface-border'">
+                          <div class="flex w-full justify-content-between">
+                            <div><i class="pi pi-calendar text-xs"></i> <span class="text-xs ml-1">{{item.date_transaction | date:'dd/MM/yyyy'}}</span></div>
+                            <div><i (click)="onContextMenu($event, item)" class="pi pi-ellipsis-h"></i></div>
+                          </div>
+                          <div class="flex flex-column align-items-center gap-1">
+                            <span class="text-2xl font-semibold">{{item.value | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</span>
+                            <div class="text-1xl font-bold text-900">{{ item.description }}</div>
+                          </div>
+                          <div class="flex align-items-center justify-content-center gap-2">
+                              @if(item.isInstallment) {
+                                <div>
+                                  <i class="pi pi-undo text-xs"></i> <span class="text-xs ml-1">{{item.installmentNumber}}/{{item.totalInstallmentNumber}}</span>
                                 </div>
-                            </div>
-                            <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
-                              <span class="text-2xl font-semibold">{{item.value | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</span>
+                              }
+                              <div class="category-area flex align-items-center"><i class="pi pi-calculator text-xs"></i> <span class="text-xs">{{ item.budgetCategory.category}}</span></div>
+                              <span class="flex align-items-center gap-1">
+                                <i class="pi pi-tag text-xs"></i>
+                                <!--span class="font-semibold">{{ item.category }}</span-->
+                              </span>
+                              <p-tag class="text-xs" [value]="item.type == 'D' ? 'Gasto' : 'Ganho'" [severity]="getSeverity(item)"></p-tag>
+                              @for (tag of item.tags; track tag) {
+                                <p-tag class="text-xs" [value]="tag"></p-tag>
+                              }
+                          </div>
+                            <!--div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
                               <div>
                                 <app-transacoes-delete [disabledBtn]="item.closing_id || (item.isInstallment && item?.installmentNumber != undefined && item?.installmentNumber != 1 ) ? true : false" (deleteButton)="isLoading = false; findTransactions(-1, transacoes, true)" [idTransaction]="item.id" />
                                 <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [disabled]="item.closing_id ? true : false" (click)="editTransaction = item; modalVisible = true"></p-button>
                               </div>
-                            </div>
-                        </div>
+                            </div-->
                       </div>
                       }
                     }@else {
@@ -115,41 +121,36 @@ import { SkeletonModule } from 'primeng/skeleton';
 
             @for(e of [].constructor(10); track e){
               <div class="transacao-item">
-                <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 border-top-1 surface-border">
-                  <div class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-                      <div class="flex flex-column align-items-center sm:align-items-start gap-3">
-                          <div class="text-2xl font-bold text-900"><p-skeleton width="8rem" height="2rem" styleClass="mb-2" borderRadius="16px" /></div>
-                          <div class="flex align-items-center gap-3">
-                              <span class="flex align-items-center gap-2">
-                                <i class="pi pi-calendar"></i>
-                              </span>
-                              <p-skeleton height="1rem" width="4rem" borderRadius="16px" />
+                <div class="flex flex-column p-4 gap-2 border-top-1 surface-border">
+                  <div class="flex w-full justify-content-between">
+                    <div class="flex align-items-center">
+                      <span class="flex align-items-center">
+                        <i class="pi pi-calendar"></i>
+                      </span><p-skeleton class="ml-1" height="1rem" width="4rem" borderRadius="16px" />
+                    </div>
+                    <p-skeleton height="1rem" width="2rem" borderRadius="16px" />
+                  </div>
+                  <div class="flex flex-column align-items-center gap-1">
+                      <p-skeleton height="2rem" width="8rem" borderRadius="16px" />
+                      <p-skeleton height="1rem" width="6rem" borderRadius="16px" />
+                    </div>
+                  <div class="flex align-items-center justify-content-center gap-2">
+                    <span class="flex align-items-center">
+                      <i class="pi pi-undo text-xs"></i>
+                    </span>
+                    <p-skeleton height="1rem" width="2rem" borderRadius="16px" />
 
-                              <span class="flex align-items-center gap-2">
-                                <i class="pi pi-undo"></i>
-                              </span>
-                              <p-skeleton height="1rem" width="2rem" borderRadius="16px" />
+                    <span class="flex align-items-center">
+                      <i class="pi pi-calculator text-xs"></i>
+                    </span>
+                    <p-skeleton height="1rem" width="2rem" borderRadius="16px" />
 
-                              <span class="flex align-items-center gap-2">
-                                <i class="pi pi-calculator"></i>
-                              </span>
-                              <p-skeleton height="1rem" width="2rem" borderRadius="16px" />
-
-                              <span class="flex align-items-center gap-2">
-                                <i class="pi pi-tag"></i>
-                              </span>
-                              <p-skeleton height="1rem" width="2rem" />
-                              <p-skeleton height="1rem" width="2rem" />
-                              <p-skeleton height="1rem" width="2rem" />
-                          </div>
-                      </div>
-                      <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
-                        <p-skeleton height="2rem" width="8rem" borderRadius="16px" />
-                        <div class="flex">
-                          <p-skeleton shape="circle" size="2rem" styleClass="mr-2" />
-                          <p-skeleton shape="circle" size="2rem" styleClass="mr-2" />
-                        </div>
-                      </div>
+                    <span class="flex align-items-center">
+                      <i class="pi pi-tag text-xs"></i>
+                    </span>
+                    <p-skeleton height="1rem" width="2rem" />
+                    <p-skeleton height="1rem" width="2rem" />
+                    <p-skeleton height="1rem" width="2rem" />
                   </div>
                 </div>
               </div>
@@ -200,6 +201,8 @@ import { SkeletonModule } from 'primeng/skeleton';
 export class TransacoesListComponent implements OnInit {
   editTransaction!: TransactionForm | undefined;
   modalVisible: boolean = false;
+  items: MenuItem[] | undefined;
+  selectedTransaction: TransactionForm | undefined = undefined;
   @Output() searchTransactions = new EventEmitter();
   @Output() clear = new EventEmitter();
   @Input() transacoes: TransactionForm[] = [];
@@ -207,8 +210,24 @@ export class TransacoesListComponent implements OnInit {
   @Input() loadingContent: boolean = false;
   @Input() last: boolean = false;
   @Input() categorias: any = {};
+  @ViewChild('cm') cm!: ContextMenu;
+  @ViewChild(TransacoesDeleteComponent) transacoesDelete!: TransacoesDeleteComponent;
 
   ngOnInit(): void {
+    this.items = [
+      {
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        disabled: this.editTransaction?.closing_id || (this.editTransaction?.isInstallment && this.editTransaction?.installmentNumber != undefined && this.editTransaction?.installmentNumber != 1 ) ? true : false,
+        command: () => { this.editTransaction = this.selectedTransaction; this.modalVisible = true }
+      },
+      {
+        label: 'Excluir',
+        icon: 'pi pi-trash',
+        disabled: this.selectedTransaction?.closing_id ? true : false,
+        command: () => { this.transacoesDelete.confirm() }
+      }
+  ]
   }
 
   findTransactions(index: number, transacoes: Array<TransactionForm>, clear?: boolean): void {
@@ -267,5 +286,10 @@ export class TransacoesListComponent implements OnInit {
       this.isLoading = false;
       this.findTransactions(-1, this.transacoes, true)
     }
+  }
+
+  onContextMenu(event: any, item: any) {
+    this.selectedTransaction = item;
+    this.cm.show(event);
   }
 }
