@@ -1,6 +1,6 @@
 import { TransactionForm } from './../../model/transaction.model';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, Signal, signal, ViewChild } from '@angular/core';
 import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
@@ -39,9 +39,9 @@ import { MenuItem } from 'primeng/api';
   ],
   template: `
     <div class="content">
-      <p-contextMenu #cm [model]="items" />
+      <p-contextMenu #cm [model]="items" (onHide)="updatSelectedTransaction({})"/>
 
-        <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - (67px + 62px + 36px))' }" styleClass="custombar1">
+      <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - (67px + 62px + 36px))' }" styleClass="custombar1">
           @if (loadingContent) {
             @for(item of transacoes; track item.id; let primeiro = $first; let idx = $index;){
                 <div #transacao class="transacao-item">
@@ -199,11 +199,11 @@ import { MenuItem } from 'primeng/api';
     }
   `
 })
-export class TransacoesListComponent implements OnInit {
+export class TransacoesListComponent {
   editTransaction!: TransactionForm | undefined;
   modalVisible: boolean = false;
   items: MenuItem[] | undefined;
-  selectedTransaction: TransactionForm | undefined = undefined;
+  selectedTransaction = signal<TransactionForm>({} as TransactionForm);
   @Output() searchTransactions = new EventEmitter();
   @Output() clear = new EventEmitter();
   @Input() transacoes: TransactionForm[] = [];
@@ -213,23 +213,6 @@ export class TransacoesListComponent implements OnInit {
   @Input() categorias: any = {};
   @ViewChild('cm') cm!: ContextMenu;
   @ViewChild(TransacoesDeleteComponent) transacoesDelete!: TransacoesDeleteComponent;
-
-  ngOnInit(): void {
-    this.items = [
-      {
-        label: 'Editar',
-        icon: 'pi pi-pencil',
-        disabled: this.editTransaction?.closing_id || (this.editTransaction?.isInstallment && this.editTransaction?.installmentNumber != undefined && this.editTransaction?.installmentNumber != 1 ) ? true : false,
-        command: () => { this.editTransaction = this.selectedTransaction; this.modalVisible = true }
-      },
-      {
-        label: 'Excluir',
-        icon: 'pi pi-trash',
-        disabled: this.selectedTransaction?.closing_id ? true : false,
-        command: () => { this.transacoesDelete.confirm() }
-      }
-  ]
-  }
 
   findTransactions(index: number, transacoes: Array<TransactionForm>, clear?: boolean): void {
     this.last = false;
@@ -290,7 +273,29 @@ export class TransacoesListComponent implements OnInit {
   }
 
   onContextMenu(event: any, item: any) {
-    this.selectedTransaction = item;
+    this.updatSelectedTransaction(item);
+    this.constructContextMenu();
     this.cm.show(event);
+  }
+
+  updatSelectedTransaction(item: any) {
+    this.selectedTransaction.update(val => item);
+  }
+
+  constructContextMenu() {
+    this.items = [
+      {
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        disabled: this.selectedTransaction().closing_id || (this.selectedTransaction().isInstallment && this.selectedTransaction().installmentNumber != undefined && this.selectedTransaction().installmentNumber != 1 ) ? true : false,
+        command: () => { this.editTransaction = this.selectedTransaction(); this.modalVisible = true }
+      },
+      {
+        label: 'Excluir',
+        icon: 'pi pi-trash',
+        disabled: this.selectedTransaction().closing_id ? true : false,
+        command: () => { this.transacoesDelete.confirm() }
+      }
+    ]
   }
 }

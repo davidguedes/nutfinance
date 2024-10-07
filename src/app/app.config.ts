@@ -1,7 +1,5 @@
 import { ApplicationConfig, importProvidersFrom, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
-
-import 'hammerjs';
 import { routes } from './app.routes';
 import { BrowserModule, HammerModule, provideClientHydration } from '@angular/platform-browser';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -11,6 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideServiceWorker } from '@angular/service-worker';
 import { OfflineInterceptor } from './interceptors/offline.interceptor.service';
 import { JwtInterceptor } from './interceptors/token.interceptor.service';
+import 'hammerjs';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
