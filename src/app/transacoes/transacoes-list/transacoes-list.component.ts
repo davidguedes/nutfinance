@@ -59,8 +59,8 @@ import { MenuItem } from 'primeng/api';
                             <div><i (click)="onContextMenu($event, item)" class="pi pi-ellipsis-h"></i></div>
                           </div>
                           <div class="flex flex-column align-items-center gap-1">
-                            <span class="text-2xl font-semibold">{{item.value | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</span>
-                            <div class="text-1xl font-bold text-900">{{ item.description }}</div>
+                            <span class="text-2xl font-bold">{{item.value | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</span>
+                            <div class="text-1sm text-700">{{ item.description }}</div>
                           </div>
                           <div class="flex align-items-center justify-content-center gap-2">
                               @if(item.isInstallment) {
@@ -78,6 +78,7 @@ import { MenuItem } from 'primeng/api';
                                 <p-tag class="text-xs" [value]="tag"></p-tag>
                               }
                           </div>
+                            <app-transacoes-delete [disabledBtn]="item.closing_id || (item.isInstallment && item?.installmentNumber != undefined && item?.installmentNumber != 1 ) ? true : false" (deleteButton)="isLoading = false; findTransactions(-1, transacoes, true)" [idTransaction]="item.id" />
                             <!--div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
                               <div>
                                 <app-transacoes-delete [disabledBtn]="item.closing_id || (item.isInstallment && item?.installmentNumber != undefined && item?.installmentNumber != 1 ) ? true : false" (deleteButton)="isLoading = false; findTransactions(-1, transacoes, true)" [idTransaction]="item.id" />
