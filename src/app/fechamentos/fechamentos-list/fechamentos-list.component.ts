@@ -16,6 +16,7 @@ import { PaginatorComponent } from '../../shared/paginator/paginator.component';
             <th>Período</th>
             <th>Ganho</th>
             <th>Gasto</th>
+            <th>Sobra</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-fechamento let-columns="columns">
@@ -23,6 +24,7 @@ import { PaginatorComponent } from '../../shared/paginator/paginator.component';
             <td style="white-space: normal"><span class="p-column-title">Período</span>{{ fechamento.initialDate | date:'dd/MM/yyyy' }} - {{ fechamento.finalDate | date:'dd/MM/yyyy' }}</td>
             <td style="white-space: normal"><span class="p-column-title">Ganhos</span>{{ fechamento.balance | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
             <td style="white-space: normal"><span class="p-column-title">Gastos</span>{{ fechamento.spending | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
+            <td style="white-space: normal"><span class="p-column-title">Sobra</span>{{ (fechamento.balance - fechamento.spending) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
