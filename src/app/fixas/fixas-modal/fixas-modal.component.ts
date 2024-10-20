@@ -15,7 +15,7 @@ import { UserForm } from '../../model/user.model';
   standalone: true,
   template: `
     <p-dialog header="Fixas" [(visible)]="visible" (onHide)="toggleVisible.emit({visible: false, alter: alter})" [draggable]="false" [resizable]="false" [modal]="true" [style]="{width: '50vw'}" [breakpoints]="{ '960px': '75vw', '660px': '90vw', '460px': '100vw' }">
-      <app-fixas-form [categorias]="budgetCategory" (onSubmit)="createFixa($event)" [edit]="fixedEdit" (closeModal)="close($event)"></app-fixas-form>
+      <app-fixas-form [categorias]="budgetCategory" (onSubmit)="createFixa($event)" [edit]="fixedEdit" (closeModal)="close($event)" [disabled]="isProcessing"></app-fixas-form>
     </p-dialog>
     <p-toast position="top-center"></p-toast>
   `,
@@ -37,12 +37,15 @@ export class FixasModalComponent implements OnInit {
   protected authService: any = inject(LoginService);
   private user: UserForm = {} as UserForm;
   alter: boolean = false;
+  isProcessing: boolean = false;
 
   ngOnInit(): void {
     this.user = this.authService.getUser();
   }
 
   async createFixa(formulario: FixedForm) {
+    if (this.isProcessing) return; // Prevenir dupla execução
+    this.isProcessing = true; // Marcar que a operação começou
     const dadosFormulario = formulario;
     formulario.user_id = this.user.id;
 
@@ -69,6 +72,7 @@ export class FixasModalComponent implements OnInit {
     this.messageService.add({ severity: 'success', summary: 'Success', detail: textDetail });
     this.alter = true;
     this.close(true);
+    this.isProcessing = false; // Marcar que a operação terminou
   }
 
   close(close: boolean) {

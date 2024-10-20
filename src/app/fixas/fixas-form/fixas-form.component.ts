@@ -104,7 +104,7 @@ import { DropdownModule } from 'primeng/dropdown';
           </div>
         </form>
         <div class="buttons-form">
-          <div class="button"><p-button icon="pi pi-check" [style]="{'width': '100%', 'background-color':'#2196F3', 'border': '1px solid #2196F3'}" label="Salvar" (click)="submitForm()"></p-button></div>
+          <div class="button"><p-button icon="pi pi-check" [disabled]="disabled" [style]="{'width': '100%', 'background-color':'#2196F3', 'border': '1px solid #2196F3'}" label="Salvar" (click)="submitForm()"></p-button></div>
 
           <div class="button"><p-button icon="pi pi-eraser" [style]="{'width': '100%', 'background-color':'#fab710', 'border': '1px solid #fab710'}" label="Limpar" (click)="clear()"></p-button></div>
 
@@ -181,6 +181,7 @@ export class FixasFormComponent implements OnInit {
     expense: [],
     income: []
   };
+  @Input() disabled: boolean = false;
 
   formBuilder = inject(FormBuilder);
   formulario!: FormGroup;

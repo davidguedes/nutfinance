@@ -6,7 +6,7 @@ import { TransactionForm } from '../../model/transaction.model';
 import { MessageService } from 'primeng/api';
 import { Transacoes } from '../transacoes.interface';
 import { TransacoesService } from '../transacoes.service';
-import { catchError, lastValueFrom } from 'rxjs';
+import { catchError, lastValueFrom, Subject, takeUntil } from 'rxjs';
 import { LoginService } from '../../login/login.service';
 import { UserForm } from '../../model/user.model';
 import { ConnectionService } from '../../connection.service';
@@ -17,7 +17,7 @@ import { OfflineService } from '../../offline-service/offline-service.service';
     standalone: true,
     template: `
       <p-dialog header="Transação" [(visible)]="visible" (onHide)="toggleVisible.emit({visible: false, alter: alter})" [draggable]="false" [resizable]="false" [modal]="true" [style]="{width: '50vw'}" [breakpoints]="{ '960px': '75vw', '660px': '90vw', '460px': '100vw' }">
-        <app-transacoes-form (onSubmit)="createTransacao($event)" [categorias]="budgetCategory" [edit]="transactionEdit" (closeModal)="close($event)"></app-transacoes-form>
+        <app-transacoes-form (onSubmit)="createTransacao($event)" [categorias]="budgetCategory" [edit]="transactionEdit" (closeModal)="close($event)" [disabled]="isProcessing"></app-transacoes-form>
       </p-dialog>
       <p-toast position="top-center"></p-toast>
     `,
@@ -40,15 +40,19 @@ export class TransacoesModalComponent implements OnInit {
   protected offlineService = inject(OfflineService); // Novo serviço
   protected connectionService = inject(ConnectionService); // Serviço de conexão
 
+  private destroy$ = new Subject<void>();
   private user: UserForm = {} as UserForm;
   alter: boolean = false;
   isOnline: boolean = true;
+  isProcessing: boolean = false;
 
   ngOnInit(): void {
     this.user = this.authService.getUser();
 
     // Monitorando a conexão
-    this.connectionService.getConnectionStatus().subscribe(status => {
+    this.connectionService.getConnectionStatus()
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(status => {
       this.isOnline = status;
       if (this.isOnline) {
         this.syncOfflineTransactions(); // Sincronizar quando online
@@ -57,6 +61,8 @@ export class TransacoesModalComponent implements OnInit {
   }
 
   async createTransacao(formulario: TransactionForm) {
+    if (this.isProcessing) return; // Prevenir dupla execução
+    this.isProcessing = true; // Marcar que a operação começou
     const dadosFormulario = formulario;
     formulario.user_id = this.user.id;
 
@@ -88,6 +94,7 @@ export class TransacoesModalComponent implements OnInit {
 
     this.alter = true;
     this.close(true);
+    this.isProcessing = false; // Marcar que a operação terminou
   }
 
   async saveTransactionOnline(transaction: TransactionForm) {
